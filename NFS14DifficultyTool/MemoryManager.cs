@@ -90,7 +90,7 @@ namespace NFS14DifficultyTool {
                 return false;
 
             UIntPtr p;
-            p = OpenProcess(ProcessAccessFlags.VirtualMemoryRead | ProcessAccessFlags.VirtualMemoryWrite, true, procList[0].Id);
+            p = OpenProcess(ProcessAccessFlags.VirtualMemoryOperation | ProcessAccessFlags.VirtualMemoryRead | ProcessAccessFlags.VirtualMemoryWrite, true, procList[0].Id);
             if (p == default(UIntPtr))
                 return false;
             ProcessHandle = p;
@@ -124,7 +124,7 @@ namespace NFS14DifficultyTool {
                 j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead
             for (long PTR = 0x0000000000000000; PTR < 0x7FFFFFFFFFFFFFFF; PTR += buff.Length) {
                 if (ReadProcessMemory((UIntPtr)PTR, buff, out bytesRead)) {
-                    for (i = 0; i < (int)bytesRead; i++) {
+                    for (i = 0; i < (int)bytesRead; i += 4) {
                         while (j < searchBytes.Length && i + j < (int)bytesRead) {
                             if (buff[i + j] != searchBytes[j]) {
                                 j = 0;
@@ -182,15 +182,23 @@ namespace NFS14DifficultyTool {
 
         //TODO TEST
         public MemoryManager() {
-            if (!OpenProcess("nfs14"))
-                OpenProcess("nfs14_x86"); //TODO is this needed?
+            if (!OpenProcess("nfs14") && !OpenProcess("nfs14_x86"))
+                return;
 
             long addr = 0;
+            //SpikestripWeapon
             //addr = FindObject(new byte[] { 0x07, 0x3C, 0x76, 0xE4, 0x86, 0x4A, 0xEC, 0x06, 0x54, 0x09, 0xEF, 0xF7, 0x7D, 0x57, 0x8B, 0x2C });
             addr = FindObject(StringToByteArray("073C76E4864AEC065409EFF77D578B2C"));
+            bool testYay = ReadBool(addr + 256);
+            bool wrote = WriteBool(addr + 256, false);
 
-            bool testYay;
-            testYay = ReadBool(addr + 100);
+            //HealthProfilesList -> HealthProfilesListEntityData
+            addr = FindObject(StringToByteArray("6ef1bfcc79f73ef1377db6b1fdce2da6"));
+            byte[] prof = Read(addr + 272, 8);
+
+            //PersonaLibraryPrefab
+            addr = FindObject(StringToByteArray("097d331254a092347db8c7f677cb620d"));
+            bool wprof = Write(addr + 32736, prof);
 
             CloseHandle();
         }

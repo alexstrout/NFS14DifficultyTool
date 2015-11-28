@@ -14,6 +14,8 @@ namespace NFS14DifficultyTool
         public Form1()
         {
             InitializeComponent();
+
+            new MemoryManager();
         }
     }
 }

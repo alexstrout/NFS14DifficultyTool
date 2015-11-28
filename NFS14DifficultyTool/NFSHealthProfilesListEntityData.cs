@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NFS14DifficultyTool {
-    class NFSHealthProfilesListEntityData : NFSObjectBlob {
+﻿namespace NFS14DifficultyTool {
+    public class NFSHealthProfilesListEntityData : NFSObjectBlob {
         public NFSHealthProfilesListEntityData(MemoryManager memManager, string guid)
             : base(memManager, guid) {
             //foxHealthEntData

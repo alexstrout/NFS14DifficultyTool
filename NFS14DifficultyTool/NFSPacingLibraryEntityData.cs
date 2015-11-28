@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NFS14DifficultyTool {
-    class NFSPacingLibraryEntityData : NFSObjectBlob {
+﻿namespace NFS14DifficultyTool {
+    public class NFSPacingLibraryEntityData : NFSObjectBlob {
         public NFSPacingLibraryEntityData(MemoryManager memManager, string guid)
             : base(memManager, guid) {
             //foxPacLibEntData

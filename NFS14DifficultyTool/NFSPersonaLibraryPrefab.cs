@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace NFS14DifficultyTool {
-    class NFSPersonaLibraryPrefab : NFSObjectBlob {
+﻿namespace NFS14DifficultyTool {
+    public class NFSPersonaLibraryPrefab : NFSObjectBlob {
         public NFSPersonaLibraryPrefab(MemoryManager memManager, string guid)
             : base(memManager, guid) {
             //foxPerLibPrefab

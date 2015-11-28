@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NFS14DifficultyTool {
-    abstract class NFSField {
+    abstract public class NFSField {
         protected NFSObjectBlob parent;
 
         public int Offset { get; protected set; }
@@ -31,7 +28,7 @@ namespace NFS14DifficultyTool {
         }
     }
 
-    class NFSFieldByteArray : NFSField {
+    public class NFSFieldByteArray : NFSField {
         public int FieldSize { get; protected set; }
         public override object Field {
             get {
@@ -54,7 +51,7 @@ namespace NFS14DifficultyTool {
         }
     }
 
-    class NFSFieldPointer : NFSFieldByteArray {
+    public class NFSFieldPointer : NFSFieldByteArray {
         public override object Field {
             get {
                 return parent.MemManager.Read(parent.Address + Offset, IntPtr.Size);
@@ -68,7 +65,7 @@ namespace NFS14DifficultyTool {
         public NFSFieldPointer(NFSObjectBlob parent, string offset) : base(parent, offset, IntPtr.Size) { }
     }
 
-    class NFSFieldBool : NFSField {
+    public class NFSFieldBool : NFSField {
         public override object Field {
             get {
                 return parent.MemManager.ReadBool(parent.Address + Offset);
@@ -82,7 +79,7 @@ namespace NFS14DifficultyTool {
         public NFSFieldBool(NFSObjectBlob parent, string offset) : base(parent, offset) { }
     }
 
-    class NFSFieldInt : NFSField {
+    public class NFSFieldInt : NFSField {
         public override object Field {
             get {
                 return parent.MemManager.ReadInt(parent.Address + Offset);
@@ -96,7 +93,7 @@ namespace NFS14DifficultyTool {
         public NFSFieldInt(NFSObjectBlob parent, string offset) : base(parent, offset) { }
     }
 
-    class NFSFieldFloat : NFSField {
+    public class NFSFieldFloat : NFSField {
         public override object Field {
             get {
                 return parent.MemManager.ReadFloat(parent.Address + Offset);
@@ -110,7 +107,7 @@ namespace NFS14DifficultyTool {
         public NFSFieldFloat(NFSObjectBlob parent, string offset) : base(parent, offset) { }
     }
 
-    class NFSFieldDouble : NFSField {
+    public class NFSFieldDouble : NFSField {
         public override object Field {
             get {
                 return parent.MemManager.ReadDouble(parent.Address + Offset);

@@ -11,11 +11,13 @@ namespace NFS14DifficultyTool
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main2()
+        static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
+
+            new MemoryManager();
         }
     }
 }

@@ -46,8 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleApplication1.cs" />
-    <Compile Include="MemoryEditor.cs" />
+    <Compile Include="MemoryManager.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

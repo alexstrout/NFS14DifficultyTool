@@ -18,7 +18,17 @@ namespace NFS14DifficultyTool {
             //This will trigger a memory read on Field and assign it to FieldDefault
             FieldDefault = Field;
         }
-        public NFSField(NFSObjectBlob parent, string offset) : this(parent, Convert.ToInt32(offset, 16)) { }
+        public NFSField(NFSObjectBlob parent, string offset) : this(parent, ParseOffset(offset)) { }
+
+        public static int ParseOffset(string offset) {
+            string[] offsets = offset.Split(new string[] { "+" }, StringSplitOptions.RemoveEmptyEntries);
+
+            int ret = 0;
+            foreach (string s in offsets) {
+                ret += Convert.ToInt32(s, 16);
+            }
+            return ret;
+        }
     }
 
     class NFSFieldByteArray : NFSField {

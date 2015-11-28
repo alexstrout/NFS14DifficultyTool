@@ -5,71 +5,116 @@ using System.Text;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace ConsoleApplication1
-{
-    class Program
-    {
+namespace ConsoleApplication1 {
+    class Program {
+        [Flags]
+        public enum ProcessAccessFlags : uint {
+            All = 0x001F0FFF,
+            Terminate = 0x00000001,
+            CreateThread = 0x00000002,
+            VirtualMemoryOperation = 0x00000008,
+            VirtualMemoryRead = 0x00000010,
+            VirtualMemoryWrite = 0x00000020,
+            DuplicateHandle = 0x00000040,
+            CreateProcess = 0x000000080,
+            SetQuota = 0x00000100,
+            SetInformation = 0x00000200,
+            QueryInformation = 0x00000400,
+            QueryLimitedInformation = 0x00001000,
+            Synchronize = 0x00100000
+        }
+
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr OpenProcess(
+             ProcessAccessFlags processAccess,
+             bool bInheritHandle,
+             int processId
+        );
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool CloseHandle(IntPtr hObject);
+
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool ReadProcessMemory(
             IntPtr hProcess,
             IntPtr lpBaseAddress,
             [Out] byte[] lpBuffer,
             int dwSize,
-            out int lpNumberOfBytesRead
+            out IntPtr lpNumberOfBytesRead
         );
 
-        [DllImport("kernel32.dll")]
-        public static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool ReadProcessMemory(
+            IntPtr hProcess,
+            IntPtr lpBaseAddress,
+            [Out, MarshalAs(UnmanagedType.AsAny)] object lpBuffer,
+            int dwSize,
+            out IntPtr lpNumberOfBytesRead
+        );
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool CloseHandle(IntPtr hObject);
+        static extern bool ReadProcessMemory(
+            IntPtr hProcess,
+            IntPtr lpBaseAddress,
+            IntPtr lpBuffer,
+            int dwSize,
+            out IntPtr lpNumberOfBytesRead
+        );
 
-        static void Main(string[] args)
-        {
-            Process[] procs = Process.GetProcessesByName("explorer");
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool WriteProcessMemory(
+            IntPtr hProcess,
+            IntPtr lpBaseAddress,
+            byte[] lpBuffer,
+            int nSize,
+            out IntPtr lpNumberOfBytesWritten
+        );
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern bool WriteProcessMemory(
+            IntPtr hProcess,
+            IntPtr lpBaseAddress,
+            IntPtr lpBuffer,
+            int nSize,
+            out IntPtr lpNumberOfBytesWritten
+        );
+
+        static void Main(string[] args) {
+            Process[] procs = Process.GetProcessesByName("nfs14");
             if (procs.Length <= 0)  //proces not found
                 return; //can replace with exit nag(message)+exit;
-            IntPtr p = OpenProcess(0x10 | 0x20, true, procs[0].Id); //0x10-read 0x20-write
+            IntPtr p = OpenProcess(ProcessAccessFlags.VirtualMemoryRead | ProcessAccessFlags.VirtualMemoryWrite, true, procs[0].Id);
 
-            uint PTR = 0x0; //begin of memory
-            byte[] bit2search1 = { 0xEB, 0x20, 0x68, 0x21, 0x27, 0x65 }; //your bit array until ??
-            int k = 1;  //numer of missing array (??)
-            byte[] bit2search2 = { 0x21, 0x64, 0xA1 };//your bit array after ??
-            byte[] buff = new byte[bit2search1.Length + 1 + bit2search2.Length];    //your array lenght;
-            int bytesReaded;
-            bool finded = false;
+            byte[] searchBytes = { 0x07, 0x3C, 0x76, 0xE4, 0x86, 0x4A, 0xEC, 0x06, 0x54, 0x09, 0xEF, 0xF7, 0x7D, 0x57, 0x8B, 0x2C };
+            byte[] buff = new byte[1024 * 64];
+            IntPtr bytesRead;
 
-            while (PTR != 0xFF000000)   //end of memory // u can specify to read less if u know he does not fill it all
-            {
-                if (ReadProcessMemory(p, (IntPtr)PTR, buff, buff.Length, out bytesReaded) && SpecialByteCompare(buff, bit2search1, bit2search2, k))
-                {
-                    //do your stuff
-                    finded = true;
-                    break;
+            //0x949DBC10
+            //0x0000000000000000
+            long addr = 0;
+            for (long PTR = 0x0000000000000000; PTR < 0x7FFFFFFFFFFFFFFF; PTR += buff.Length) {
+                if (ReadProcessMemory(p, (IntPtr)PTR, buff, buff.Length, out bytesRead)) {
+                    for (int i = 0; i < (int)bytesRead - searchBytes.Length; i++) {
+                        bool found = true;
+                        for (int j = 0; j < searchBytes.Length; j++) {
+                            if (buff[i + j] != searchBytes[j]) {
+                                found = false;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            addr = PTR + i;
+                            break;
+                        }
+                    }
+                    if (addr != 0) {
+                        //addrList.Add(addr);
+                        //addr = 0;
+                        break;
+                    }
                 }
-                PTR += 0x1;
             }
-            if (!finded)
-                Console.WriteLine("sry no byte array found");
-        }
-
-        private static bool SpecialByteCompare(byte[] b1, byte[] b2, byte[] b3, int k)  //readed memory, first byte array, second byte array, number of missing byte's
-        {
-            if (b1.Length != (b2.Length + k + b3.Length))
-                return false;
-            for (int i = 0; i < b2.Length; i++)
-            {
-                if (b1[i] != b2[i])
-                    return false;
-            }
-
-            for (int i = 0; i < b3.Length; i++)
-            {
-                if (b1[b2.Length + k + i] != b3[i])
-                    return false;
-            }
-            return true;
         }
     }
 }

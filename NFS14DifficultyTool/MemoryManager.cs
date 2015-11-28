@@ -8,6 +8,30 @@ using System.Collections;
 
 namespace NFS14DifficultyTool {
     class MemoryManager {
+        //Most (if not all) of these defs are from http://www.pinvoke.net/ - good stuff!
+        public enum ProcessorArchitecture {
+            X86 = 0,
+            X64 = 9,
+            @Arm = -1,
+            Itanium = 6,
+            Unknown = 0xFFFF,
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SystemInfo {
+            public ProcessorArchitecture ProcessorArchitecture; // WORD
+            public uint PageSize; // DWORD
+            public IntPtr MinimumApplicationAddress; // (long)void*
+            public IntPtr MaximumApplicationAddress; // (long)void*
+            public IntPtr ActiveProcessorMask; // DWORD*
+            public uint NumberOfProcessors; // DWORD (WTF)
+            public uint ProcessorType; // DWORD
+            public uint AllocationGranularity; // DWORD
+            public ushort ProcessorLevel; // WORD
+            public ushort ProcessorRevision; // WORD
+        }
+        [DllImport("kernel32.dll", SetLastError = false)]
+        public static extern void GetSystemInfo(out SystemInfo Info);
+
         [Flags]
         protected enum ProcessAccessFlags : uint {
             All = 0x001F0FFF,
@@ -24,9 +48,8 @@ namespace NFS14DifficultyTool {
             QueryLimitedInformation = 0x00001000,
             Synchronize = 0x00100000
         }
-
         [DllImport("kernel32.dll")]
-        protected static extern UIntPtr OpenProcess(
+        protected static extern IntPtr OpenProcess(
              ProcessAccessFlags processAccess,
              bool bInheritHandle,
              int processId
@@ -34,79 +57,76 @@ namespace NFS14DifficultyTool {
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        protected static extern bool CloseHandle(UIntPtr hObject);
+        protected static extern bool CloseHandle(IntPtr hObject);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         protected static extern bool ReadProcessMemory(
-            UIntPtr hProcess,
-            UIntPtr lpBaseAddress,
+            IntPtr hProcess,
+            IntPtr lpBaseAddress,
             [Out] byte[] lpBuffer,
             int dwSize,
-            out UIntPtr lpNumberOfBytesRead
+            out IntPtr lpNumberOfBytesRead
         );
         [DllImport("kernel32.dll", SetLastError = true)]
         protected static extern bool ReadProcessMemory(
-            UIntPtr hProcess,
-            UIntPtr lpBaseAddress,
+            IntPtr hProcess,
+            IntPtr lpBaseAddress,
             [Out, MarshalAs(UnmanagedType.AsAny)] object lpBuffer,
             int dwSize,
-            out UIntPtr lpNumberOfBytesRead
+            out IntPtr lpNumberOfBytesRead
         );
         [DllImport("kernel32.dll", SetLastError = true)]
         protected static extern bool ReadProcessMemory(
-            UIntPtr hProcess,
-            UIntPtr lpBaseAddress,
-            UIntPtr lpBuffer,
+            IntPtr hProcess,
+            IntPtr lpBaseAddress,
+            IntPtr lpBuffer,
             int dwSize,
-            out UIntPtr lpNumberOfBytesRead
+            out IntPtr lpNumberOfBytesRead
         );
 
         [DllImport("kernel32.dll", SetLastError = true)]
         protected static extern bool WriteProcessMemory(
-            UIntPtr hProcess,
-            UIntPtr lpBaseAddress,
+            IntPtr hProcess,
+            IntPtr lpBaseAddress,
             byte[] lpBuffer,
             int nSize,
-            out UIntPtr lpNumberOfBytesWritten
+            out IntPtr lpNumberOfBytesWritten
         );
         [DllImport("kernel32.dll", SetLastError = true)]
         protected static extern bool WriteProcessMemory(
-            UIntPtr hProcess,
-            UIntPtr lpBaseAddress,
-            UIntPtr lpBuffer,
+            IntPtr hProcess,
+            IntPtr lpBaseAddress,
+            IntPtr lpBuffer,
             int nSize,
-            out UIntPtr lpNumberOfBytesWritten
+            out IntPtr lpNumberOfBytesWritten
         );
 
-        protected UIntPtr ProcessHandle;
-
-        public MemoryManager(string processName) {
-            OpenProcess(processName);
-        }
+        protected IntPtr processHandle;
+        protected SystemInfo sysInfo;
 
         public bool OpenProcess(string processName) {
             Process[] procList = Process.GetProcessesByName(processName);
             if (procList.Length < 1)
                 return false;
 
-            UIntPtr p;
+            IntPtr p;
             p = OpenProcess(ProcessAccessFlags.VirtualMemoryOperation | ProcessAccessFlags.VirtualMemoryRead | ProcessAccessFlags.VirtualMemoryWrite, true, procList[0].Id);
-            if (p == default(UIntPtr))
+            if (p == default(IntPtr))
                 return false;
-            ProcessHandle = p;
+            processHandle = p;
             return true;
         }
 
         public bool CloseHandle() {
-            return CloseHandle(ProcessHandle);
+            return CloseHandle(processHandle);
         }
 
-        public bool ReadProcessMemory(UIntPtr lpBaseAddress, byte[] lpBuffer, out UIntPtr lpNumberOfBytesWritten) {
-            return ReadProcessMemory(ProcessHandle, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesWritten);
+        public bool ReadProcessMemory(IntPtr lpBaseAddress, byte[] lpBuffer, out IntPtr lpNumberOfBytesWritten) {
+            return ReadProcessMemory(processHandle, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesWritten);
         }
 
-        public bool WriteProcessMemory(UIntPtr lpBaseAddress, byte[] lpBuffer, out UIntPtr lpNumberOfBytesWritten) {
-            return WriteProcessMemory(ProcessHandle, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesWritten);
+        public bool WriteProcessMemory(IntPtr lpBaseAddress, byte[] lpBuffer, out IntPtr lpNumberOfBytesWritten) {
+            return WriteProcessMemory(processHandle, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesWritten);
         }
 
         //From JaredPar at http://stackoverflow.com/a/321404 (http://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array)
@@ -117,13 +137,13 @@ namespace NFS14DifficultyTool {
                 .ToArray();
         }
 
-        public long FindObject(byte[] searchBytes, int byteAlignment = 4) {
-            byte[] buff = new byte[1024 * 64];
-            UIntPtr bytesRead;
+        public IntPtr FindObject(byte[] searchBytes, int byteAlignment = 4) {
+            byte[] buff = new byte[sysInfo.PageSize];
+            IntPtr bytesRead;
             int i = 0,
                 j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead
-            for (long PTR = 0; PTR < uint.MaxValue; PTR += buff.Length) {
-                if (ReadProcessMemory((UIntPtr)PTR, buff, out bytesRead)) {
+            for (IntPtr PTR = IntPtr.Zero; (long)PTR < (long)sysInfo.MaximumApplicationAddress; PTR += buff.Length) {
+                if (ReadProcessMemory(PTR, buff, out bytesRead)) {
                     for (i = 0; i < (int)bytesRead; i += byteAlignment) {
                         while (j < searchBytes.Length && i + j < (int)bytesRead) {
                             if (buff[i + j] != searchBytes[j]) {
@@ -137,55 +157,58 @@ namespace NFS14DifficultyTool {
                     }
                 }
             }
-            return -1;
+            return IntPtr.Zero;
         }
 
-        public byte[] Read(long addr, int size) {
+        public byte[] Read(IntPtr addr, int size) {
             byte[] buff = new byte[size];
-            UIntPtr lpNumberOfBytesRead;
-            if (!ReadProcessMemory((UIntPtr)addr, buff, out lpNumberOfBytesRead))
+            IntPtr lpNumberOfBytesRead;
+            if (!ReadProcessMemory((IntPtr)addr, buff, out lpNumberOfBytesRead))
                 return null;
             byte[] ret = new byte[(int)lpNumberOfBytesRead];
             for (int i = 0; i < ret.Length; i++)
                 ret[i] = buff[i];
             return ret;
         }
-        public bool ReadBool(long addr) {
+        public bool ReadBool(IntPtr addr) {
             return BitConverter.ToBoolean(Read(addr, 1), 0);
         }
-        public int ReadInt(long addr) {
+        public int ReadInt(IntPtr addr) {
             return BitConverter.ToInt32(Read(addr, 4), 0);
         }
-        public float ReadFloat(long addr) {
+        public float ReadFloat(IntPtr addr) {
             return BitConverter.ToSingle(Read(addr, 4), 0);
         }
-        public double ReadDouble(long addr) {
+        public double ReadDouble(IntPtr addr) {
             return BitConverter.ToDouble(Read(addr, 8), 0);
         }
 
-        public bool Write(long addr, byte[] value) {
-            UIntPtr lpNumberOfBytesWritten;
-            return WriteProcessMemory((UIntPtr)addr, value, out lpNumberOfBytesWritten);
+        public bool Write(IntPtr addr, byte[] value) {
+            IntPtr lpNumberOfBytesWritten;
+            return WriteProcessMemory((IntPtr)addr, value, out lpNumberOfBytesWritten);
         }
-        public bool WriteBool(long addr, bool value) {
+        public bool WriteBool(IntPtr addr, bool value) {
             return Write(addr, BitConverter.GetBytes(value));
         }
-        public bool WriteInt(long addr, int value) {
+        public bool WriteInt(IntPtr addr, int value) {
             return Write(addr, BitConverter.GetBytes(value));
         }
-        public bool WriteFloat(long addr, float value) {
+        public bool WriteFloat(IntPtr addr, float value) {
             return Write(addr, BitConverter.GetBytes(value));
         }
-        public bool WriteDouble(long addr, double value) {
+        public bool WriteDouble(IntPtr addr, double value) {
             return Write(addr, BitConverter.GetBytes(value));
         }
 
         //TODO TEST
         public MemoryManager() {
+            GetSystemInfo(out sysInfo);
+
+            //TODO TEST
             if (!OpenProcess("nfs14") && !OpenProcess("nfs14_x86"))
                 return;
 
-            //SpikestripWeapon
+            //StdAIPrefab -> AiDirectorEntityData
             NFSAiDirectorEntityData AiDirectorEntityData = new NFSAiDirectorEntityData(this, "2d774798942db34e960cd083ace16340");
 
             //SpikestripWeapon
@@ -196,7 +219,7 @@ namespace NFS14DifficultyTool {
             NFSObjectBlob HealthProfilesListEntityData = new NFSObjectBlob(this, "6ef1bfcc79f73ef1377db6b1fdce2da6");
 
             //PersonaLibraryPrefab
-            NFSObjectBlob PersonaLibraryPrefab = new NFSObjectBlob(this, "097d331254a092347db8c7f677cb620d");
+            NFSObjectBlob PersonaLibraryPrefab = new NFSObjectBlob(this, "097d331254a092347db8c7f677cb620dF0");
 
             CloseHandle();
         }

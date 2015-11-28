@@ -90,27 +90,25 @@ namespace ConsoleApplication1 {
             byte[] buff = new byte[1024 * 64];
             IntPtr bytesRead;
 
-            //0x949DBC10
-            //0x0000000000000000
             long addr = 0;
+            int i = 0,
+                j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead
             for (long PTR = 0x0000000000000000; PTR < 0x7FFFFFFFFFFFFFFF; PTR += buff.Length) {
                 if (ReadProcessMemory(p, (IntPtr)PTR, buff, buff.Length, out bytesRead)) {
-                    for (int i = 0; i < (int)bytesRead - searchBytes.Length; i++) {
-                        bool found = true;
-                        for (int j = 0; j < searchBytes.Length; j++) {
+                    for (i = 0; i < (int)bytesRead; i++) {
+                        while (j < searchBytes.Length && i + j < (int)bytesRead) {
                             if (buff[i + j] != searchBytes[j]) {
-                                found = false;
+                                j = 0;
                                 break;
                             }
+                            j++;
                         }
-                        if (found) {
+                        if (j == searchBytes.Length) {
                             addr = PTR + i;
                             break;
                         }
                     }
                     if (addr != 0) {
-                        //addrList.Add(addr);
-                        //addr = 0;
                         break;
                     }
                 }

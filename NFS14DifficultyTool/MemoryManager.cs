@@ -117,14 +117,14 @@ namespace NFS14DifficultyTool {
                 .ToArray();
         }
 
-        public long FindObject(byte[] searchBytes) {
+        public long FindObject(byte[] searchBytes, int byteAlignment = 4) {
             byte[] buff = new byte[1024 * 64];
             UIntPtr bytesRead;
             int i = 0,
                 j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead
-            for (long PTR = 0x0000000000000000; PTR < 0x7FFFFFFFFFFFFFFF; PTR += buff.Length) {
+            for (long PTR = 0; PTR < uint.MaxValue; PTR += buff.Length) {
                 if (ReadProcessMemory((UIntPtr)PTR, buff, out bytesRead)) {
-                    for (i = 0; i < (int)bytesRead; i += 4) {
+                    for (i = 0; i < (int)bytesRead; i += byteAlignment) {
                         while (j < searchBytes.Length && i + j < (int)bytesRead) {
                             if (buff[i + j] != searchBytes[j]) {
                                 j = 0;

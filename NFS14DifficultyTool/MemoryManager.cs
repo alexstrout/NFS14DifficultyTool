@@ -185,20 +185,18 @@ namespace NFS14DifficultyTool {
             if (!OpenProcess("nfs14") && !OpenProcess("nfs14_x86"))
                 return;
 
-            long addr = 0;
             //SpikestripWeapon
-            //addr = FindObject(new byte[] { 0x07, 0x3C, 0x76, 0xE4, 0x86, 0x4A, 0xEC, 0x06, 0x54, 0x09, 0xEF, 0xF7, 0x7D, 0x57, 0x8B, 0x2C });
-            addr = FindObject(StringToByteArray("073C76E4864AEC065409EFF77D578B2C"));
-            bool testYay = ReadBool(addr + 256);
-            bool wrote = WriteBool(addr + 256, false);
+            NFSAiDirectorEntityData AiDirectorEntityData = new NFSAiDirectorEntityData(this, "2d774798942db34e960cd083ace16340");
+
+            //SpikestripWeapon
+            NFSSpikestripWeapon SpikestripWeapon = new NFSSpikestripWeapon(this, "073c76e4864aec065409eff77d578b2c");
+            SpikestripWeapon.FieldList["Classification"].Field = true;
 
             //HealthProfilesList -> HealthProfilesListEntityData
-            addr = FindObject(StringToByteArray("6ef1bfcc79f73ef1377db6b1fdce2da6"));
-            byte[] prof = Read(addr + 272, 8);
+            NFSObjectBlob HealthProfilesListEntityData = new NFSObjectBlob(this, "6ef1bfcc79f73ef1377db6b1fdce2da6");
 
             //PersonaLibraryPrefab
-            addr = FindObject(StringToByteArray("097d331254a092347db8c7f677cb620d"));
-            bool wprof = Write(addr + 32736, prof);
+            NFSObjectBlob PersonaLibraryPrefab = new NFSObjectBlob(this, "097d331254a092347db8c7f677cb620d");
 
             CloseHandle();
         }

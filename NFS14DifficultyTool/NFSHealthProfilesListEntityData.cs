@@ -8,12 +8,9 @@ namespace NFS14DifficultyTool {
         public NFSHealthProfilesListEntityData(MemoryManager memManager, string guid)
             : base(memManager, guid) {
             //foxHealthEntData
-            FieldList.Add("HealthProfiles", new NFSFieldByteArray(this, "F0", 112));
-            FieldList.Add("CopHealthProfile *", new NFSFieldPointer(this, "120"));
             FieldList.Add("CopHealthProfile_AI_Default", new NFSFieldPointer(this, "120"));
             FieldList.Add("CopHealthProfile_CopTutorial", new NFSFieldPointer(this, "128"));
             FieldList.Add("CopHealthProfile_RacerTutorial", new NFSFieldPointer(this, "130"));
-            FieldList.Add("RacerHealthProfile *", new NFSFieldPointer(this, "138"));
             FieldList.Add("RacerHealthProfile_CopHotPursuit_Easy", new NFSFieldPointer(this, "F0"));
             FieldList.Add("RacerHealthProfile_CopHotPursuit_Hard", new NFSFieldPointer(this, "F8"));
             FieldList.Add("RacerHealthProfile_CopHotPursuit_Medium", new NFSFieldPointer(this, "100"));

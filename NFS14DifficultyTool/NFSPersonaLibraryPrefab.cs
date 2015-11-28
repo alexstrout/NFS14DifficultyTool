@@ -8,7 +8,6 @@ namespace NFS14DifficultyTool {
         public NFSPersonaLibraryPrefab(MemoryManager memManager, string guid)
             : base(memManager, guid) {
             //foxPerLibPrefab
-            FieldList.Add("HealthProfile *", new NFSFieldPointer(this, "10+7FD0"));
             FieldList.Add("AggressorCopPersonality - HealthProfile", new NFSFieldPointer(this, "10+7FD0"));
             FieldList.Add("BruteCopPersonality - HealthProfile", new NFSFieldPointer(this, "10+8160"));
             FieldList.Add("BasicCopPersonality - HealthProfile", new NFSFieldPointer(this, "10+83B8"));
@@ -16,7 +15,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("ChaserCopPersonality - HealthProfile", new NFSFieldPointer(this, "10+87A0"));
             FieldList.Add("RacerTutorialCop - HealthProfile", new NFSFieldPointer(this, "10+8DE0"));
             FieldList.Add("CopTutorialCop - HealthProfile", new NFSFieldPointer(this, "10+8EA8"));
-            FieldList.Add("UsedSpontaneousRacePacingScheduleGroup *", new NFSFieldPointer(this, "78+7FD0"));
             FieldList.Add("AggressorCopPersonality - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+7FD0"));
             FieldList.Add("BruteCopPersonality - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+8160"));
             FieldList.Add("BasicCopPersonality - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+83B8"));
@@ -24,7 +22,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("ChaserCopPersonality - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+87A0"));
             FieldList.Add("RacerTutorialCop - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+8DE0"));
             FieldList.Add("CopTutorialCop - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+8EA8"));
-            FieldList.Add("UsedPursuitAndEscapePacingSchedule *", new NFSFieldPointer(this, "80+7FD0"));
             FieldList.Add("AggressorCopPersonality - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+7FD0"));
             FieldList.Add("BruteCopPersonality - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+8160"));
             FieldList.Add("BasicCopPersonality - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+83B8"));
@@ -32,7 +29,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("ChaserCopPersonality - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+87A0"));
             FieldList.Add("RacerTutorialCop - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+8DE0"));
             FieldList.Add("CopTutorialCop - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+8EA8"));
-            FieldList.Add("PacingSkill *", new NFSFieldFloat(this, "74+7FD0"));
             FieldList.Add("AggressorCopPersonality - PacingSkill", new NFSFieldFloat(this, "74+7FD0"));
             FieldList.Add("BruteCopPersonality - PacingSkill", new NFSFieldFloat(this, "74+8160"));
             FieldList.Add("BasicCopPersonality - PacingSkill", new NFSFieldFloat(this, "74+83B8"));
@@ -40,8 +36,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("ChaserCopPersonality - PacingSkill", new NFSFieldFloat(this, "74+87A0"));
             FieldList.Add("RacerTutorialCop - PacingSkill", new NFSFieldFloat(this, "74+8DE0"));
             FieldList.Add("CopTutorialCop - PacingSkill", new NFSFieldFloat(this, "74+8EA8"));
-            FieldList.Add("WeaponSkill *", new NFSFieldFloat(this, "A0+7FD0"));
-            FieldList.Add("WeaponSkill *", new NFSFieldFloat(this, "A0+7FD0"));
             FieldList.Add("AggressorCopPersonality - WeaponSkill", new NFSFieldFloat(this, "A0+7FD0"));
             FieldList.Add("BruteCopPersonality - WeaponSkill", new NFSFieldFloat(this, "A0+8160"));
             FieldList.Add("BasicCopPersonality - WeaponSkill", new NFSFieldFloat(this, "A0+83B8"));
@@ -49,7 +43,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("ChaserCopPersonality - WeaponSkill", new NFSFieldFloat(this, "A0+87A0"));
             FieldList.Add("RacerTutorialCop - WeaponSkill", new NFSFieldFloat(this, "A0+8DE0"));
             FieldList.Add("CopTutorialCop - WeaponSkill", new NFSFieldFloat(this, "A0+8EA8"));
-            FieldList.Add("WeaponSkillVsHumanCop *", new NFSFieldFloat(this, "A4+7FD0"));
             FieldList.Add("AggressorCopPersonality - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+7FD0"));
             FieldList.Add("BruteCopPersonality - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+8160"));
             FieldList.Add("BasicCopPersonality - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+83B8"));
@@ -57,7 +50,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("ChaserCopPersonality - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+87A0"));
             FieldList.Add("RacerTutorialCop - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+8DE0"));
             FieldList.Add("CopTutorialCop - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+8EA8"));
-            FieldList.Add("WeaponSkillVsHumanRacer *", new NFSFieldFloat(this, "A8+7FD0"));
             FieldList.Add("AggressorCopPersonality - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+7FD0"));
             FieldList.Add("BruteCopPersonality - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+8160"));
             FieldList.Add("BasicCopPersonality - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+83B8"));
@@ -65,7 +57,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("ChaserCopPersonality - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+87A0"));
             FieldList.Add("RacerTutorialCop - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+8DE0"));
             FieldList.Add("CopTutorialCop - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+8EA8"));
-            FieldList.Add("WeaponSkillVsAICop *", new NFSFieldFloat(this, "AC+7FD0"));
             FieldList.Add("AggressorCopPersonality - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+7FD0"));
             FieldList.Add("BruteCopPersonality - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+8160"));
             FieldList.Add("BasicCopPersonality - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+83B8"));
@@ -73,7 +64,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("ChaserCopPersonality - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+87A0"));
             FieldList.Add("RacerTutorialCop - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+8DE0"));
             FieldList.Add("CopTutorialCop - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+8EA8"));
-            FieldList.Add("WeaponSkillVsAIRacer *", new NFSFieldFloat(this, "B0+7FD0"));
             FieldList.Add("AggressorCopPersonality - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+7FD0"));
             FieldList.Add("BruteCopPersonality - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+8160"));
             FieldList.Add("BasicCopPersonality - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+83B8"));
@@ -81,7 +71,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("ChaserCopPersonality - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+87A0"));
             FieldList.Add("RacerTutorialCop - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+8DE0"));
             FieldList.Add("CopTutorialCop - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+8EA8"));
-            FieldList.Add("AvoidanceSpeedMatchWhenBlocked *", new NFSFieldBool(this, "B4+7FD0"));
             FieldList.Add("AggressorCopPersonality - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+7FD0"));
             FieldList.Add("BruteCopPersonality - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+8160"));
             FieldList.Add("BasicCopPersonality - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+83B8"));
@@ -89,7 +78,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("ChaserCopPersonality - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+87A0"));
             FieldList.Add("RacerTutorialCop - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+8DE0"));
             FieldList.Add("CopTutorialCop - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+8EA8"));
-            FieldList.Add("HealthProfile *", new NFSFieldPointer(this, "10+8098"));
             FieldList.Add("Tier1WeaponRacer - HealthProfile", new NFSFieldPointer(this, "10+8098"));
             FieldList.Add("RecklessRacer - HealthProfile", new NFSFieldPointer(this, "10+8228"));
             FieldList.Add("Tier2CautiousRacer - HealthProfile", new NFSFieldPointer(this, "10+82F0"));
@@ -107,7 +95,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("CopTutorialRacer - HealthProfile", new NFSFieldPointer(this, "10+9038"));
             FieldList.Add("CautiousRacer - HealthProfile", new NFSFieldPointer(this, "10+9100"));
             FieldList.Add("ViolentRacer - HealthProfile", new NFSFieldPointer(this, "10+91C8"));
-            FieldList.Add("UsedSpontaneousRacePacingScheduleGroup *", new NFSFieldPointer(this, "78+8098"));
             FieldList.Add("Tier1WeaponRacer - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+8098"));
             FieldList.Add("RecklessRacer - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+8228"));
             FieldList.Add("Tier2CautiousRacer - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+82F0"));
@@ -125,7 +112,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("CopTutorialRacer - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+9038"));
             FieldList.Add("CautiousRacer - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+9100"));
             FieldList.Add("ViolentRacer - UsedSpontaneousRacePacingScheduleGroup", new NFSFieldPointer(this, "78+91C8"));
-            FieldList.Add("UsedPursuitAndEscapePacingSchedule *", new NFSFieldPointer(this, "80+8098"));
             FieldList.Add("Tier1WeaponRacer - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+8098"));
             FieldList.Add("RecklessRacer - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+8228"));
             FieldList.Add("Tier2CautiousRacer - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+82F0"));
@@ -143,7 +129,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("CopTutorialRacer - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+9038"));
             FieldList.Add("CautiousRacer - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+9100"));
             FieldList.Add("ViolentRacer - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+91C8"));
-            FieldList.Add("PacingSkill *", new NFSFieldFloat(this, "74+8098"));
             FieldList.Add("Tier1WeaponRacer - PacingSkill", new NFSFieldFloat(this, "74+91C8"));
             FieldList.Add("RecklessRacer - PacingSkill", new NFSFieldFloat(this, "74+8228"));
             FieldList.Add("Tier2CautiousRacer - PacingSkill", new NFSFieldFloat(this, "74+82F0"));
@@ -161,8 +146,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("CopTutorialRacer - PacingSkill", new NFSFieldFloat(this, "74+9038"));
             FieldList.Add("CautiousRacer - PacingSkill", new NFSFieldFloat(this, "74+9100"));
             FieldList.Add("ViolentRacer - PacingSkill", new NFSFieldFloat(this, "74+91C8"));
-            FieldList.Add("WeaponSkill *", new NFSFieldFloat(this, "A0+8098"));
-            FieldList.Add("WeaponSkill *", new NFSFieldFloat(this, "A0+8098"));
             FieldList.Add("Tier1WeaponRacer - WeaponSkill", new NFSFieldFloat(this, "A0+91C8"));
             FieldList.Add("RecklessRacer - WeaponSkill", new NFSFieldFloat(this, "A0+8228"));
             FieldList.Add("Tier2CautiousRacer - WeaponSkill", new NFSFieldFloat(this, "A0+82F0"));
@@ -180,7 +163,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("CopTutorialRacer - WeaponSkill", new NFSFieldFloat(this, "A0+9038"));
             FieldList.Add("CautiousRacer - WeaponSkill", new NFSFieldFloat(this, "A0+9100"));
             FieldList.Add("ViolentRacer - WeaponSkill", new NFSFieldFloat(this, "A0+91C8"));
-            FieldList.Add("WeaponSkillVsHumanCop *", new NFSFieldFloat(this, "A4+8098"));
             FieldList.Add("Tier1WeaponRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+91C8"));
             FieldList.Add("RecklessRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+8228"));
             FieldList.Add("Tier2CautiousRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+82F0"));
@@ -198,7 +180,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("CopTutorialRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+9038"));
             FieldList.Add("CautiousRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+9100"));
             FieldList.Add("ViolentRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+91C8"));
-            FieldList.Add("WeaponSkillVsHumanRacer *", new NFSFieldFloat(this, "A8+8098"));
             FieldList.Add("Tier1WeaponRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+91C8"));
             FieldList.Add("RecklessRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+8228"));
             FieldList.Add("Tier2CautiousRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+82F0"));
@@ -216,7 +197,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("CopTutorialRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+9038"));
             FieldList.Add("CautiousRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+9100"));
             FieldList.Add("ViolentRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+91C8"));
-            FieldList.Add("WeaponSkillVsAICop *", new NFSFieldFloat(this, "AC+8098"));
             FieldList.Add("Tier1WeaponRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+91C8"));
             FieldList.Add("RecklessRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+8228"));
             FieldList.Add("Tier2CautiousRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+82F0"));
@@ -234,7 +214,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("CopTutorialRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+9038"));
             FieldList.Add("CautiousRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+9100"));
             FieldList.Add("ViolentRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+91C8"));
-            FieldList.Add("WeaponSkillVsAIRacer *", new NFSFieldFloat(this, "B0+8098"));
             FieldList.Add("Tier1WeaponRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+91C8"));
             FieldList.Add("RecklessRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+8228"));
             FieldList.Add("Tier2CautiousRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+82F0"));
@@ -252,7 +231,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("CopTutorialRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+9038"));
             FieldList.Add("CautiousRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+9100"));
             FieldList.Add("ViolentRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+91C8"));
-            FieldList.Add("AvoidanceSpeedMatchWhenBlocked *", new NFSFieldBool(this, "B4+8098"));
             FieldList.Add("Tier1WeaponRacer - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+91C8"));
             FieldList.Add("RecklessRacer - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+8228"));
             FieldList.Add("Tier2CautiousRacer - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+82F0"));

@@ -15,8 +15,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("BlockHeatThreshold", new NFSFieldInt(this, "40"));
             FieldList.Add("SpawnDelay", new NFSFieldFloat(this, "44"));
             FieldList.Add("MaxAiVisibilityDistance", new NFSFieldFloat(this, "48"));
-            FieldList.Add("HeatIntervalVsCopCountArray", new NFSFieldByteArray(this, "4CC", 520));
-            FieldList.Add("MinHeat *", new NFSFieldInt(this, "4CC"));
             FieldList.Add("Heat1 - MinHeat", new NFSFieldInt(this, "4CC"));
             FieldList.Add("Heat2 - MinHeat", new NFSFieldInt(this, "4CC+34"));
             FieldList.Add("Heat3 - MinHeat", new NFSFieldInt(this, "4CC+68"));
@@ -27,7 +25,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - MinHeat", new NFSFieldInt(this, "4CC+16C"));
             FieldList.Add("Heat9 - MinHeat", new NFSFieldInt(this, "4CC+1A0"));
             FieldList.Add("Heat10 - MinHeat", new NFSFieldInt(this, "4CC+1D4"));
-            FieldList.Add("MaxHeat *", new NFSFieldInt(this, "4D0"));
             FieldList.Add("Heat1 - MaxHeat", new NFSFieldInt(this, "4D0"));
             FieldList.Add("Heat2 - MaxHeat", new NFSFieldInt(this, "4D0+34"));
             FieldList.Add("Heat3 - MaxHeat", new NFSFieldInt(this, "4D0+68"));
@@ -38,7 +35,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - MaxHeat", new NFSFieldInt(this, "4D0+16C"));
             FieldList.Add("Heat9 - MaxHeat", new NFSFieldInt(this, "4D0+1A0"));
             FieldList.Add("Heat10 - MaxHeat", new NFSFieldInt(this, "4D0+1D4"));
-            FieldList.Add("CopCountHeatBased *", new NFSFieldInt(this, "4D4"));
             FieldList.Add("Heat1 - CopCountHeatBased", new NFSFieldInt(this, "4D4"));
             FieldList.Add("Heat2 - CopCountHeatBased", new NFSFieldInt(this, "4D4+34"));
             FieldList.Add("Heat3 - CopCountHeatBased", new NFSFieldInt(this, "4D4+68"));
@@ -49,8 +45,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - CopCountHeatBased", new NFSFieldInt(this, "4D4+16C"));
             FieldList.Add("Heat9 - CopCountHeatBased", new NFSFieldInt(this, "4D4+1A0"));
             FieldList.Add("Heat10 - CopCountHeatBased", new NFSFieldInt(this, "4D4+1D4"));
-            FieldList.Add("CopCountBreakdownDuringPursuit", new NFSFieldByteArray(this, "4D8", 20));
-            FieldList.Add("Basic *", new NFSFieldInt(this, "4D8"));
             FieldList.Add("Heat1 - Basic", new NFSFieldInt(this, "4D8"));
             FieldList.Add("Heat2 - Basic", new NFSFieldInt(this, "4D8+34"));
             FieldList.Add("Heat3 - Basic", new NFSFieldInt(this, "4D8+68"));
@@ -61,7 +55,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - Basic", new NFSFieldInt(this, "4D8+16C"));
             FieldList.Add("Heat9 - Basic", new NFSFieldInt(this, "4D8+1A0"));
             FieldList.Add("Heat10 - Basic", new NFSFieldInt(this, "4D8+1D4"));
-            FieldList.Add("Chaser *", new NFSFieldInt(this, "4DC"));
             FieldList.Add("Heat1 - Chaser", new NFSFieldInt(this, "4DC"));
             FieldList.Add("Heat2 - Chaser", new NFSFieldInt(this, "4DC+34"));
             FieldList.Add("Heat3 - Chaser", new NFSFieldInt(this, "4DC+68"));
@@ -72,7 +65,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - Chaser", new NFSFieldInt(this, "4DC+16C"));
             FieldList.Add("Heat9 - Chaser", new NFSFieldInt(this, "4DC+1A0"));
             FieldList.Add("Heat10 - Chaser", new NFSFieldInt(this, "4DC+1D4"));
-            FieldList.Add("Brute *", new NFSFieldInt(this, "4E0"));
             FieldList.Add("Heat1 - Brute", new NFSFieldInt(this, "4E0"));
             FieldList.Add("Heat2 - Brute", new NFSFieldInt(this, "4E0+34"));
             FieldList.Add("Heat3 - Brute", new NFSFieldInt(this, "4E0+68"));
@@ -83,7 +75,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - Brute", new NFSFieldInt(this, "4E0+16C"));
             FieldList.Add("Heat9 - Brute", new NFSFieldInt(this, "4E0+1A0"));
             FieldList.Add("Heat10 - Brute", new NFSFieldInt(this, "4E0+1D4"));
-            FieldList.Add("Aggressor *", new NFSFieldInt(this, "4E4"));
             FieldList.Add("Heat1 - Aggressor", new NFSFieldInt(this, "4E4"));
             FieldList.Add("Heat2 - Aggressor", new NFSFieldInt(this, "4E4+34"));
             FieldList.Add("Heat3 - Aggressor", new NFSFieldInt(this, "4E4+68"));
@@ -94,7 +85,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - Aggressor", new NFSFieldInt(this, "4E4+16C"));
             FieldList.Add("Heat9 - Aggressor", new NFSFieldInt(this, "4E4+1A0"));
             FieldList.Add("Heat10 - Aggressor", new NFSFieldInt(this, "4E4+1D4"));
-            FieldList.Add("AdvancedAggressor *", new NFSFieldInt(this, "4E8"));
             FieldList.Add("Heat1 - AdvancedAggressor", new NFSFieldInt(this, "4E8"));
             FieldList.Add("Heat2 - AdvancedAggressor", new NFSFieldInt(this, "4E8+34"));
             FieldList.Add("Heat3 - AdvancedAggressor", new NFSFieldInt(this, "4E8+68"));
@@ -105,7 +95,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - AdvancedAggressor", new NFSFieldInt(this, "4E8+16C"));
             FieldList.Add("Heat9 - AdvancedAggressor", new NFSFieldInt(this, "4E8+1A0"));
             FieldList.Add("Heat10 - AdvancedAggressor", new NFSFieldInt(this, "4E8+1D4"));
-            FieldList.Add("ChanceOfSpawningRoamingCopHeatBased *", new NFSFieldInt(this, "4EC"));
             FieldList.Add("Heat1 - ChanceOfSpawningRoamingCopHeatBased", new NFSFieldInt(this, "4EC"));
             FieldList.Add("Heat2 - ChanceOfSpawningRoamingCopHeatBased", new NFSFieldInt(this, "4EC+34"));
             FieldList.Add("Heat3 - ChanceOfSpawningRoamingCopHeatBased", new NFSFieldInt(this, "4EC+68"));
@@ -116,7 +105,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - ChanceOfSpawningRoamingCopHeatBased", new NFSFieldInt(this, "4EC+16C"));
             FieldList.Add("Heat9 - ChanceOfSpawningRoamingCopHeatBased", new NFSFieldInt(this, "4EC+1A0"));
             FieldList.Add("Heat10 - ChanceOfSpawningRoamingCopHeatBased", new NFSFieldInt(this, "4EC+1D4"));
-            FieldList.Add("MinimumHelicopterSpawnInterval *", new NFSFieldFloat(this, "4F0"));
             FieldList.Add("Heat1 - MinimumHelicopterSpawnInterval", new NFSFieldFloat(this, "4F0"));
             FieldList.Add("Heat2 - MinimumHelicopterSpawnInterval", new NFSFieldFloat(this, "4F0+34"));
             FieldList.Add("Heat3 - MinimumHelicopterSpawnInterval", new NFSFieldFloat(this, "4F0+68"));
@@ -127,7 +115,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - MinimumHelicopterSpawnInterval", new NFSFieldFloat(this, "4F0+16C"));
             FieldList.Add("Heat9 - MinimumHelicopterSpawnInterval", new NFSFieldFloat(this, "4F0+1A0"));
             FieldList.Add("Heat10 - MinimumHelicopterSpawnInterval", new NFSFieldFloat(this, "4F0+1D4"));
-            FieldList.Add("MaxHelicoptersPerBubble *", new NFSFieldInt(this, "4F4"));
             FieldList.Add("Heat1 - MaxHelicoptersPerBubble", new NFSFieldInt(this, "4F4"));
             FieldList.Add("Heat2 - MaxHelicoptersPerBubble", new NFSFieldInt(this, "4F4+34"));
             FieldList.Add("Heat3 - MaxHelicoptersPerBubble", new NFSFieldInt(this, "4F4+68"));
@@ -138,7 +125,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - MaxHelicoptersPerBubble", new NFSFieldInt(this, "4F4+16C"));
             FieldList.Add("Heat9 - MaxHelicoptersPerBubble", new NFSFieldInt(this, "4F4+1A0"));
             FieldList.Add("Heat10 - MaxHelicoptersPerBubble", new NFSFieldInt(this, "4F4+1D4"));
-            FieldList.Add("MinimumRoadblockSpawnInterval *", new NFSFieldFloat(this, "4F8"));
             FieldList.Add("Heat1 - MinimumRoadblockSpawnInterval", new NFSFieldFloat(this, "4F8"));
             FieldList.Add("Heat2 - MinimumRoadblockSpawnInterval", new NFSFieldFloat(this, "4F8+34"));
             FieldList.Add("Heat3 - MinimumRoadblockSpawnInterval", new NFSFieldFloat(this, "4F8+68"));
@@ -149,7 +135,6 @@ namespace NFS14DifficultyTool {
             FieldList.Add("Heat8 - MinimumRoadblockSpawnInterval", new NFSFieldFloat(this, "4F8+16C"));
             FieldList.Add("Heat9 - MinimumRoadblockSpawnInterval", new NFSFieldFloat(this, "4F8+1A0"));
             FieldList.Add("Heat10 - MinimumRoadblockSpawnInterval", new NFSFieldFloat(this, "4F8+1D4"));
-            FieldList.Add("TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop *", new NFSFieldFloat(this, "4FC"));
             FieldList.Add("Heat1 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop", new NFSFieldFloat(this, "4FC"));
             FieldList.Add("Heat2 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop", new NFSFieldFloat(this, "4FC+34"));
             FieldList.Add("Heat3 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop", new NFSFieldFloat(this, "4FC+68"));

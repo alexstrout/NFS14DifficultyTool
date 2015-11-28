@@ -5,8 +5,8 @@ using System.Text;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace ConsoleApplication1 {
-    class Program {
+namespace NFS14DifficultyTool {
+    class OtherProgram {
         [Flags]
         public enum ProcessAccessFlags : uint {
             All = 0x001F0FFF,
@@ -25,7 +25,7 @@ namespace ConsoleApplication1 {
         }
 
         [DllImport("kernel32.dll")]
-        public static extern IntPtr OpenProcess(
+        public static extern UIntPtr OpenProcess(
              ProcessAccessFlags processAccess,
              bool bInheritHandle,
              int processId
@@ -33,68 +33,81 @@ namespace ConsoleApplication1 {
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool CloseHandle(IntPtr hObject);
+        static extern bool CloseHandle(UIntPtr hObject);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool ReadProcessMemory(
-            IntPtr hProcess,
-            IntPtr lpBaseAddress,
+            UIntPtr hProcess,
+            UIntPtr lpBaseAddress,
             [Out] byte[] lpBuffer,
             int dwSize,
-            out IntPtr lpNumberOfBytesRead
+            out UIntPtr lpNumberOfBytesRead
         );
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool ReadProcessMemory(
-            IntPtr hProcess,
-            IntPtr lpBaseAddress,
+            UIntPtr hProcess,
+            UIntPtr lpBaseAddress,
             [Out, MarshalAs(UnmanagedType.AsAny)] object lpBuffer,
             int dwSize,
-            out IntPtr lpNumberOfBytesRead
+            out UIntPtr lpNumberOfBytesRead
         );
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool ReadProcessMemory(
-            IntPtr hProcess,
-            IntPtr lpBaseAddress,
-            IntPtr lpBuffer,
+            UIntPtr hProcess,
+            UIntPtr lpBaseAddress,
+            UIntPtr lpBuffer,
             int dwSize,
-            out IntPtr lpNumberOfBytesRead
+            out UIntPtr lpNumberOfBytesRead
         );
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool WriteProcessMemory(
-            IntPtr hProcess,
-            IntPtr lpBaseAddress,
+            UIntPtr hProcess,
+            UIntPtr lpBaseAddress,
             byte[] lpBuffer,
             int nSize,
-            out IntPtr lpNumberOfBytesWritten
+            out UIntPtr lpNumberOfBytesWritten
         );
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool WriteProcessMemory(
-            IntPtr hProcess,
-            IntPtr lpBaseAddress,
-            IntPtr lpBuffer,
+            UIntPtr hProcess,
+            UIntPtr lpBaseAddress,
+            UIntPtr lpBuffer,
             int nSize,
-            out IntPtr lpNumberOfBytesWritten
+            out UIntPtr lpNumberOfBytesWritten
         );
 
         static void Main(string[] args) {
-            Process[] procs = Process.GetProcessesByName("nfs14");
-            if (procs.Length <= 0)  //proces not found
-                return; //can replace with exit nag(message)+exit;
-            IntPtr p = OpenProcess(ProcessAccessFlags.VirtualMemoryRead | ProcessAccessFlags.VirtualMemoryWrite, true, procs[0].Id);
-
-            byte[] searchBytes = { 0x07, 0x3C, 0x76, 0xE4, 0x86, 0x4A, 0xEC, 0x06, 0x54, 0x09, 0xEF, 0xF7, 0x7D, 0x57, 0x8B, 0x2C };
-            byte[] buff = new byte[1024 * 64];
-            IntPtr bytesRead;
+            Process[] procList = Process.GetProcessesByName("nfs14");
+            if (procList.Length < 1)
+                procList = Process.GetProcessesByName("nfs14_x86"); //TODO is this needed?
+            if (procList.Length < 1)
+                return;
+            UIntPtr procPtr = OpenProcess(ProcessAccessFlags.VirtualMemoryRead | ProcessAccessFlags.VirtualMemoryWrite, true, procList[0].Id);
 
             long addr = 0;
+            //addr = FindObject(procPtr, new byte[] { 0x07, 0x3C, 0x76, 0xE4, 0x86, 0x4A, 0xEC, 0x06, 0x54, 0x09, 0xEF, 0xF7, 0x7D, 0x57, 0x8B, 0x2C });
+            addr = FindObject(procPtr, StringToByteArray("073C76E4864AEC065409EFF77D578B2C"));
+        }
+
+        //From JaredPar at http://stackoverflow.com/a/321404 (http://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array)
+        public static byte[] StringToByteArray(string hex) {
+            return Enumerable.Range(0, hex.Length)
+                .Where(x => x % 2 == 0)
+                .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                .ToArray();
+        }
+
+        static long FindObject(UIntPtr p, byte[] searchBytes) {
+            byte[] buff = new byte[1024 * 64];
+            UIntPtr bytesRead;
             int i = 0,
                 j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead
             for (long PTR = 0x0000000000000000; PTR < 0x7FFFFFFFFFFFFFFF; PTR += buff.Length) {
-                if (ReadProcessMemory(p, (IntPtr)PTR, buff, buff.Length, out bytesRead)) {
+                if (ReadProcessMemory(p, (UIntPtr)PTR, buff, buff.Length, out bytesRead)) {
                     for (i = 0; i < (int)bytesRead; i++) {
                         while (j < searchBytes.Length && i + j < (int)bytesRead) {
                             if (buff[i + j] != searchBytes[j]) {
@@ -103,16 +116,12 @@ namespace ConsoleApplication1 {
                             }
                             j++;
                         }
-                        if (j == searchBytes.Length) {
-                            addr = PTR + i;
-                            break;
-                        }
-                    }
-                    if (addr != 0) {
-                        break;
+                        if (j == searchBytes.Length)
+                            return PTR + i;
                     }
                 }
             }
+            return -1;
         }
     }
 }

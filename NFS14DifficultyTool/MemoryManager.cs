@@ -211,15 +211,21 @@ namespace NFS14DifficultyTool {
             //StdAIPrefab -> AiDirectorEntityData
             NFSAiDirectorEntityData AiDirectorEntityData = new NFSAiDirectorEntityData(this, "2d774798942db34e960cd083ace16340");
 
-            //SpikestripWeapon
-            NFSSpikestripWeapon SpikestripWeapon = new NFSSpikestripWeapon(this, "073c76e4864aec065409eff77d578b2c");
-            SpikestripWeapon.FieldList["Classification"].Field = true;
+            //PacingLibraryPrefab -> PacingLibraryEntityData
+            NFSPacingLibraryEntityData PacingLibraryEntityData = new NFSPacingLibraryEntityData(this, "706cd7f0bc65284cf0a747f5ec29ce7d");
 
             //HealthProfilesList -> HealthProfilesListEntityData
             NFSObjectBlob HealthProfilesListEntityData = new NFSObjectBlob(this, "6ef1bfcc79f73ef1377db6b1fdce2da6");
 
             //PersonaLibraryPrefab
-            NFSObjectBlob PersonaLibraryPrefab = new NFSObjectBlob(this, "097d331254a092347db8c7f677cb620dF0");
+            NFSObjectBlob PersonaLibraryPrefab = new NFSObjectBlob(this, "097d331254a092347db8c7f677cb620d");
+
+            //GameTime
+            NFSGameTime GameTime = new NFSGameTime(this, "c8d0247b61bcc2314b5679507d0416e2");
+
+            //SpikestripWeapon
+            NFSSpikestripWeapon SpikestripWeapon = new NFSSpikestripWeapon(this, "073c76e4864aec065409eff77d578b2c");
+            //SpikestripWeapon.FieldList["Classification"].Field = true;
 
             CloseHandle();
         }

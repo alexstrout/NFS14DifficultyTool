@@ -139,10 +139,10 @@ namespace NFS14DifficultyTool {
         }
 
         public IntPtr FindObject(byte[] searchBytes, int byteAlignment = 4) {
-            byte[] buff = new byte[sysInfo.PageSize];
+            byte[] buff = new byte[sysInfo.AllocationGranularity];
             IntPtr bytesRead;
             int i = 0,
-                j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead
+                j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead - though in practice this should never happen
             for (IntPtr PTR = IntPtr.Zero; (long)PTR < (long)sysInfo.MaximumApplicationAddress; PTR += buff.Length) {
                 if (ReadProcessMemory(PTR, buff, out bytesRead)) {
                     for (i = 0; i < (int)bytesRead; i += byteAlignment) {

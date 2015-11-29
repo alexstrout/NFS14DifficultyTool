@@ -10,6 +10,7 @@ namespace NFS14DifficultyTool {
         public NFSObjectBlob PersonaLibraryPrefab { get; set; }
         public NFSGameTime GameTime { get; set; }
         public NFSSpikestripWeapon SpikestripWeapon { get; set; }
+        public NFSHeliSpikestripWeapon HeliSpikestripWeapon { get; set; }
 
         public Form1() {
             InitializeComponent();
@@ -499,6 +500,22 @@ namespace NFS14DifficultyTool {
                 SetStatus("Finding SpikestripWeapon...");
                 SpikestripWeapon = new NFSSpikestripWeapon(MemManager, "073c76e4864aec065409eff77d578b2c");
                 SpikestripWeapon.FieldList["Classification"].Field = NFSSpikestripWeapon.VehicleWeaponClassification.VehicleWeaponClassification_BackwardFiring;
+                //SpikestripWeapon.FieldList["ConeLength-Low"].Field = 100f;
+                //SpikestripWeapon.FieldList["ConeLength-High"].Field = 100f;
+                SpikestripWeapon.FieldList["MinimumTriggerDistance-Low"].Field = 2f;
+                SpikestripWeapon.FieldList["MinimumTriggerDistance-High"].Field = 1f;
+                //SpikestripWeapon.FieldList["Projectile-EX0"].Field = null;
+                //SpikestripWeapon.FieldList["Projectile-EX1"].Field = null;
+                //SpikestripWeapon.FieldList["Projectile-EX2"].Field = null;
+                //SpikestripWeapon.FieldList["Projectile-EX3"].Field = null;
+
+                //HeliSpikestripWeapon
+                SetStatus("Finding HeliSpikestripWeapon...");
+                HeliSpikestripWeapon = new NFSHeliSpikestripWeapon(MemManager, "7008a3427f4a252a36025d741e2112c4");
+                //HeliSpikestripWeapon.FieldList["Projectile-EX0"].Field = SpikestripWeapon.FieldList["Projectile-EX0"].FieldDefault;
+                //HeliSpikestripWeapon.FieldList["Projectile-EX1"].Field = SpikestripWeapon.FieldList["Projectile-EX1"].FieldDefault;
+                //HeliSpikestripWeapon.FieldList["Projectile-EX2"].Field = SpikestripWeapon.FieldList["Projectile-EX2"].FieldDefault;
+                //HeliSpikestripWeapon.FieldList["Projectile-EX3"].Field = SpikestripWeapon.FieldList["Projectile-EX3"].FieldDefault;
 
                 SetStatus("Done! Close this window to revert all changes.");
             }
@@ -521,6 +538,8 @@ namespace NFS14DifficultyTool {
                 GameTime.ResetFieldsToDefault();
             if (SpikestripWeapon != null)
                 SpikestripWeapon.ResetFieldsToDefault();
+            if (HeliSpikestripWeapon != null)
+                HeliSpikestripWeapon.ResetFieldsToDefault();
         }
     }
 }

@@ -1,0 +1,447 @@
+﻿"MaxHeat" 10
+"HeatTime" 3000
+"BonusStartingHeat" 2
+"PullAheadHeatThreshold" 3
+"BlockHeatThreshold" 5
+"SpawnDelay" 0f
+"MaxAiVisibilityDistance" 250f
+"Heat1 - MinHeat" 1
+"Heat2 - MinHeat" 2
+"Heat3 - MinHeat" 3
+"Heat4 - MinHeat" 4
+"Heat5 - MinHeat" 5
+"Heat6 - MinHeat" 6
+"Heat7 - MinHeat" 7
+"Heat8 - MinHeat" 8
+"Heat9 - MinHeat" 9
+"Heat10 - MinHeat" 10
+"Heat1 - MaxHeat" 1
+"Heat2 - MaxHeat" 2
+"Heat3 - MaxHeat" 3
+"Heat4 - MaxHeat" 4
+"Heat5 - MaxHeat" 5
+"Heat6 - MaxHeat" 6
+"Heat7 - MaxHeat" 7
+"Heat8 - MaxHeat" 8
+"Heat9 - MaxHeat" 9
+"Heat10 - MaxHeat" 10
+"Heat1 - CopCountHeatBased" 1
+"Heat2 - CopCountHeatBased" 2
+"Heat3 - CopCountHeatBased" 2
+"Heat4 - CopCountHeatBased" 2
+"Heat5 - CopCountHeatBased" 2
+"Heat6 - CopCountHeatBased" 3
+"Heat7 - CopCountHeatBased" 3
+"Heat8 - CopCountHeatBased" 4
+"Heat9 - CopCountHeatBased" 4
+"Heat10 - CopCountHeatBased" 5
+"Heat1 - Basic" 1
+"Heat2 - Basic" 2
+"Heat3 - Basic" 1
+"Heat4 - Basic" 0
+"Heat5 - Basic" 0
+"Heat6 - Basic" 0
+"Heat7 - Basic" 0
+"Heat8 - Basic" 0
+"Heat9 - Basic" 0
+"Heat10 - Basic" 0
+"Heat1 - Chaser" 0
+"Heat2 - Chaser" 0
+"Heat3 - Chaser" 2
+"Heat4 - Chaser" 1
+"Heat5 - Chaser" 2
+"Heat6 - Chaser" 1
+"Heat7 - Chaser" 0
+"Heat8 - Chaser" 0
+"Heat9 - Chaser" 0
+"Heat10 - Chaser" 0
+"Heat1 - Brute" 0
+"Heat2 - Brute" 0
+"Heat3 - Brute" 0
+"Heat4 - Brute" 2
+"Heat5 - Brute" 2
+"Heat6 - Brute" 1
+"Heat7 - Brute" 2
+"Heat8 - Brute" 1
+"Heat9 - Brute" 0
+"Heat10 - Brute" 0
+"Heat1 - Aggressor" 0
+"Heat2 - Aggressor" 0
+"Heat3 - Aggressor" 0
+"Heat4 - Aggressor" 0
+"Heat5 - Aggressor" 0
+"Heat6 - Aggressor" 2
+"Heat7 - Aggressor" 2
+"Heat8 - Aggressor" 1
+"Heat9 - Aggressor" 2
+"Heat10 - Aggressor" 2
+"Heat1 - AdvancedAggressor" 0
+"Heat2 - AdvancedAggressor" 0
+"Heat3 - AdvancedAggressor" 0
+"Heat4 - AdvancedAggressor" 0
+"Heat5 - AdvancedAggressor" 0
+"Heat6 - AdvancedAggressor" 0
+"Heat7 - AdvancedAggressor" 0
+"Heat8 - AdvancedAggressor" 2
+"Heat9 - AdvancedAggressor" 3
+"Heat10 - AdvancedAggressor" 4
+"Heat1 - ChanceOfSpawningRoamingCopHeatBased" 3
+"Heat2 - ChanceOfSpawningRoamingCopHeatBased" 3
+"Heat3 - ChanceOfSpawningRoamingCopHeatBased" 4
+"Heat4 - ChanceOfSpawningRoamingCopHeatBased" 5
+"Heat5 - ChanceOfSpawningRoamingCopHeatBased" 6
+"Heat6 - ChanceOfSpawningRoamingCopHeatBased" 7
+"Heat7 - ChanceOfSpawningRoamingCopHeatBased" 10
+"Heat8 - ChanceOfSpawningRoamingCopHeatBased" 15
+"Heat9 - ChanceOfSpawningRoamingCopHeatBased" 20
+"Heat10 - ChanceOfSpawningRoamingCopHeatBased" 30
+"Heat1 - MinimumHelicopterSpawnInterval" -1f
+"Heat2 - MinimumHelicopterSpawnInterval" -1f
+"Heat3 - MinimumHelicopterSpawnInterval" -1f
+"Heat4 - MinimumHelicopterSpawnInterval" -1f
+"Heat5 - MinimumHelicopterSpawnInterval" 50f
+"Heat6 - MinimumHelicopterSpawnInterval" 40f
+"Heat7 - MinimumHelicopterSpawnInterval" 30f
+"Heat8 - MinimumHelicopterSpawnInterval" 25f
+"Heat9 - MinimumHelicopterSpawnInterval" 20f
+"Heat10 - MinimumHelicopterSpawnInterval" 15f
+"Heat1 - MaxHelicoptersPerBubble" 1
+"Heat2 - MaxHelicoptersPerBubble" 1
+"Heat3 - MaxHelicoptersPerBubble" 1
+"Heat4 - MaxHelicoptersPerBubble" 1
+"Heat5 - MaxHelicoptersPerBubble" 1
+"Heat6 - MaxHelicoptersPerBubble" 1
+"Heat7 - MaxHelicoptersPerBubble" 1
+"Heat8 - MaxHelicoptersPerBubble" 1
+"Heat9 - MaxHelicoptersPerBubble" 1
+"Heat10 - MaxHelicoptersPerBubble" 1
+"Heat1 - MinimumRoadblockSpawnInterval" -1f
+"Heat2 - MinimumRoadblockSpawnInterval" -1f
+"Heat3 - MinimumRoadblockSpawnInterval" 50f
+"Heat4 - MinimumRoadblockSpawnInterval" 45f
+"Heat5 - MinimumRoadblockSpawnInterval" 30f
+"Heat6 - MinimumRoadblockSpawnInterval" 25f
+"Heat7 - MinimumRoadblockSpawnInterval" 20f
+"Heat8 - MinimumRoadblockSpawnInterval" 15f
+"Heat9 - MinimumRoadblockSpawnInterval" 10f
+"Heat10 - MinimumRoadblockSpawnInterval" 10f
+"Heat1 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop" 30f
+"Heat2 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop" 30f
+"Heat3 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop" 30f
+"Heat4 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop" 30f
+"Heat5 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop" 30f
+"Heat6 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop" 30f
+"Heat7 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop" 30f
+"Heat8 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop" 30f
+"Heat9 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop" 30f
+"Heat10 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop" 30f
+"ClientViewSpawnRadius" 400f
+"ClientViewCullRadius" 500f
+"MaxNumberOfAiOnlySpontaneousRaces" 1
+"NumberOfPawnRacersWanted" 15
+"NumberOfPawnCopsWanted" 0
+"NumberOfRacers" 1
+"GlobalNumberOfCops" 1
+"GlobalChanceOfSpawningRoamingCop" 25
+"InitialTimeIntervalForTryingToSpawnRacer" 10f
+"InitialTimeIntervalForTryingToSpawnCop" 20f
+"TimeIntervalForTryingToSpawnRacer" 10f
+"TimeIntervalForTryingToSpawnCop" 2f
+"TimeIntervalForTryingToSpawnCopDuringPursuit" 6f
+"TimeIntervalForTryingToSpawnCopDuringHPRacer" 4f
+"IsEnabled" False
+
+"PacingScheduleGroupSpontaneousRace_Default" null
+"PacingScheduleGroupSpontaneousRace_Tutorial" null
+"PacingScheduleGroupSpontaneousRace_Easy" null
+"PacingScheduleGroupSpontaneousRace_Medium" null
+"PacingScheduleGroupSpontaneousRace_Hard" null
+"PacingScheduleGroupDirectedRace" null
+"PacingScheduleGroupDirectedRace_Easy" null
+"PacingScheduleGroupDirectedRace_Hard" null
+"PacingScheduleGroupDirectedRace_AroundTheWorld" null
+"PacingScheduleGroupDirectedRace_Tutorial" null
+"PacingScheduleGroupCopHotPursuit" null
+"PacingScheduleGroupCopHotPursuit_Easy" null
+"PacingScheduleGroupCopHotPursuit_Hard" null
+"PacingScheduleEscape_Default" null
+"PacingScheduleEscape_Easy" null
+"PacingScheduleEscape_Hard" null
+"PacingScheduleEscape_Tutorial" null
+"PacingSchedulePursuit_Default" null
+"PacingSchedulePursuit_Easy" null
+"PacingSchedulePursuit_Hard" null
+"PacingSchedulePursuit_Tutorial" null
+
+"CopHealthProfile_AI_Default" null
+"CopHealthProfile_CopTutorial" null
+"CopHealthProfile_RacerTutorial" null
+"RacerHealthProfile_CopHotPursuit_Easy" null
+"RacerHealthProfile_CopHotPursuit_Hard" null
+"RacerHealthProfile_CopHotPursuit_Medium" null
+"RacerHealthProfile_CopInterceptor_Easy" null
+"RacerHealthProfile_CopInterceptor_Hard" null
+"RacerHealthProfile_CopInterceptor_Medium" null
+"RacerHealthProfile_AI_Default" null
+"RacerHealthProfile_CopTutorial" null
+"RacerHealthProfile_RacerTutorial" null
+"TutorialHealthProfile" null
+"RacerHealthProfile_AI_AroundTheWorld" null
+
+"AggressorCopPersonality - HealthProfile" null
+"BruteCopPersonality - HealthProfile" null
+"BasicCopPersonality - HealthProfile" null
+"AdvAggressorCopPersonality - HealthProfile" null
+"ChaserCopPersonality - HealthProfile" null
+"RacerTutorialCop - HealthProfile" null
+"CopTutorialCop - HealthProfile" null
+"AggressorCopPersonality - UsedSpontaneousRacePacingScheduleGroup" null
+"BruteCopPersonality - UsedSpontaneousRacePacingScheduleGroup" null
+"BasicCopPersonality - UsedSpontaneousRacePacingScheduleGroup" null
+"AdvAggressorCopPersonality - UsedSpontaneousRacePacingScheduleGroup" null
+"ChaserCopPersonality - UsedSpontaneousRacePacingScheduleGroup" null
+"RacerTutorialCop - UsedSpontaneousRacePacingScheduleGroup" null
+"CopTutorialCop - UsedSpontaneousRacePacingScheduleGroup" null
+"AggressorCopPersonality - UsedPursuitAndEscapePacingSchedule" null
+"BruteCopPersonality - UsedPursuitAndEscapePacingSchedule" null
+"BasicCopPersonality - UsedPursuitAndEscapePacingSchedule" null
+"AdvAggressorCopPersonality - UsedPursuitAndEscapePacingSchedule" null
+"ChaserCopPersonality - UsedPursuitAndEscapePacingSchedule" null
+"RacerTutorialCop - UsedPursuitAndEscapePacingSchedule" null
+"CopTutorialCop - UsedPursuitAndEscapePacingSchedule" null
+"AggressorCopPersonality - PacingSkill" 0.7f
+"BruteCopPersonality - PacingSkill" 0.7f
+"BasicCopPersonality - PacingSkill" 0.5f
+"AdvAggressorCopPersonality - PacingSkill" 0.7f
+"ChaserCopPersonality - PacingSkill" 0.7f
+"RacerTutorialCop - PacingSkill" 0.5f
+"CopTutorialCop - PacingSkill" 0.5f
+"AggressorCopPersonality - WeaponSkill" 1f
+"BruteCopPersonality - WeaponSkill" 1f
+"BasicCopPersonality - WeaponSkill" 1f
+"AdvAggressorCopPersonality - WeaponSkill" 1f
+"ChaserCopPersonality - WeaponSkill" 1f
+"RacerTutorialCop - WeaponSkill" 0f
+"CopTutorialCop - WeaponSkill" 0f
+"AggressorCopPersonality - WeaponSkillVsHumanCop" 0f
+"BruteCopPersonality - WeaponSkillVsHumanCop" 0f
+"BasicCopPersonality - WeaponSkillVsHumanCop" 0f
+"AdvAggressorCopPersonality - WeaponSkillVsHumanCop" 0f
+"ChaserCopPersonality - WeaponSkillVsHumanCop" 0f
+"RacerTutorialCop - WeaponSkillVsHumanCop" 0f
+"CopTutorialCop - WeaponSkillVsHumanCop" 0f
+"AggressorCopPersonality - WeaponSkillVsHumanRacer" 1f
+"BruteCopPersonality - WeaponSkillVsHumanRacer" 1f
+"BasicCopPersonality - WeaponSkillVsHumanRacer" 1f
+"AdvAggressorCopPersonality - WeaponSkillVsHumanRacer" 1f
+"ChaserCopPersonality - WeaponSkillVsHumanRacer" 1f
+"RacerTutorialCop - WeaponSkillVsHumanRacer" 0f
+"CopTutorialCop - WeaponSkillVsHumanRacer" 0f
+"AggressorCopPersonality - WeaponSkillVsAICop" 0f
+"BruteCopPersonality - WeaponSkillVsAICop" 0f
+"BasicCopPersonality - WeaponSkillVsAICop" 0f
+"AdvAggressorCopPersonality - WeaponSkillVsAICop" 0f
+"ChaserCopPersonality - WeaponSkillVsAICop" 0f
+"RacerTutorialCop - WeaponSkillVsAICop" 0f
+"CopTutorialCop - WeaponSkillVsAICop" 0f
+"AggressorCopPersonality - WeaponSkillVsAIRacer" 0.5f
+"BruteCopPersonality - WeaponSkillVsAIRacer" 0.5f
+"BasicCopPersonality - WeaponSkillVsAIRacer" 0.5f
+"AdvAggressorCopPersonality - WeaponSkillVsAIRacer" 0.5f
+"ChaserCopPersonality - WeaponSkillVsAIRacer" 0.5f
+"RacerTutorialCop - WeaponSkillVsAIRacer" 0f
+"CopTutorialCop - WeaponSkillVsAIRacer" 0f
+"AggressorCopPersonality - AvoidanceSpeedMatchWhenBlocked" True
+"BruteCopPersonality - AvoidanceSpeedMatchWhenBlocked" True
+"BasicCopPersonality - AvoidanceSpeedMatchWhenBlocked" True
+"AdvAggressorCopPersonality - AvoidanceSpeedMatchWhenBlocked" True
+"ChaserCopPersonality - AvoidanceSpeedMatchWhenBlocked" True
+"RacerTutorialCop - AvoidanceSpeedMatchWhenBlocked" True
+"CopTutorialCop - AvoidanceSpeedMatchWhenBlocked" True
+"Tier1WeaponRacer - HealthProfile" null
+"RecklessRacer - HealthProfile" null
+"Tier2CautiousRacer - HealthProfile" null
+"Tier1ViolentRacer - HealthProfile" null
+"Tier1RecklessRacer - HealthProfile" null
+"Tier1CautiousRacer - HealthProfile" null
+"RacerTutorialRacer - HealthProfile" null
+"CleanRacer - HealthProfile" null
+"Tier2WeaponRacer - HealthProfile" null
+"Tier1CleanRacer - HealthProfile" null
+"Tier2ViolentRacer - HealthProfile" null
+"Tier2RecklessRacer - HealthProfile" null
+"Tier2CleanRacer - HealthProfile" null
+"WeaponRacer - HealthProfile" null
+"CopTutorialRacer - HealthProfile" null
+"CautiousRacer - HealthProfile" null
+"ViolentRacer - HealthProfile" null
+"Tier1WeaponRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"RecklessRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"Tier2CautiousRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"Tier1ViolentRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"Tier1RecklessRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"Tier1CautiousRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"RacerTutorialRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"CleanRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"Tier2WeaponRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"Tier1CleanRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"Tier2ViolentRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"Tier2RecklessRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"Tier2CleanRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"WeaponRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"CopTutorialRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"CautiousRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"ViolentRacer - UsedSpontaneousRacePacingScheduleGroup" null
+"Tier1WeaponRacer - UsedPursuitAndEscapePacingSchedule" null
+"RecklessRacer - UsedPursuitAndEscapePacingSchedule" null
+"Tier2CautiousRacer - UsedPursuitAndEscapePacingSchedule" null
+"Tier1ViolentRacer - UsedPursuitAndEscapePacingSchedule" null
+"Tier1RecklessRacer - UsedPursuitAndEscapePacingSchedule" null
+"Tier1CautiousRacer - UsedPursuitAndEscapePacingSchedule" null
+"RacerTutorialRacer - UsedPursuitAndEscapePacingSchedule" null
+"CleanRacer - UsedPursuitAndEscapePacingSchedule" null
+"Tier2WeaponRacer - UsedPursuitAndEscapePacingSchedule" null
+"Tier1CleanRacer - UsedPursuitAndEscapePacingSchedule" null
+"Tier2ViolentRacer - UsedPursuitAndEscapePacingSchedule" null
+"Tier2RecklessRacer - UsedPursuitAndEscapePacingSchedule" null
+"Tier2CleanRacer - UsedPursuitAndEscapePacingSchedule" null
+"WeaponRacer - UsedPursuitAndEscapePacingSchedule" null
+"CopTutorialRacer - UsedPursuitAndEscapePacingSchedule" null
+"CautiousRacer - UsedPursuitAndEscapePacingSchedule" null
+"ViolentRacer - UsedPursuitAndEscapePacingSchedule" null
+"Tier1WeaponRacer - PacingSkill" 0.5f
+"RecklessRacer - PacingSkill" 0.5f
+"Tier2CautiousRacer - PacingSkill" 0.5f
+"Tier1ViolentRacer - PacingSkill" 0.5f
+"Tier1RecklessRacer - PacingSkill" 0.5f
+"Tier1CautiousRacer - PacingSkill" 0.5f
+"RacerTutorialRacer - PacingSkill" 0.4f
+"CleanRacer - PacingSkill" 0.5f
+"Tier2WeaponRacer - PacingSkill" 0.5f
+"Tier1CleanRacer - PacingSkill" 0.5f
+"Tier2ViolentRacer - PacingSkill" 0.5f
+"Tier2RecklessRacer - PacingSkill" 0.5f
+"Tier2CleanRacer - PacingSkill" 0.5f
+"WeaponRacer - PacingSkill" 0.5f
+"CopTutorialRacer - PacingSkill" 0.5f
+"CautiousRacer - PacingSkill" 0.5f
+"ViolentRacer - PacingSkill" 0.5f
+"Tier1WeaponRacer - WeaponSkill" 0.5f
+"RecklessRacer - WeaponSkill" 0.5f
+"Tier2CautiousRacer - WeaponSkill" 0.5f
+"Tier1ViolentRacer - WeaponSkill" 0f
+"Tier1RecklessRacer - WeaponSkill" 0f
+"Tier1CautiousRacer - WeaponSkill" 0f
+"RacerTutorialRacer - WeaponSkill" 0f
+"CleanRacer - WeaponSkill" 0.5f
+"Tier2WeaponRacer - WeaponSkill" 1f
+"Tier1CleanRacer - WeaponSkill" 0f
+"Tier2ViolentRacer - WeaponSkill" 0.5f
+"Tier2RecklessRacer - WeaponSkill" 0.5f
+"Tier2CleanRacer - WeaponSkill" 0.5f
+"WeaponRacer - WeaponSkill" 1f
+"CopTutorialRacer - WeaponSkill" 0f
+"CautiousRacer - WeaponSkill" 0.5f
+"ViolentRacer - WeaponSkill" 0.5f
+"Tier1WeaponRacer - WeaponSkillVsHumanCop" 0.5f
+"RecklessRacer - WeaponSkillVsHumanCop" 0.5f
+"Tier2CautiousRacer - WeaponSkillVsHumanCop" 0.5f
+"Tier1ViolentRacer - WeaponSkillVsHumanCop" 0f
+"Tier1RecklessRacer - WeaponSkillVsHumanCop" 0f
+"Tier1CautiousRacer - WeaponSkillVsHumanCop" 0f
+"RacerTutorialRacer - WeaponSkillVsHumanCop" 0f
+"CleanRacer - WeaponSkillVsHumanCop" 0.5f
+"Tier2WeaponRacer - WeaponSkillVsHumanCop" 1f
+"Tier1CleanRacer - WeaponSkillVsHumanCop" 0f
+"Tier2ViolentRacer - WeaponSkillVsHumanCop" 0.5f
+"Tier2RecklessRacer - WeaponSkillVsHumanCop" 0.5f
+"Tier2CleanRacer - WeaponSkillVsHumanCop" 0.5f
+"WeaponRacer - WeaponSkillVsHumanCop" 1f
+"CopTutorialRacer - WeaponSkillVsHumanCop" 0f
+"CautiousRacer - WeaponSkillVsHumanCop" 0.5f
+"ViolentRacer - WeaponSkillVsHumanCop" 0.5f
+"Tier1WeaponRacer - WeaponSkillVsHumanRacer" 0.25f
+"RecklessRacer - WeaponSkillVsHumanRacer" 0.25f
+"Tier2CautiousRacer - WeaponSkillVsHumanRacer" 0.25f
+"Tier1ViolentRacer - WeaponSkillVsHumanRacer" 0f
+"Tier1RecklessRacer - WeaponSkillVsHumanRacer" 0f
+"Tier1CautiousRacer - WeaponSkillVsHumanRacer" 0f
+"RacerTutorialRacer - WeaponSkillVsHumanRacer" 0f
+"CleanRacer - WeaponSkillVsHumanRacer" 0.25f
+"Tier2WeaponRacer - WeaponSkillVsHumanRacer" 0.5f
+"Tier1CleanRacer - WeaponSkillVsHumanRacer" 0f
+"Tier2ViolentRacer - WeaponSkillVsHumanRacer" 0.25f
+"Tier2RecklessRacer - WeaponSkillVsHumanRacer" 0.25f
+"Tier2CleanRacer - WeaponSkillVsHumanRacer" 0.25f
+"WeaponRacer - WeaponSkillVsHumanRacer" 0.5f
+"CopTutorialRacer - WeaponSkillVsHumanRacer" 0f
+"CautiousRacer - WeaponSkillVsHumanRacer" 0.25f
+"ViolentRacer - WeaponSkillVsHumanRacer" 0.25f
+"Tier1WeaponRacer - WeaponSkillVsAICop" 0.25f
+"RecklessRacer - WeaponSkillVsAICop" 0.25f
+"Tier2CautiousRacer - WeaponSkillVsAICop" 0.25f
+"Tier1ViolentRacer - WeaponSkillVsAICop" 0f
+"Tier1RecklessRacer - WeaponSkillVsAICop" 0f
+"Tier1CautiousRacer - WeaponSkillVsAICop" 0f
+"RacerTutorialRacer - WeaponSkillVsAICop" 0f
+"CleanRacer - WeaponSkillVsAICop" 0.25f
+"Tier2WeaponRacer - WeaponSkillVsAICop" 0.5f
+"Tier1CleanRacer - WeaponSkillVsAICop" 0f
+"Tier2ViolentRacer - WeaponSkillVsAICop" 0.25f
+"Tier2RecklessRacer - WeaponSkillVsAICop" 0.25f
+"Tier2CleanRacer - WeaponSkillVsAICop" 0.25f
+"WeaponRacer - WeaponSkillVsAICop" 0.5f
+"CopTutorialRacer - WeaponSkillVsAICop" 0f
+"CautiousRacer - WeaponSkillVsAICop" 0.25f
+"ViolentRacer - WeaponSkillVsAICop" 0.25f
+"Tier1WeaponRacer - WeaponSkillVsAIRacer" 0f
+"RecklessRacer - WeaponSkillVsAIRacer" 0f
+"Tier2CautiousRacer - WeaponSkillVsAIRacer" 0f
+"Tier1ViolentRacer - WeaponSkillVsAIRacer" 0f
+"Tier1RecklessRacer - WeaponSkillVsAIRacer" 0f
+"Tier1CautiousRacer - WeaponSkillVsAIRacer" 0f
+"RacerTutorialRacer - WeaponSkillVsAIRacer" 0f
+"CleanRacer - WeaponSkillVsAIRacer" 0f
+"Tier2WeaponRacer - WeaponSkillVsAIRacer" 0f
+"Tier1CleanRacer - WeaponSkillVsAIRacer" 0f
+"Tier2ViolentRacer - WeaponSkillVsAIRacer" 0f
+"Tier2RecklessRacer - WeaponSkillVsAIRacer" 0f
+"Tier2CleanRacer - WeaponSkillVsAIRacer" 0f
+"WeaponRacer - WeaponSkillVsAIRacer" 0f
+"CopTutorialRacer - WeaponSkillVsAIRacer" 0f
+"CautiousRacer - WeaponSkillVsAIRacer" 0f
+"ViolentRacer - WeaponSkillVsAIRacer" 0f
+"Tier1WeaponRacer - AvoidanceSpeedMatchWhenBlocked" True
+"RecklessRacer - AvoidanceSpeedMatchWhenBlocked" True
+"Tier2CautiousRacer - AvoidanceSpeedMatchWhenBlocked" True
+"Tier1ViolentRacer - AvoidanceSpeedMatchWhenBlocked" True
+"Tier1RecklessRacer - AvoidanceSpeedMatchWhenBlocked" True
+"Tier1CautiousRacer - AvoidanceSpeedMatchWhenBlocked" True
+"RacerTutorialRacer - AvoidanceSpeedMatchWhenBlocked" True
+"CleanRacer - AvoidanceSpeedMatchWhenBlocked" True
+"Tier2WeaponRacer - AvoidanceSpeedMatchWhenBlocked" True
+"Tier1CleanRacer - AvoidanceSpeedMatchWhenBlocked" True
+"Tier2ViolentRacer - AvoidanceSpeedMatchWhenBlocked" True
+"Tier2RecklessRacer - AvoidanceSpeedMatchWhenBlocked" True
+"Tier2CleanRacer - AvoidanceSpeedMatchWhenBlocked" True
+"WeaponRacer - AvoidanceSpeedMatchWhenBlocked" True
+"CopTutorialRacer - AvoidanceSpeedMatchWhenBlocked" True
+"CautiousRacer - AvoidanceSpeedMatchWhenBlocked" True
+"ViolentRacer - AvoidanceSpeedMatchWhenBlocked" True
+
+"VariableSimTickTimeEnable" False
+
+"Classification" 0
+"ConeLength-Low" 50f
+"ConeLength-High" 50f
+"MinimumTriggerDistance-Low" 25f
+"MinimumTriggerDistance-High" 20f
+"Projectile-EX0" null
+"Projectile-EX1" null
+"Projectile-EX2" null
+"Projectile-EX3" null
+
+"Projectile-EX0" null
+"Projectile-EX1" null
+"Projectile-EX2" null
+"Projectile-EX2" null

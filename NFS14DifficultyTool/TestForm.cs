@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 
 namespace NFS14DifficultyTool {
-    public partial class Form1 : Form {
+    public partial class TestForm : Form {
         public MemoryManager MemManager { get; set; }
         public NFSAiDirectorEntityData AiDirectorEntityData { get; set; }
         public NFSPacingLibraryEntityData PacingLibraryEntityData { get; set; }
@@ -12,7 +12,7 @@ namespace NFS14DifficultyTool {
         public NFSSpikestripWeapon SpikestripWeapon { get; set; }
         public NFSHeliSpikestripWeapon HeliSpikestripWeapon { get; set; }
 
-        public Form1() {
+        public TestForm() {
             InitializeComponent();
 
             //TODO TEST

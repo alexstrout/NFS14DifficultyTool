@@ -1,6 +1,6 @@
 ﻿namespace NFS14DifficultyTool
 {
-    partial class Form1
+    partial class TestForm
     {
         /// <summary>
         /// Required designer variable.

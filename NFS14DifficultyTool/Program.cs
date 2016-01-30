@@ -10,7 +10,8 @@ namespace NFS14DifficultyTool {
         static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            //Application.Run(new TestForm());
+            Application.Run(new DifficultyForm());
         }
     }
 }

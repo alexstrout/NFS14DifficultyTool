@@ -1,7 +1,7 @@
 ﻿namespace NFS14DifficultyTool {
-    public class NFSPersonaLibraryPrefab : NFSObjectBlob {
-        public NFSPersonaLibraryPrefab(MemoryManager memManager, string guid)
-            : base(memManager, guid) {
+    public class NFSObjectPersonaLibraryPrefab : NFSObject {
+        public NFSObjectPersonaLibraryPrefab(MemoryManager memManager)
+            : base(memManager, "097d331254a092347db8c7f677cb620d") {
             //foxPerLibPrefab
             FieldList.Add("AggressorCopPersonality - HealthProfile", new NFSFieldPointer(this, "10+7FD0"));
             FieldList.Add("BruteCopPersonality - HealthProfile", new NFSFieldPointer(this, "10+8160"));

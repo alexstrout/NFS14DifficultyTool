@@ -1,7 +1,7 @@
 ﻿namespace NFS14DifficultyTool {
-    public class NFSAiDirectorEntityData : NFSObjectBlob {
-        public NFSAiDirectorEntityData(MemoryManager memManager, string guid)
-            : base(memManager, guid) {
+    public class NFSObjectAiDirectorEntityData : NFSObject {
+        public NFSObjectAiDirectorEntityData(MemoryManager memManager)
+            : base(memManager, "2d774798942db34e960cd083ace16340") {
             //foxAiDirEntData
             FieldList.Add("MaxHeat", new NFSFieldInt(this, "30"));
             FieldList.Add("HeatTime", new NFSFieldInt(this, "34"));

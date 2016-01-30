@@ -1,7 +1,7 @@
 ﻿namespace NFS14DifficultyTool {
-    public class NFSPacingLibraryEntityData : NFSObjectBlob {
-        public NFSPacingLibraryEntityData(MemoryManager memManager, string guid)
-            : base(memManager, guid) {
+    public class NFSObjectPacingLibraryEntityData : NFSObject {
+        public NFSObjectPacingLibraryEntityData(MemoryManager memManager)
+            : base(memManager, "706cd7f0bc65284cf0a747f5ec29ce7d") {
             //foxPacLibEntData
             FieldList.Add("PacingScheduleGroupSpontaneousRace_Default", new NFSFieldPointer(this, "D0"));
             FieldList.Add("PacingScheduleGroupSpontaneousRace_Tutorial", new NFSFieldPointer(this, "118"));

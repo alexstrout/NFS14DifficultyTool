@@ -80,14 +80,14 @@
     <Compile Include="DifficultyForm.Designer.cs">
       <DependentUpon>DifficultyForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NFSHeliSpikestripWeapon.cs" />
-    <Compile Include="NFSSpikestripWeapon.cs" />
-    <Compile Include="NFSGameTime.cs" />
-    <Compile Include="NFSPersonaLibraryPrefab.cs" />
-    <Compile Include="NFSHealthProfilesListEntityData.cs" />
-    <Compile Include="NFSPacingLibraryEntityData.cs" />
+    <Compile Include="NFSObjectHeliSpikestripWeapon.cs" />
+    <Compile Include="NFSObjectSpikestripWeapon.cs" />
+    <Compile Include="NFSObjectGameTime.cs" />
+    <Compile Include="NFSObjectPersonaLibraryPrefab.cs" />
+    <Compile Include="NFSObjectHealthProfilesListEntityData.cs" />
+    <Compile Include="NFSObjectPacingLibraryEntityData.cs" />
     <Compile Include="NFSField.cs" />
-    <Compile Include="NFSAiDirectorEntityData.cs" />
+    <Compile Include="NFSObjectAiDirectorEntityData.cs" />
     <Compile Include="MemoryManager.cs" />
     <Compile Include="TestForm.cs">
       <SubType>Form</SubType>
@@ -95,7 +95,7 @@
     <Compile Include="TestForm.Designer.cs">
       <DependentUpon>TestForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="NFSObjectBlob.cs" />
+    <Compile Include="NFSObject.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="DifficultyForm.resx">

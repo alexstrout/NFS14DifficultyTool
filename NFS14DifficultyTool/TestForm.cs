@@ -4,13 +4,13 @@ using System.Windows.Forms;
 namespace NFS14DifficultyTool {
     public partial class TestForm : Form {
         public MemoryManager MemManager { get; set; }
-        public NFSAiDirectorEntityData AiDirectorEntityData { get; set; }
-        public NFSPacingLibraryEntityData PacingLibraryEntityData { get; set; }
-        public NFSObjectBlob HealthProfilesListEntityData { get; set; }
-        public NFSObjectBlob PersonaLibraryPrefab { get; set; }
-        public NFSGameTime GameTime { get; set; }
-        public NFSSpikestripWeapon SpikestripWeapon { get; set; }
-        public NFSHeliSpikestripWeapon HeliSpikestripWeapon { get; set; }
+        public NFSObject AiDirectorEntityData { get; set; }
+        public NFSObject PacingLibraryEntityData { get; set; }
+        public NFSObject HealthProfilesListEntityData { get; set; }
+        public NFSObject PersonaLibraryPrefab { get; set; }
+        public NFSObject GameTime { get; set; }
+        public NFSObject SpikestripWeapon { get; set; }
+        public NFSObject HeliSpikestripWeapon { get; set; }
 
         public TestForm() {
             InitializeComponent();
@@ -51,7 +51,7 @@ namespace NFS14DifficultyTool {
             try {
                 //StdAIPrefab -> AiDirectorEntityData
                 SetStatus("Finding StdAIPrefab -> AiDirectorEntityData...");
-                AiDirectorEntityData = new NFSAiDirectorEntityData(MemManager, "2d774798942db34e960cd083ace16340");
+                AiDirectorEntityData = new NFSObjectAiDirectorEntityData(MemManager);
                 //AiDirectorEntityData.FieldList["MaxHeat"].Field = 0;
                 AiDirectorEntityData.FieldList["HeatTime"].Field = 300;
                 AiDirectorEntityData.FieldList["BonusStartingHeat"].Field = 6;
@@ -207,7 +207,7 @@ namespace NFS14DifficultyTool {
 
                 //PacingLibraryPrefab -> PacingLibraryEntityData
                 SetStatus("Finding PacingLibraryPrefab -> PacingLibraryEntityData...");
-                PacingLibraryEntityData = new NFSPacingLibraryEntityData(MemManager, "706cd7f0bc65284cf0a747f5ec29ce7d");
+                PacingLibraryEntityData = new NFSObjectPacingLibraryEntityData(MemManager);
                 PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Default"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Hard"].FieldDefault;
                 PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Hard"].FieldDefault;
                 PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Easy"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Hard"].FieldDefault;
@@ -232,7 +232,7 @@ namespace NFS14DifficultyTool {
 
                 //HealthProfilesList -> HealthProfilesListEntityData
                 SetStatus("Finding HealthProfilesList -> HealthProfilesListEntityData...");
-                HealthProfilesListEntityData = new NFSHealthProfilesListEntityData(MemManager, "6ef1bfcc79f73ef1377db6b1fdce2da6");
+                HealthProfilesListEntityData = new NFSObjectHealthProfilesListEntityData(MemManager);
                 //HealthProfilesListEntityData.FieldList["CopHealthProfile_AI_Default"].Field = null;
                 //HealthProfilesListEntityData.FieldList["CopHealthProfile_CopTutorial"].Field = null;
                 //HealthProfilesListEntityData.FieldList["CopHealthProfile_RacerTutorial"].Field = null;
@@ -250,7 +250,7 @@ namespace NFS14DifficultyTool {
 
                 //PersonaLibraryPrefab
                 SetStatus("Finding PersonaLibraryPrefab...");
-                PersonaLibraryPrefab = new NFSPersonaLibraryPrefab(MemManager, "097d331254a092347db8c7f677cb620d");
+                PersonaLibraryPrefab = new NFSObjectPersonaLibraryPrefab(MemManager);
                 //PersonaLibraryPrefab.FieldList["AggressorCopPersonality - HealthProfile"].Field = null;
                 //PersonaLibraryPrefab.FieldList["BruteCopPersonality - HealthProfile"].Field = null;
                 //PersonaLibraryPrefab.FieldList["BasicCopPersonality - HealthProfile"].Field = null;
@@ -494,13 +494,13 @@ namespace NFS14DifficultyTool {
 
                 //GameTime
                 SetStatus("Finding GameTime...");
-                GameTime = new NFSGameTime(MemManager, "c8d0247b61bcc2314b5679507d0416e2");
+                GameTime = new NFSObjectGameTime(MemManager);
                 GameTime.FieldList["VariableSimTickTimeEnable"].Field = true;
 
                 //SpikestripWeapon
                 SetStatus("Finding SpikestripWeapon...");
-                SpikestripWeapon = new NFSSpikestripWeapon(MemManager, "073c76e4864aec065409eff77d578b2c");
-                SpikestripWeapon.FieldList["Classification"].Field = NFSSpikestripWeapon.VehicleWeaponClassification.VehicleWeaponClassification_BackwardFiring;
+                SpikestripWeapon = new NFSObjectSpikestripWeapon(MemManager);
+                SpikestripWeapon.FieldList["Classification"].Field = NFSObjectSpikestripWeapon.VehicleWeaponClassification.VehicleWeaponClassification_BackwardFiring;
                 //SpikestripWeapon.FieldList["ConeLength-Low"].Field = 100f;
                 //SpikestripWeapon.FieldList["ConeLength-High"].Field = 100f;
                 SpikestripWeapon.FieldList["MinimumTriggerDistance-Low"].Field = 2f;
@@ -512,7 +512,7 @@ namespace NFS14DifficultyTool {
 
                 //HeliSpikestripWeapon
                 SetStatus("Finding HeliSpikestripWeapon...");
-                HeliSpikestripWeapon = new NFSHeliSpikestripWeapon(MemManager, "7008a3427f4a252a36025d741e2112c4");
+                HeliSpikestripWeapon = new NFSObjectHeliSpikestripWeapon(MemManager);
                 //HeliSpikestripWeapon.FieldList["Projectile-EX0"].Field = SpikestripWeapon.FieldList["Projectile-EX0"].FieldDefault;
                 //HeliSpikestripWeapon.FieldList["Projectile-EX1"].Field = SpikestripWeapon.FieldList["Projectile-EX1"].FieldDefault;
                 //HeliSpikestripWeapon.FieldList["Projectile-EX2"].Field = SpikestripWeapon.FieldList["Projectile-EX2"].FieldDefault;

@@ -1,12 +1,12 @@
 ﻿namespace NFS14DifficultyTool {
-    public class NFSSpikestripWeapon : NFSObjectBlob {
+    public class NFSObjectSpikestripWeapon : NFSObject {
         public enum VehicleWeaponClassification {
             VehicleWeaponClassification_ForwardFiring = 0,
             VehicleWeaponClassification_BackwardFiring = 1
         }
 
-        public NFSSpikestripWeapon(MemoryManager memManager, string guid)
-            : base(memManager, guid) {
+        public NFSObjectSpikestripWeapon(MemoryManager memManager)
+            : base(memManager, "073c76e4864aec065409eff77d578b2c") {
             //foxSpikeWeap
             FieldList.Add("Classification", new NFSFieldInt(this, "100"));
             FieldList.Add("ConeLength-Low", new NFSFieldFloat(this, "1C0"));

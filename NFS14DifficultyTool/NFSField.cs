@@ -2,20 +2,20 @@
 
 namespace NFS14DifficultyTool {
     abstract public class NFSField {
-        protected NFSObjectBlob parent;
+        protected NFSObject parent;
 
         public int Offset { get; protected set; }
         public object FieldDefault { get; protected set; }
         abstract public object Field { get; set; }
 
-        public NFSField(NFSObjectBlob parent, int offset) {
+        public NFSField(NFSObject parent, int offset) {
             this.parent = parent;
             Offset = offset;
 
             //This will trigger a memory read on Field and assign it to FieldDefault
             FieldDefault = Field;
         }
-        public NFSField(NFSObjectBlob parent, string offset) : this(parent, ParseOffset(offset)) { }
+        public NFSField(NFSObject parent, string offset) : this(parent, ParseOffset(offset)) { }
 
         public static int ParseOffset(string offset) {
             string[] offsets = offset.Split(new string[] { "+" }, StringSplitOptions.RemoveEmptyEntries);
@@ -39,12 +39,12 @@ namespace NFS14DifficultyTool {
             }
         }
 
-        public NFSFieldByteArray(NFSObjectBlob parent, int offset, int fieldSize)
+        public NFSFieldByteArray(NFSObject parent, int offset, int fieldSize)
             : base(parent, offset) {
             FieldSize = fieldSize;
             FieldDefault = Field; //HACK can't call base constructor later, so must do this again
         }
-        public NFSFieldByteArray(NFSObjectBlob parent, string offset, int fieldSize)
+        public NFSFieldByteArray(NFSObject parent, string offset, int fieldSize)
             : base(parent, offset) {
             FieldSize = fieldSize;
             FieldDefault = Field; //HACK can't call base constructor later, so must do this again
@@ -61,8 +61,8 @@ namespace NFS14DifficultyTool {
             }
         }
 
-        public NFSFieldPointer(NFSObjectBlob parent, int offset) : base(parent, offset, IntPtr.Size) { }
-        public NFSFieldPointer(NFSObjectBlob parent, string offset) : base(parent, offset, IntPtr.Size) { }
+        public NFSFieldPointer(NFSObject parent, int offset) : base(parent, offset, IntPtr.Size) { }
+        public NFSFieldPointer(NFSObject parent, string offset) : base(parent, offset, IntPtr.Size) { }
     }
 
     public class NFSFieldBool : NFSField {
@@ -75,8 +75,8 @@ namespace NFS14DifficultyTool {
             }
         }
 
-        public NFSFieldBool(NFSObjectBlob parent, int offset) : base(parent, offset) { }
-        public NFSFieldBool(NFSObjectBlob parent, string offset) : base(parent, offset) { }
+        public NFSFieldBool(NFSObject parent, int offset) : base(parent, offset) { }
+        public NFSFieldBool(NFSObject parent, string offset) : base(parent, offset) { }
     }
 
     public class NFSFieldInt : NFSField {
@@ -89,8 +89,8 @@ namespace NFS14DifficultyTool {
             }
         }
 
-        public NFSFieldInt(NFSObjectBlob parent, int offset) : base(parent, offset) { }
-        public NFSFieldInt(NFSObjectBlob parent, string offset) : base(parent, offset) { }
+        public NFSFieldInt(NFSObject parent, int offset) : base(parent, offset) { }
+        public NFSFieldInt(NFSObject parent, string offset) : base(parent, offset) { }
     }
 
     public class NFSFieldFloat : NFSField {
@@ -103,8 +103,8 @@ namespace NFS14DifficultyTool {
             }
         }
 
-        public NFSFieldFloat(NFSObjectBlob parent, int offset) : base(parent, offset) { }
-        public NFSFieldFloat(NFSObjectBlob parent, string offset) : base(parent, offset) { }
+        public NFSFieldFloat(NFSObject parent, int offset) : base(parent, offset) { }
+        public NFSFieldFloat(NFSObject parent, string offset) : base(parent, offset) { }
     }
 
     public class NFSFieldDouble : NFSField {
@@ -117,7 +117,7 @@ namespace NFS14DifficultyTool {
             }
         }
 
-        public NFSFieldDouble(NFSObjectBlob parent, int offset) : base(parent, offset) { }
-        public NFSFieldDouble(NFSObjectBlob parent, string offset) : base(parent, offset) { }
+        public NFSFieldDouble(NFSObject parent, int offset) : base(parent, offset) { }
+        public NFSFieldDouble(NFSObject parent, string offset) : base(parent, offset) { }
     }
 }

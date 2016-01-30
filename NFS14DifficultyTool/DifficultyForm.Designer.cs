@@ -23,8 +23,9 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.lblRacerClass = new System.Windows.Forms.Label();
-            this.lblSettings = new System.Windows.Forms.Label();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.lblRacerSkill = new System.Windows.Forms.Label();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.lblRacerDensity = new System.Windows.Forms.Label();
@@ -56,6 +57,7 @@
             this.cmbCopDifficulty = new System.Windows.Forms.ComboBox();
             this.lblInfoName = new System.Windows.Forms.Label();
             this.lnkBitbucket = new System.Windows.Forms.LinkLabel();
+            this.tmrFindProcess = new System.Windows.Forms.Timer(this.components);
             this.grpMiscSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRacerSkill)).BeginInit();
             this.grpRacerSettings.SuspendLayout();
@@ -74,15 +76,15 @@
             this.lblRacerClass.TabIndex = 4;
             this.lblRacerClass.Text = "AI Class:";
             // 
-            // lblSettings
+            // lblStatus
             // 
-            this.lblSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSettings.AutoSize = true;
-            this.lblSettings.Location = new System.Drawing.Point(79, 388);
-            this.lblSettings.Name = "lblSettings";
-            this.lblSettings.Size = new System.Drawing.Size(85, 13);
-            this.lblSettings.TabIndex = 21;
-            this.lblSettings.Text = "Current Settings:";
+            this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Location = new System.Drawing.Point(12, 388);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(46, 13);
+            this.lblStatus.TabIndex = 21;
+            this.lblStatus.Text = "Status...";
             // 
             // lblRacerSkill
             // 
@@ -96,12 +98,14 @@
             // btnSaveSettings
             // 
             this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSaveSettings.Enabled = false;
             this.btnSaveSettings.Location = new System.Drawing.Point(170, 383);
             this.btnSaveSettings.Name = "btnSaveSettings";
             this.btnSaveSettings.Size = new System.Drawing.Size(75, 23);
             this.btnSaveSettings.TabIndex = 20;
             this.btnSaveSettings.Text = "Save As...";
             this.btnSaveSettings.UseVisualStyleBackColor = true;
+            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
             // lblRacerDensity
             // 
@@ -116,12 +120,14 @@
             // btnLoadSettings
             // 
             this.btnLoadSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLoadSettings.Enabled = false;
             this.btnLoadSettings.Location = new System.Drawing.Point(251, 383);
             this.btnLoadSettings.Name = "btnLoadSettings";
             this.btnLoadSettings.Size = new System.Drawing.Size(75, 23);
             this.btnLoadSettings.TabIndex = 19;
             this.btnLoadSettings.Text = "Load...";
             this.btnLoadSettings.UseVisualStyleBackColor = true;
+            this.btnLoadSettings.Click += new System.EventHandler(this.btnLoadSettings_Click);
             // 
             // cmbRacerClass
             // 
@@ -131,11 +137,12 @@
             "Easy",
             "Normal",
             "Hard",
-            "Very Hard"});
+            "Insane"});
             this.cmbRacerClass.Location = new System.Drawing.Point(57, 3);
             this.cmbRacerClass.Name = "cmbRacerClass";
             this.cmbRacerClass.Size = new System.Drawing.Size(61, 21);
             this.cmbRacerClass.TabIndex = 3;
+            this.cmbRacerClass.SelectedIndexChanged += new System.EventHandler(this.cmbRacerClass_SelectedIndexChanged);
             // 
             // grpMiscSettings
             // 
@@ -160,6 +167,7 @@
             this.chkSpikeStripFix.TabIndex = 1;
             this.chkSpikeStripFix.Text = "Spike Strip AI Fix";
             this.chkSpikeStripFix.UseVisualStyleBackColor = true;
+            this.chkSpikeStripFix.CheckedChanged += new System.EventHandler(this.chkSpikeStripFix_CheckedChanged);
             // 
             // chkEqualWeaponUse
             // 
@@ -171,6 +179,7 @@
             this.chkEqualWeaponUse.TabIndex = 0;
             this.chkEqualWeaponUse.Text = "Equal Weapon Use";
             this.chkEqualWeaponUse.UseVisualStyleBackColor = true;
+            this.chkEqualWeaponUse.CheckedChanged += new System.EventHandler(this.chkEqualWeaponUse_CheckedChanged);
             // 
             // numRacerSkill
             // 
@@ -184,6 +193,7 @@
             this.numRacerSkill.Name = "numRacerSkill";
             this.numRacerSkill.Size = new System.Drawing.Size(60, 20);
             this.numRacerSkill.TabIndex = 2;
+            this.numRacerSkill.ValueChanged += new System.EventHandler(this.numRacerSkill_ValueChanged);
             // 
             // grpRacerSettings
             // 
@@ -208,7 +218,7 @@
             this.cmbRacerDensity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRacerDensity.FormattingEnabled = true;
             this.cmbRacerDensity.Items.AddRange(new object[] {
-            "None (Events Only)",
+            "None (Event Only)",
             "Low",
             "Normal",
             "High",
@@ -217,6 +227,7 @@
             this.cmbRacerDensity.Name = "cmbRacerDensity";
             this.cmbRacerDensity.Size = new System.Drawing.Size(121, 21);
             this.cmbRacerDensity.TabIndex = 5;
+            this.cmbRacerDensity.SelectedIndexChanged += new System.EventHandler(this.cmbRacerDensity_SelectedIndexChanged);
             // 
             // pnlRacerCustom
             // 
@@ -271,6 +282,7 @@
             this.cmbRacerDifficulty.Name = "cmbRacerDifficulty";
             this.cmbRacerDifficulty.Size = new System.Drawing.Size(121, 21);
             this.cmbRacerDifficulty.TabIndex = 0;
+            this.cmbRacerDifficulty.SelectedIndexChanged += new System.EventHandler(this.cmbRacerDifficulty_SelectedIndexChanged);
             // 
             // grpCopSettings
             // 
@@ -329,6 +341,7 @@
             this.cmbCopHeatIntensity.Name = "cmbCopHeatIntensity";
             this.cmbCopHeatIntensity.Size = new System.Drawing.Size(121, 21);
             this.cmbCopHeatIntensity.TabIndex = 7;
+            this.cmbCopHeatIntensity.SelectedIndexChanged += new System.EventHandler(this.cmbCopHeatIntensity_SelectedIndexChanged);
             // 
             // lblCopDensity
             // 
@@ -346,7 +359,7 @@
             this.cmbCopDensity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbCopDensity.FormattingEnabled = true;
             this.cmbCopDensity.Items.AddRange(new object[] {
-            "None (Events Only) *",
+            "None (Event Only) *",
             "Low",
             "Normal",
             "High",
@@ -356,6 +369,7 @@
             this.cmbCopDensity.Name = "cmbCopDensity";
             this.cmbCopDensity.Size = new System.Drawing.Size(121, 21);
             this.cmbCopDensity.TabIndex = 5;
+            this.cmbCopDensity.SelectedIndexChanged += new System.EventHandler(this.cmbCopDensity_SelectedIndexChanged);
             // 
             // pnlCopCustom
             // 
@@ -399,6 +413,7 @@
             this.cmbCopClass.Name = "cmbCopClass";
             this.cmbCopClass.Size = new System.Drawing.Size(61, 21);
             this.cmbCopClass.TabIndex = 3;
+            this.cmbCopClass.SelectedIndexChanged += new System.EventHandler(this.cmbCopClass_SelectedIndexChanged);
             // 
             // numCopSkill
             // 
@@ -412,6 +427,7 @@
             this.numCopSkill.Name = "numCopSkill";
             this.numCopSkill.Size = new System.Drawing.Size(60, 20);
             this.numCopSkill.TabIndex = 2;
+            this.numCopSkill.ValueChanged += new System.EventHandler(this.numCopSkill_ValueChanged);
             // 
             // txtCopDifficultyDescription
             // 
@@ -454,6 +470,7 @@
             this.cmbCopDifficulty.Name = "cmbCopDifficulty";
             this.cmbCopDifficulty.Size = new System.Drawing.Size(121, 21);
             this.cmbCopDifficulty.TabIndex = 0;
+            this.cmbCopDifficulty.SelectedIndexChanged += new System.EventHandler(this.cmbCopDifficulty_SelectedIndexChanged);
             // 
             // lblInfoName
             // 
@@ -475,6 +492,12 @@
             this.lnkBitbucket.TabIndex = 23;
             this.lnkBitbucket.TabStop = true;
             this.lnkBitbucket.Text = "https://bitbucket.org/alexstrout/nfs14difficultytool";
+            this.lnkBitbucket.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkBitbucket_LinkClicked);
+            // 
+            // tmrFindProcess
+            // 
+            this.tmrFindProcess.Interval = 1000;
+            this.tmrFindProcess.Tick += new System.EventHandler(this.tmrFindProcess_Tick);
             // 
             // DifficultyForm
             // 
@@ -482,7 +505,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(344, 452);
             this.Controls.Add(this.lnkBitbucket);
-            this.Controls.Add(this.lblSettings);
+            this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnSaveSettings);
             this.Controls.Add(this.btnLoadSettings);
             this.Controls.Add(this.grpMiscSettings);
@@ -492,6 +515,7 @@
             this.MinimumSize = new System.Drawing.Size(294, 482);
             this.Name = "DifficultyForm";
             this.Text = "NFS Rivals Difficulty Tool";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DifficultyForm_FormClosing);
             this.grpMiscSettings.ResumeLayout(false);
             this.grpMiscSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRacerSkill)).EndInit();
@@ -512,7 +536,7 @@
         #endregion
 
         private System.Windows.Forms.Label lblRacerClass;
-        private System.Windows.Forms.Label lblSettings;
+        private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Label lblRacerSkill;
         private System.Windows.Forms.Button btnSaveSettings;
         private System.Windows.Forms.Label lblRacerDensity;
@@ -544,6 +568,7 @@
         private System.Windows.Forms.ComboBox cmbCopDifficulty;
         private System.Windows.Forms.Label lblInfoName;
         private System.Windows.Forms.LinkLabel lnkBitbucket;
+        private System.Windows.Forms.Timer tmrFindProcess;
 
     }
 }

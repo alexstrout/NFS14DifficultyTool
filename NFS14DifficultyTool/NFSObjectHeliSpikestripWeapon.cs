@@ -1,8 +1,8 @@
 ﻿namespace NFS14DifficultyTool {
     //Note: This is actually just "Helicopter" in the game, but renamed to HeliSpikestripWeapon for clarity
-    public class NFSHeliSpikestripWeapon : NFSObjectBlob {
-        public NFSHeliSpikestripWeapon(MemoryManager memManager, string guid)
-            : base(memManager, guid) {
+    public class NFSObjectHeliSpikestripWeapon : NFSObject {
+        public NFSObjectHeliSpikestripWeapon(MemoryManager memManager)
+            : base(memManager, "7008a3427f4a252a36025d741e2112c4") {
             //foxHeliSpikeWeap
             FieldList.Add("Projectile-EX0", new NFSFieldPointer(this, "17C0"));
             FieldList.Add("Projectile-EX1", new NFSFieldPointer(this, "1800"));

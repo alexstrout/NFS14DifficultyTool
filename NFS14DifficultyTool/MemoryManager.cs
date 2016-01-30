@@ -98,10 +98,13 @@ namespace NFS14DifficultyTool {
             out IntPtr lpNumberOfBytesWritten
         );
 
+        public bool ProcessOpen { get; protected set; }
+
         protected IntPtr processHandle;
         protected SystemInfo sysInfo;
 
         public MemoryManager() {
+            ProcessOpen = false;
             GetSystemInfo(out sysInfo);
         }
 
@@ -115,11 +118,16 @@ namespace NFS14DifficultyTool {
             if (p == default(IntPtr))
                 return false;
             processHandle = p;
+            ProcessOpen = true;
             return true;
         }
 
         public bool CloseHandle() {
-            return CloseHandle(processHandle);
+            if (ProcessOpen && CloseHandle(processHandle)) {
+                ProcessOpen = false;
+                return true;
+            }
+            return false;
         }
 
         public bool ReadProcessMemory(IntPtr lpBaseAddress, byte[] lpBuffer, out IntPtr lpNumberOfBytesWritten) {

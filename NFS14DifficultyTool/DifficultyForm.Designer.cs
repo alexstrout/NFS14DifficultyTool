@@ -137,7 +137,7 @@
             "Easy",
             "Normal",
             "Hard",
-            "Insane"});
+            "V. Hard"});
             this.cmbRacerClass.Location = new System.Drawing.Point(57, 3);
             this.cmbRacerClass.Name = "cmbRacerClass";
             this.cmbRacerClass.Size = new System.Drawing.Size(61, 21);
@@ -161,11 +161,11 @@
             // 
             this.chkSpikeStripFix.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkSpikeStripFix.AutoSize = true;
-            this.chkSpikeStripFix.Location = new System.Drawing.Point(83, 19);
+            this.chkSpikeStripFix.Location = new System.Drawing.Point(79, 19);
             this.chkSpikeStripFix.Name = "chkSpikeStripFix";
-            this.chkSpikeStripFix.Size = new System.Drawing.Size(106, 17);
+            this.chkSpikeStripFix.Size = new System.Drawing.Size(117, 17);
             this.chkSpikeStripFix.TabIndex = 1;
-            this.chkSpikeStripFix.Text = "Spike Strip AI Fix";
+            this.chkSpikeStripFix.Text = "AI Use Spike Strips";
             this.chkSpikeStripFix.UseVisualStyleBackColor = true;
             this.chkSpikeStripFix.CheckedChanged += new System.EventHandler(this.chkSpikeStripFix_CheckedChanged);
             // 
@@ -173,11 +173,11 @@
             // 
             this.chkEqualWeaponUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkEqualWeaponUse.AutoSize = true;
-            this.chkEqualWeaponUse.Location = new System.Drawing.Point(195, 19);
+            this.chkEqualWeaponUse.Location = new System.Drawing.Point(202, 19);
             this.chkEqualWeaponUse.Name = "chkEqualWeaponUse";
-            this.chkEqualWeaponUse.Size = new System.Drawing.Size(119, 17);
+            this.chkEqualWeaponUse.Size = new System.Drawing.Size(112, 17);
             this.chkEqualWeaponUse.TabIndex = 0;
-            this.chkEqualWeaponUse.Text = "Equal Weapon Use";
+            this.chkEqualWeaponUse.Text = "AI Target Other AI";
             this.chkEqualWeaponUse.UseVisualStyleBackColor = true;
             this.chkEqualWeaponUse.CheckedChanged += new System.EventHandler(this.chkEqualWeaponUse_CheckedChanged);
             // 

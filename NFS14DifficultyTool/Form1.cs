@@ -21,7 +21,8 @@ namespace NFS14DifficultyTool {
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
             ResetAll();
-            MemManager.CloseHandle();
+            if (MemManager != null)
+                MemManager.CloseHandle();
         }
 
         private void btnApply_Click(object sender, System.EventArgs e) {

@@ -141,6 +141,7 @@ namespace NFS14DifficultyTool {
         public IntPtr FindObject(byte[] searchBytes, int byteAlignment = 4) {
             byte[] buff = new byte[sysInfo.AllocationGranularity];
             IntPtr bytesRead;
+            //TODO maybe i should be long or uint with UIntPtrs
             int i = 0,
                 j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead - though in practice this should never happen
             for (IntPtr PTR = IntPtr.Zero; (long)PTR < (long)sysInfo.MaximumApplicationAddress; PTR += buff.Length) {
@@ -166,10 +167,7 @@ namespace NFS14DifficultyTool {
             IntPtr lpNumberOfBytesRead;
             if (!ReadProcessMemory((IntPtr)addr, buff, out lpNumberOfBytesRead))
                 return null;
-            byte[] ret = new byte[(int)lpNumberOfBytesRead];
-            for (int i = 0; i < ret.Length; i++)
-                ret[i] = buff[i];
-            return ret;
+            return buff;
         }
         public bool ReadBool(IntPtr addr) {
             return BitConverter.ToBoolean(Read(addr, 1), 0);

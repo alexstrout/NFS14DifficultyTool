@@ -32,7 +32,7 @@ namespace NFS14DifficultyTool {
         public int FieldSize { get; protected set; }
         public override object Field {
             get {
-                return parent.MemManager.Read(parent.Address + Offset, FieldSize);
+                return (FieldSize == 0) ? null : parent.MemManager.Read(parent.Address + Offset, FieldSize);
             }
             set {
                 parent.MemManager.Write(parent.Address + Offset, (byte[])value);
@@ -42,12 +42,12 @@ namespace NFS14DifficultyTool {
         public NFSFieldByteArray(NFSObjectBlob parent, int offset, int fieldSize)
             : base(parent, offset) {
             FieldSize = fieldSize;
-            FieldDefault = Field; //HACK because C# constructor inheritence is bad and you can not call base constructor later
+            FieldDefault = Field; //HACK can't call base constructor later, so must do this again
         }
         public NFSFieldByteArray(NFSObjectBlob parent, string offset, int fieldSize)
             : base(parent, offset) {
             FieldSize = fieldSize;
-            FieldDefault = Field; //HACK because C# constructor inheritence is bad and you can not call base constructor later
+            FieldDefault = Field; //HACK can't call base constructor later, so must do this again
         }
     }
 

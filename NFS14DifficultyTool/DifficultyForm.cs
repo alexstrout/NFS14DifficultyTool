@@ -58,7 +58,7 @@ namespace NFS14DifficultyTool {
             tmrFindProcess.Start();
 
             //Set defaults -- TODO hook this up to save/load system
-            cmbCopDifficulty.SelectedIndex = (int)DifficultyEnum.Skilled;
+            cmbCopDifficulty.SelectedIndex = (int)DifficultyEnum.Adept;
             cmbRacerDifficulty.SelectedIndex = (int)DifficultyEnum.Skilled;
             cmbCopDensity.SelectedIndex = (int)DensityEnum.Normal;
             cmbRacerDensity.SelectedIndex = (int)DensityEnum.Normal;
@@ -714,6 +714,19 @@ namespace NFS14DifficultyTool {
 
         //Other events
         private void cmbCopHeatIntensity_SelectedIndexChanged(object sender, EventArgs e) {
+            switch ((HeatEnum)cmbCopHeatIntensity.SelectedIndex) {
+                case HeatEnum.Cool:
+                    txtCopHeatIntensityDescription.Text = "A slightly less agressive experience. One less cop per heat and higher requirements for roadblocks and helicopters."; break;
+                case HeatEnum.Normal:
+                    txtCopHeatIntensityDescription.Text = "The vanilla police chase experience. Recommended when combined with higher AI difficulty levels."; break;
+                case HeatEnum.Hot:
+                    txtCopHeatIntensityDescription.Text = "Hot! A single additional cop per heat, with each cop tier introduced one heat early."; break;
+                case HeatEnum.VeryHot:
+                    txtCopHeatIntensityDescription.Text = "Very hot! Two additional cops per heat, with each cop tier introduced two heats early."; break;
+                case HeatEnum.Blazing:
+                    txtCopHeatIntensityDescription.Text = "Blazing! Three additional cops per heat, with each cop tier introduced three heats early. Two helicopters on Heat 10."; break;
+            }
+
             if (!MemManager.ProcessOpen)
                 return;
 
@@ -739,6 +752,7 @@ namespace NFS14DifficultyTool {
                 AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].FieldDefault;
             }
 
+            //Now do specific overrides by heat intensity
             switch ((HeatEnum)cmbCopHeatIntensity.SelectedIndex) {
                 case HeatEnum.Cool:
                     AiDirectorEntityData.FieldList["Heat2 - Basic"].Field = 1;
@@ -779,7 +793,6 @@ namespace NFS14DifficultyTool {
                     //Do nothing, already reset above
                     break;
                 default: //Hot, Very Hot, Blazing
-                    //Hot! Introduce each's heat's new cop one heat early, higher spawn chances, roadblocks on all heats
                     if (cmbCopHeatIntensity.SelectedIndex >= (int)HeatEnum.Hot) {
                         AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = 1;
                         AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = 1;
@@ -820,8 +833,6 @@ namespace NFS14DifficultyTool {
                         AiDirectorEntityData.FieldList["Heat9 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 6f;
                         AiDirectorEntityData.FieldList["Heat10 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 3f;
                     }
-
-                    //Very Hot! Additionally introduce each's heat's new cop two heats early
                     if (cmbCopHeatIntensity.SelectedIndex >= (int)HeatEnum.VeryHot) {
                         AiDirectorEntityData.FieldList["Heat1 - Brute"].Field = 1;
                         AiDirectorEntityData.FieldList["Heat2 - Brute"].Field = 1;
@@ -844,8 +855,6 @@ namespace NFS14DifficultyTool {
                         AiDirectorEntityData.FieldList["Heat9 - ChanceOfSpawningRoamingCopHeatBased"].Field = 90;
                         AiDirectorEntityData.FieldList["Heat10 - ChanceOfSpawningRoamingCopHeatBased"].Field = 100;
                     }
-
-                    //Blazing! Each's heat's new cop three heats early, two helicopters on Heat 10
                     if (cmbCopHeatIntensity.SelectedIndex >= (int)HeatEnum.Blazing) {
                         AiDirectorEntityData.FieldList["Heat1 - Aggressor"].Field = 1;
                         AiDirectorEntityData.FieldList["Heat2 - Aggressor"].Field = 1;

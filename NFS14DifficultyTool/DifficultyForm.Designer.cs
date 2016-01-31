@@ -42,7 +42,7 @@
             this.lblRacerDifficulty = new System.Windows.Forms.Label();
             this.cmbRacerDifficulty = new System.Windows.Forms.ComboBox();
             this.grpCopSettings = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.txtCopHeatIntensityDescription = new System.Windows.Forms.TextBox();
             this.lblCopHeatIntensity = new System.Windows.Forms.Label();
             this.cmbCopHeatIntensity = new System.Windows.Forms.ComboBox();
             this.lblCopDensity = new System.Windows.Forms.Label();
@@ -78,7 +78,7 @@
             // 
             // lblStatus
             // 
-            this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblStatus.AutoSize = true;
             this.lblStatus.Location = new System.Drawing.Point(12, 388);
             this.lblStatus.Name = "lblStatus";
@@ -146,7 +146,7 @@
             // 
             // grpMiscSettings
             // 
-            this.grpMiscSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.grpMiscSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpMiscSettings.Controls.Add(this.chkSpikeStripFix);
             this.grpMiscSettings.Controls.Add(this.chkEqualWeaponUse);
@@ -197,7 +197,7 @@
             // 
             // grpRacerSettings
             // 
-            this.grpRacerSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.grpRacerSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.grpRacerSettings.Controls.Add(this.lblRacerDensity);
             this.grpRacerSettings.Controls.Add(this.cmbRacerDensity);
@@ -286,9 +286,10 @@
             // 
             // grpCopSettings
             // 
-            this.grpCopSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.grpCopSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpCopSettings.Controls.Add(this.textBox1);
+            this.grpCopSettings.Controls.Add(this.txtCopHeatIntensityDescription);
             this.grpCopSettings.Controls.Add(this.lblCopHeatIntensity);
             this.grpCopSettings.Controls.Add(this.cmbCopHeatIntensity);
             this.grpCopSettings.Controls.Add(this.lblCopDensity);
@@ -304,17 +305,18 @@
             this.grpCopSettings.TabStop = false;
             this.grpCopSettings.Text = "Cop AI Settings";
             // 
-            // textBox1
+            // txtCopHeatIntensityDescription
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtCopHeatIntensityDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(6, 146);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(308, 40);
-            this.textBox1.TabIndex = 9;
-            this.textBox1.Text = "Sample Heat: Prepate to be mildly warm!";
+            this.txtCopHeatIntensityDescription.Enabled = false;
+            this.txtCopHeatIntensityDescription.Location = new System.Drawing.Point(6, 146);
+            this.txtCopHeatIntensityDescription.Multiline = true;
+            this.txtCopHeatIntensityDescription.Name = "txtCopHeatIntensityDescription";
+            this.txtCopHeatIntensityDescription.Size = new System.Drawing.Size(308, 40);
+            this.txtCopHeatIntensityDescription.TabIndex = 9;
+            this.txtCopHeatIntensityDescription.Text = "Sample Heat: Prepate to be mildly warm!";
             // 
             // lblCopHeatIntensity
             // 
@@ -553,7 +555,7 @@
         private System.Windows.Forms.Label lblRacerDifficulty;
         private System.Windows.Forms.ComboBox cmbRacerDifficulty;
         private System.Windows.Forms.GroupBox grpCopSettings;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox txtCopHeatIntensityDescription;
         private System.Windows.Forms.Label lblCopHeatIntensity;
         private System.Windows.Forms.ComboBox cmbCopHeatIntensity;
         private System.Windows.Forms.Label lblCopDensity;

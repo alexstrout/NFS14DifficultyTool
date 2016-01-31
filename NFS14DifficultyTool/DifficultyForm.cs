@@ -157,7 +157,7 @@ namespace NFS14DifficultyTool {
             cmbRacerDensity_SelectedIndexChanged(null, null);
             cmbCopHeatIntensity_SelectedIndexChanged(null, null);
             chkSpikeStripFix_CheckedChanged(null, null);
-            chkEqualWeaponUse_CheckedChanged(null, null);
+            //chkEqualWeaponUse_CheckedChanged(null, null); //Not needed, only calls cmb[Cop/Racer]Class_SelectedIndexChanged()
         }
 
         //Save / load / link events
@@ -683,11 +683,33 @@ namespace NFS14DifficultyTool {
 
         //Density events
         private void cmbCopDensity_SelectedIndexChanged(object sender, EventArgs e) {
+            if (!MemManager.ProcessOpen)
+                return;
 
+            //Adjust spawn caps and times based on density
+            int density = cmbCopDensity.SelectedIndex;
+            NFSObject AiDirectorEntityData = GetObject("AiDirectorEntityData");
+            AiDirectorEntityData.FieldList["NumberOfPawnCopsWanted"].Field = (int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * (int)(density / 10 + 1);
+            AiDirectorEntityData.FieldList["GlobalNumberOfCops"].Field = density;
+            AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].Field = Math.Min(100, (int)AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].FieldDefault * density);
+            AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].FieldDefault / Math.Max(0.1f, density - 1);
+            AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].FieldDefault / Math.Max(0.1f, density - 1);
+            AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].FieldDefault / Math.Max(0.1f, density - 1);
+            AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringHPRacer"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringHPRacer"].FieldDefault / Math.Max(0.1f, density - 1);
         }
 
         private void cmbRacerDensity_SelectedIndexChanged(object sender, EventArgs e) {
+            if (!MemManager.ProcessOpen)
+                return;
 
+            //Adjust spawn caps and times based on density
+            int density = cmbRacerDensity.SelectedIndex;
+            NFSObject AiDirectorEntityData = GetObject("AiDirectorEntityData");
+            AiDirectorEntityData.FieldList["MaxNumberOfAiOnlySpontaneousRaces"].Field = density;
+            AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].Field = (int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * (int)(density / 10 + 1);
+            AiDirectorEntityData.FieldList["NumberOfRacers"].Field = density;
+            AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].FieldDefault / Math.Max(0.1f, density - 1);
+            AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].FieldDefault / Math.Max(0.1f, density - 1);
         }
 
         //Other events
@@ -695,18 +717,181 @@ namespace NFS14DifficultyTool {
             if (!MemManager.ProcessOpen)
                 return;
 
-            //Adjust some AiDirectorEntityData values based on class
+            //Go crazy! Default everything to selectively override it later
             NFSObject AiDirectorEntityData = GetObject("AiDirectorEntityData");
-            AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = 1;
-            AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = 1;
+            AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].FieldDefault;
+            AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = AiDirectorEntityData.FieldList["BlockHeatThreshold"].FieldDefault;
+            for (int i = 1; i <= 10; i++) {
+                //Adjust CopCount based on option (up one for every option above Normal, down one for Cool)
+                AiDirectorEntityData.FieldList["Heat" + i + " - CopCountHeatBased"].Field = (int)AiDirectorEntityData.FieldList["Heat" + i + " - CopCountHeatBased"].FieldDefault
+                    + cmbCopHeatIntensity.SelectedIndex - (int)HeatEnum.Normal;
+
+                //Everything else just gets reset
+                AiDirectorEntityData.FieldList["Heat" + i + " - Basic"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - Basic"].FieldDefault;
+                AiDirectorEntityData.FieldList["Heat" + i + " - Chaser"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - Chaser"].FieldDefault;
+                AiDirectorEntityData.FieldList["Heat" + i + " - Brute"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - Brute"].FieldDefault;
+                AiDirectorEntityData.FieldList["Heat" + i + " - Aggressor"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - Aggressor"].FieldDefault;
+                AiDirectorEntityData.FieldList["Heat" + i + " - AdvancedAggressor"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - AdvancedAggressor"].FieldDefault;
+                AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].FieldDefault;
+                AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault;
+                AiDirectorEntityData.FieldList["Heat" + i + " - MaxHelicoptersPerBubble"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MaxHelicoptersPerBubble"].FieldDefault;
+                AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault;
+                AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].FieldDefault;
+            }
+
+            switch ((HeatEnum)cmbCopHeatIntensity.SelectedIndex) {
+                case HeatEnum.Cool:
+                    AiDirectorEntityData.FieldList["Heat2 - Basic"].Field = 1;
+                    AiDirectorEntityData.FieldList["Heat3 - Chaser"].Field = 1;
+                    AiDirectorEntityData.FieldList["Heat4 - Brute"].Field = 1;
+                    AiDirectorEntityData.FieldList["Heat5 - Brute"].Field = 1;
+                    AiDirectorEntityData.FieldList["Heat6 - Aggressor"].Field = 1;
+                    AiDirectorEntityData.FieldList["Heat7 - Aggressor"].Field = 1;
+                    AiDirectorEntityData.FieldList["Heat8 - AdvancedAggressor"].Field = 1;
+                    AiDirectorEntityData.FieldList["Heat9 - AdvancedAggressor"].Field = 2;
+                    AiDirectorEntityData.FieldList["Heat10 - AdvancedAggressor"].Field = 3;
+                    AiDirectorEntityData.FieldList["Heat1 - ChanceOfSpawningRoamingCopHeatBased"].Field = 1;
+                    AiDirectorEntityData.FieldList["Heat2 - ChanceOfSpawningRoamingCopHeatBased"].Field = 1;
+                    AiDirectorEntityData.FieldList["Heat3 - ChanceOfSpawningRoamingCopHeatBased"].Field = 2;
+                    AiDirectorEntityData.FieldList["Heat4 - ChanceOfSpawningRoamingCopHeatBased"].Field = 2;
+                    AiDirectorEntityData.FieldList["Heat5 - ChanceOfSpawningRoamingCopHeatBased"].Field = 3;
+                    AiDirectorEntityData.FieldList["Heat6 - ChanceOfSpawningRoamingCopHeatBased"].Field = 3;
+                    AiDirectorEntityData.FieldList["Heat7 - ChanceOfSpawningRoamingCopHeatBased"].Field = 5;
+                    AiDirectorEntityData.FieldList["Heat8 - ChanceOfSpawningRoamingCopHeatBased"].Field = 7;
+                    AiDirectorEntityData.FieldList["Heat9 - ChanceOfSpawningRoamingCopHeatBased"].Field = 10;
+                    AiDirectorEntityData.FieldList["Heat10 - ChanceOfSpawningRoamingCopHeatBased"].Field = 15;
+                    AiDirectorEntityData.FieldList["Heat5 - MinimumHelicopterSpawnInterval"].Field = -1f;
+                    AiDirectorEntityData.FieldList["Heat6 - MinimumHelicopterSpawnInterval"].Field = 50f;
+                    AiDirectorEntityData.FieldList["Heat7 - MinimumHelicopterSpawnInterval"].Field = 40f;
+                    AiDirectorEntityData.FieldList["Heat8 - MinimumHelicopterSpawnInterval"].Field = 30f;
+                    AiDirectorEntityData.FieldList["Heat9 - MinimumHelicopterSpawnInterval"].Field = 25f;
+                    AiDirectorEntityData.FieldList["Heat10 - MinimumHelicopterSpawnInterval"].Field = 20f;
+                    AiDirectorEntityData.FieldList["Heat3 - MinimumRoadblockSpawnInterval"].Field = -1f;
+                    AiDirectorEntityData.FieldList["Heat4 - MinimumRoadblockSpawnInterval"].Field = 50f;
+                    AiDirectorEntityData.FieldList["Heat5 - MinimumRoadblockSpawnInterval"].Field = 45f;
+                    AiDirectorEntityData.FieldList["Heat6 - MinimumRoadblockSpawnInterval"].Field = 30f;
+                    AiDirectorEntityData.FieldList["Heat7 - MinimumRoadblockSpawnInterval"].Field = 25f;
+                    AiDirectorEntityData.FieldList["Heat8 - MinimumRoadblockSpawnInterval"].Field = 20f;
+                    AiDirectorEntityData.FieldList["Heat9 - MinimumRoadblockSpawnInterval"].Field = 15f;
+                    AiDirectorEntityData.FieldList["Heat10 - MinimumRoadblockSpawnInterval"].Field = 10f;
+                    break;
+                case HeatEnum.Normal:
+                    //Do nothing, already reset above
+                    break;
+                default: //Hot, Very Hot, Blazing
+                    //Hot! Introduce each's heat's new cop one heat early, higher spawn chances, roadblocks on all heats
+                    if (cmbCopHeatIntensity.SelectedIndex >= (int)HeatEnum.Hot) {
+                        AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = 1;
+                        AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat1 - Chaser"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat2 - Chaser"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat3 - Brute"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat4 - Aggressor"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat5 - Aggressor"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat6 - AdvancedAggressor"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat7 - AdvancedAggressor"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat8 - AdvancedAggressor"].Field = 3;
+                        AiDirectorEntityData.FieldList["Heat9 - AdvancedAggressor"].Field = 4;
+                        AiDirectorEntityData.FieldList["Heat10 - AdvancedAggressor"].Field = 5;
+                        AiDirectorEntityData.FieldList["Heat1 - ChanceOfSpawningRoamingCopHeatBased"].Field = 9;
+                        AiDirectorEntityData.FieldList["Heat2 - ChanceOfSpawningRoamingCopHeatBased"].Field = 18;
+                        AiDirectorEntityData.FieldList["Heat3 - ChanceOfSpawningRoamingCopHeatBased"].Field = 27;
+                        AiDirectorEntityData.FieldList["Heat4 - ChanceOfSpawningRoamingCopHeatBased"].Field = 36;
+                        AiDirectorEntityData.FieldList["Heat5 - ChanceOfSpawningRoamingCopHeatBased"].Field = 45;
+                        AiDirectorEntityData.FieldList["Heat6 - ChanceOfSpawningRoamingCopHeatBased"].Field = 54;
+                        AiDirectorEntityData.FieldList["Heat7 - ChanceOfSpawningRoamingCopHeatBased"].Field = 63;
+                        AiDirectorEntityData.FieldList["Heat8 - ChanceOfSpawningRoamingCopHeatBased"].Field = 72;
+                        AiDirectorEntityData.FieldList["Heat9 - ChanceOfSpawningRoamingCopHeatBased"].Field = 81;
+                        AiDirectorEntityData.FieldList["Heat10 - ChanceOfSpawningRoamingCopHeatBased"].Field = 90;
+                        AiDirectorEntityData.FieldList["Heat1 - MinimumHelicopterSpawnInterval"].Field = 50f;
+                        AiDirectorEntityData.FieldList["Heat2 - MinimumHelicopterSpawnInterval"].Field = 50f;
+                        AiDirectorEntityData.FieldList["Heat3 - MinimumHelicopterSpawnInterval"].Field = 50f;
+                        AiDirectorEntityData.FieldList["Heat4 - MinimumHelicopterSpawnInterval"].Field = 50f;
+                        AiDirectorEntityData.FieldList["Heat1 - MinimumRoadblockSpawnInterval"].Field = 50f;
+                        AiDirectorEntityData.FieldList["Heat2 - MinimumRoadblockSpawnInterval"].Field = 50f;
+                        AiDirectorEntityData.FieldList["Heat1 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 30f;
+                        AiDirectorEntityData.FieldList["Heat2 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 27f;
+                        AiDirectorEntityData.FieldList["Heat3 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 24f;
+                        AiDirectorEntityData.FieldList["Heat4 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 21f;
+                        AiDirectorEntityData.FieldList["Heat5 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 18f;
+                        AiDirectorEntityData.FieldList["Heat6 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 15f;
+                        AiDirectorEntityData.FieldList["Heat7 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 12f;
+                        AiDirectorEntityData.FieldList["Heat8 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 9f;
+                        AiDirectorEntityData.FieldList["Heat9 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 6f;
+                        AiDirectorEntityData.FieldList["Heat10 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 3f;
+                    }
+
+                    //Very Hot! Additionally introduce each's heat's new cop two heats early
+                    if (cmbCopHeatIntensity.SelectedIndex >= (int)HeatEnum.VeryHot) {
+                        AiDirectorEntityData.FieldList["Heat1 - Brute"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat2 - Brute"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat3 - Aggressor"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat4 - AdvancedAggressor"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat5 - AdvancedAggressor"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat6 - AdvancedAggressor"].Field = 2;
+                        AiDirectorEntityData.FieldList["Heat7 - AdvancedAggressor"].Field = 2;
+                        AiDirectorEntityData.FieldList["Heat8 - AdvancedAggressor"].Field = 4;
+                        AiDirectorEntityData.FieldList["Heat9 - AdvancedAggressor"].Field = 5;
+                        AiDirectorEntityData.FieldList["Heat10 - AdvancedAggressor"].Field = 6;
+                        AiDirectorEntityData.FieldList["Heat1 - ChanceOfSpawningRoamingCopHeatBased"].Field = 18;
+                        AiDirectorEntityData.FieldList["Heat2 - ChanceOfSpawningRoamingCopHeatBased"].Field = 27;
+                        AiDirectorEntityData.FieldList["Heat3 - ChanceOfSpawningRoamingCopHeatBased"].Field = 36;
+                        AiDirectorEntityData.FieldList["Heat4 - ChanceOfSpawningRoamingCopHeatBased"].Field = 45;
+                        AiDirectorEntityData.FieldList["Heat5 - ChanceOfSpawningRoamingCopHeatBased"].Field = 54;
+                        AiDirectorEntityData.FieldList["Heat6 - ChanceOfSpawningRoamingCopHeatBased"].Field = 63;
+                        AiDirectorEntityData.FieldList["Heat7 - ChanceOfSpawningRoamingCopHeatBased"].Field = 72;
+                        AiDirectorEntityData.FieldList["Heat8 - ChanceOfSpawningRoamingCopHeatBased"].Field = 81;
+                        AiDirectorEntityData.FieldList["Heat9 - ChanceOfSpawningRoamingCopHeatBased"].Field = 90;
+                        AiDirectorEntityData.FieldList["Heat10 - ChanceOfSpawningRoamingCopHeatBased"].Field = 100;
+                    }
+
+                    //Blazing! Each's heat's new cop three heats early, two helicopters on Heat 10
+                    if (cmbCopHeatIntensity.SelectedIndex >= (int)HeatEnum.Blazing) {
+                        AiDirectorEntityData.FieldList["Heat1 - Aggressor"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat2 - Aggressor"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat3 - AdvancedAggressor"].Field = 1;
+                        AiDirectorEntityData.FieldList["Heat4 - AdvancedAggressor"].Field = 2;
+                        AiDirectorEntityData.FieldList["Heat5 - AdvancedAggressor"].Field = 2;
+                        AiDirectorEntityData.FieldList["Heat6 - AdvancedAggressor"].Field = 3;
+                        AiDirectorEntityData.FieldList["Heat7 - AdvancedAggressor"].Field = 3;
+                        AiDirectorEntityData.FieldList["Heat8 - AdvancedAggressor"].Field = 5;
+                        AiDirectorEntityData.FieldList["Heat9 - AdvancedAggressor"].Field = 6;
+                        AiDirectorEntityData.FieldList["Heat10 - AdvancedAggressor"].Field = 7;
+                        AiDirectorEntityData.FieldList["Heat1 - ChanceOfSpawningRoamingCopHeatBased"].Field = 27;
+                        AiDirectorEntityData.FieldList["Heat2 - ChanceOfSpawningRoamingCopHeatBased"].Field = 36;
+                        AiDirectorEntityData.FieldList["Heat3 - ChanceOfSpawningRoamingCopHeatBased"].Field = 45;
+                        AiDirectorEntityData.FieldList["Heat4 - ChanceOfSpawningRoamingCopHeatBased"].Field = 54;
+                        AiDirectorEntityData.FieldList["Heat5 - ChanceOfSpawningRoamingCopHeatBased"].Field = 63;
+                        AiDirectorEntityData.FieldList["Heat6 - ChanceOfSpawningRoamingCopHeatBased"].Field = 72;
+                        AiDirectorEntityData.FieldList["Heat7 - ChanceOfSpawningRoamingCopHeatBased"].Field = 81;
+                        AiDirectorEntityData.FieldList["Heat8 - ChanceOfSpawningRoamingCopHeatBased"].Field = 90;
+                        AiDirectorEntityData.FieldList["Heat9 - ChanceOfSpawningRoamingCopHeatBased"].Field = 100;
+                        AiDirectorEntityData.FieldList["Heat10 - MaxHelicoptersPerBubble"].Field = 2;
+                    }
+                    break;
+            }
         }
 
         private void chkSpikeStripFix_CheckedChanged(object sender, EventArgs e) {
+            if (!MemManager.ProcessOpen)
+                return;
 
+            NFSObject SpikestripWeapon = GetObject("SpikestripWeapon");
+            if (chkSpikeStripFix.Checked) {
+                SpikestripWeapon.FieldList["Classification"].Field = NFSObjectSpikestripWeapon.VehicleWeaponClassification.VehicleWeaponClassification_BackwardFiring;
+                SpikestripWeapon.FieldList["MinimumTriggerDistance-Low"].Field = 2f;
+                SpikestripWeapon.FieldList["MinimumTriggerDistance-High"].Field = 1f;
+            }
+            else
+                SpikestripWeapon.ResetFieldsToDefault();
         }
 
         private void chkEqualWeaponUse_CheckedChanged(object sender, EventArgs e) {
+            if (!MemManager.ProcessOpen)
+                return;
 
+            cmbCopClass_SelectedIndexChanged(null, null);
+            cmbRacerClass_SelectedIndexChanged(null, null);
         }
     }
 }

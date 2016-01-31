@@ -336,7 +336,7 @@
             "Normal",
             "Hot",
             "Very Hot",
-            "Blazing"});
+            "Blazing! *"});
             this.cmbCopHeatIntensity.Location = new System.Drawing.Point(193, 119);
             this.cmbCopHeatIntensity.Name = "cmbCopHeatIntensity";
             this.cmbCopHeatIntensity.Size = new System.Drawing.Size(121, 21);

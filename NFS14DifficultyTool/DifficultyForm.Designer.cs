@@ -56,7 +56,7 @@
             this.cmbCopDifficulty = new System.Windows.Forms.ComboBox();
             this.lblInfoName = new System.Windows.Forms.Label();
             this.lnkBitbucket = new System.Windows.Forms.LinkLabel();
-            this.tmrFindProcess = new System.Windows.Forms.Timer(this.components);
+            this.FindProcessTimer = new System.Windows.Forms.Timer(this.components);
             this.txtStatus = new System.Windows.Forms.TextBox();
             this.grpMiscSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRacerSkill)).BeginInit();
@@ -491,10 +491,10 @@
             this.lnkBitbucket.Text = "https://bitbucket.org/alexstrout/nfs14difficultytool";
             this.lnkBitbucket.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkBitbucket_LinkClicked);
             // 
-            // tmrFindProcess
+            // FindProcessTimer
             // 
-            this.tmrFindProcess.Interval = 1000;
-            this.tmrFindProcess.Tick += new System.EventHandler(this.tmrFindProcess_Tick);
+            this.FindProcessTimer.Interval = 1000;
+            this.FindProcessTimer.Tick += new System.EventHandler(this.FindProcessTimer_Tick);
             // 
             // txtStatus
             // 
@@ -577,8 +577,8 @@
         private System.Windows.Forms.ComboBox cmbCopDifficulty;
         private System.Windows.Forms.Label lblInfoName;
         private System.Windows.Forms.LinkLabel lnkBitbucket;
-        private System.Windows.Forms.Timer tmrFindProcess;
         private System.Windows.Forms.TextBox txtStatus;
+        public System.Windows.Forms.Timer FindProcessTimer;
 
     }
 }

@@ -139,7 +139,7 @@ namespace NFS14DifficultyTool {
                 case DifficultyEnum.Godlike:
                     txtCopDifficultyDescription.Text = "I am the Law and the Omega.";
                     cmbCopClass.SelectedIndex = (int)ClassEnum.Hard;
-                    numCopSkill.Value = 1.1m;
+                    numCopSkill.Value = 1.0m;
                     break;
                 default: //Custom
                     txtCopDifficultyDescription.Text = "";
@@ -188,7 +188,7 @@ namespace NFS14DifficultyTool {
                 case DifficultyEnum.Godlike:
                     txtRacerDifficultyDescription.Text = "I am not you, and also the Omega.";
                     cmbRacerClass.SelectedIndex = (int)ClassEnum.AroundTheWorld;
-                    numRacerSkill.Value = 1.1m;
+                    numRacerSkill.Value = 1.0m;
                     break;
                 default: //Custom
                     txtRacerDifficultyDescription.Text = "";

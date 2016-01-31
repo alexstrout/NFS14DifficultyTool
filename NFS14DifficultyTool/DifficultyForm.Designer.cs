@@ -180,6 +180,11 @@
             0,
             65536});
             this.numRacerSkill.Location = new System.Drawing.Point(182, 4);
+            this.numRacerSkill.Maximum = new decimal(new int[] {
+            9001,
+            0,
+            0,
+            0});
             this.numRacerSkill.Name = "numRacerSkill";
             this.numRacerSkill.Size = new System.Drawing.Size(60, 20);
             this.numRacerSkill.TabIndex = 2;
@@ -420,6 +425,11 @@
             0,
             65536});
             this.numCopSkill.Location = new System.Drawing.Point(182, 4);
+            this.numCopSkill.Maximum = new decimal(new int[] {
+            9001,
+            0,
+            0,
+            0});
             this.numCopSkill.Name = "numCopSkill";
             this.numCopSkill.Size = new System.Drawing.Size(60, 20);
             this.numCopSkill.TabIndex = 2;

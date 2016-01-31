@@ -41,6 +41,8 @@
             this.lblRacerDifficulty = new System.Windows.Forms.Label();
             this.cmbRacerDifficulty = new System.Windows.Forms.ComboBox();
             this.grpCopSettings = new System.Windows.Forms.GroupBox();
+            this.lblCopMinHeat = new System.Windows.Forms.Label();
+            this.numCopMinHeat = new System.Windows.Forms.NumericUpDown();
             this.txtCopHeatIntensityDescription = new System.Windows.Forms.TextBox();
             this.lblCopHeatIntensity = new System.Windows.Forms.Label();
             this.cmbCopHeatIntensity = new System.Windows.Forms.ComboBox();
@@ -63,6 +65,7 @@
             this.grpRacerSettings.SuspendLayout();
             this.pnlRacerCustom.SuspendLayout();
             this.grpCopSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numCopMinHeat)).BeginInit();
             this.pnlCopCustom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numCopSkill)).BeginInit();
             this.SuspendLayout();
@@ -286,6 +289,8 @@
             this.grpCopSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpCopSettings.Controls.Add(this.lblCopMinHeat);
+            this.grpCopSettings.Controls.Add(this.numCopMinHeat);
             this.grpCopSettings.Controls.Add(this.txtCopHeatIntensityDescription);
             this.grpCopSettings.Controls.Add(this.lblCopHeatIntensity);
             this.grpCopSettings.Controls.Add(this.cmbCopHeatIntensity);
@@ -301,6 +306,39 @@
             this.grpCopSettings.TabIndex = 16;
             this.grpCopSettings.TabStop = false;
             this.grpCopSettings.Text = "Cop AI Settings";
+            // 
+            // lblCopMinHeat
+            // 
+            this.lblCopMinHeat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCopMinHeat.AutoSize = true;
+            this.lblCopMinHeat.Location = new System.Drawing.Point(6, 95);
+            this.lblCopMinHeat.Name = "lblCopMinHeat";
+            this.lblCopMinHeat.Size = new System.Drawing.Size(53, 13);
+            this.lblCopMinHeat.TabIndex = 11;
+            this.lblCopMinHeat.Text = "Min Heat:";
+            // 
+            // numCopMinHeat
+            // 
+            this.numCopMinHeat.Location = new System.Drawing.Point(9, 111);
+            this.numCopMinHeat.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numCopMinHeat.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numCopMinHeat.Name = "numCopMinHeat";
+            this.numCopMinHeat.Size = new System.Drawing.Size(60, 20);
+            this.numCopMinHeat.TabIndex = 10;
+            this.numCopMinHeat.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numCopMinHeat.ValueChanged += new System.EventHandler(this.numCopMinHeat_ValueChanged);
             // 
             // txtCopHeatIntensityDescription
             // 
@@ -545,6 +583,7 @@
             this.pnlRacerCustom.PerformLayout();
             this.grpCopSettings.ResumeLayout(false);
             this.grpCopSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numCopMinHeat)).EndInit();
             this.pnlCopCustom.ResumeLayout(false);
             this.pnlCopCustom.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numCopSkill)).EndInit();
@@ -589,6 +628,8 @@
         private System.Windows.Forms.LinkLabel lnkBitbucket;
         private System.Windows.Forms.TextBox txtStatus;
         public System.Windows.Forms.Timer FindProcessTimer;
+        private System.Windows.Forms.Label lblCopMinHeat;
+        private System.Windows.Forms.NumericUpDown numCopMinHeat;
 
     }
 }

@@ -625,6 +625,32 @@ namespace NFS14DifficultyTool {
         }
 
         //Other events
+        public void UpdateCopMinHeat(int heat) {
+            copMinHeat = heat;
+            LaunchThread(UpdateCopMinHeat);
+        }
+        protected int copMinHeat;
+        protected void UpdateCopMinHeat() {
+            if (!MemManager.ProcessOpen)
+                return;
+            int heat = copMinHeat;
+
+            //Set Min/MaxHeat of each heat appropriately...
+            NFSObject AiDirectorEntityData = GetObject("AiDirectorEntityData");
+            for (int i = 1; i < heat; i++) {
+                AiDirectorEntityData.FieldList["Heat" + i + " - MinHeat"].Field = 0;
+                AiDirectorEntityData.FieldList["Heat" + i + " - MaxHeat"].Field = 0;
+            }
+            AiDirectorEntityData.FieldList["Heat" + heat + " - MinHeat"].Field = 1;
+            AiDirectorEntityData.FieldList["Heat" + heat + " - MaxHeat"].Field = AiDirectorEntityData.FieldList["Heat" + heat + " - MaxHeat"].FieldDefault;
+
+            //... and default the rest
+            for (int i = heat + 1; i <= 10; i++) {
+                AiDirectorEntityData.FieldList["Heat" + i + " - MinHeat"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinHeat"].FieldDefault;
+                AiDirectorEntityData.FieldList["Heat" + i + " - MaxHeat"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MaxHeat"].FieldDefault;
+            }
+        }
+
         public void UpdateCopHeatIntensity(int index) {
             copHeatIntensity = index;
             LaunchThread(UpdateCopHeatIntensity);

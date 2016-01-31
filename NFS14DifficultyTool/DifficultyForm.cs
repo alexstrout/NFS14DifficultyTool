@@ -27,6 +27,7 @@ namespace NFS14DifficultyTool {
             cmbRacerDifficulty.SelectedIndex = (int)DifficultyEnum.Skilled;
             cmbCopDensity.SelectedIndex = (int)DensityEnum.Normal;
             cmbRacerDensity.SelectedIndex = (int)DensityEnum.Normal;
+            numCopMinHeat.Value = 1;
             cmbCopHeatIntensity.SelectedIndex = (int)HeatEnum.Normal;
             chkSpikeStripFix.Checked = true;
             chkEqualWeaponUse.Checked = true;
@@ -79,6 +80,7 @@ namespace NFS14DifficultyTool {
             numRacerSkill_ValueChanged(null, null);
             cmbCopDensity_SelectedIndexChanged(null, null);
             cmbRacerDensity_SelectedIndexChanged(null, null);
+            numCopMinHeat_ValueChanged(null, null);
             cmbCopHeatIntensity_SelectedIndexChanged(null, null);
             chkSpikeStripFix_CheckedChanged(null, null);
             //chkEqualWeaponUse_CheckedChanged(null, null); //Not needed, only calls cmb[Cop/Racer]Class_SelectedIndexChanged()
@@ -224,6 +226,10 @@ namespace NFS14DifficultyTool {
         }
 
         //Other events
+        private void numCopMinHeat_ValueChanged(object sender, EventArgs e) {
+            worker.UpdateCopMinHeat((int)numCopMinHeat.Value);
+        }
+
         private void cmbCopHeatIntensity_SelectedIndexChanged(object sender, EventArgs e) {
             switch ((HeatEnum)cmbCopHeatIntensity.SelectedIndex) {
                 case HeatEnum.Cool:

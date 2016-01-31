@@ -69,13 +69,13 @@ namespace NFS14DifficultyTool {
 
         //Status callbacks
         delegate void SetStatusCallback(string text);
-        private void SetStatus(string text = "") {
-            if (lblStatus.InvokeRequired) {
+        private void SetStatus(string text = "Ready...") {
+            if (txtStatus.InvokeRequired) {
                 SetStatusCallback d = new SetStatusCallback(SetStatus);
                 Invoke(d, new object[] { text });
             }
             else {
-                lblStatus.Text = text;
+                txtStatus.Text = text;
             }
         }
 
@@ -658,7 +658,7 @@ namespace NFS14DifficultyTool {
             //Adjust HeatTime based on skill
             float skill = (float)numRacerSkill.Value;
             NFSObject AiDirectorEntityData = GetObject("AiDirectorEntityData");
-            AiDirectorEntityData.FieldList["HeatTime"].Field = (float)AiDirectorEntityData.FieldList["HeatTime"].FieldDefault / Math.Pow(Math.Max(0.34f, skill) * 3f, 2);
+            AiDirectorEntityData.FieldList["HeatTime"].Field = Convert.ToInt32((int)AiDirectorEntityData.FieldList["HeatTime"].FieldDefault / Math.Pow(Math.Max(0.34d, skill) * 3d, 2));
 
             //Adjust PacingSkill values inside PersonaLibraryPrefab objects
             NFSObject PersonaLibraryPrefab = GetObject("PersonaLibraryPrefab");

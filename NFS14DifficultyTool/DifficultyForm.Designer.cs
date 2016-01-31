@@ -25,7 +25,6 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.lblRacerClass = new System.Windows.Forms.Label();
-            this.lblStatus = new System.Windows.Forms.Label();
             this.lblRacerSkill = new System.Windows.Forms.Label();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.lblRacerDensity = new System.Windows.Forms.Label();
@@ -58,6 +57,7 @@
             this.lblInfoName = new System.Windows.Forms.Label();
             this.lnkBitbucket = new System.Windows.Forms.LinkLabel();
             this.tmrFindProcess = new System.Windows.Forms.Timer(this.components);
+            this.txtStatus = new System.Windows.Forms.TextBox();
             this.grpMiscSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRacerSkill)).BeginInit();
             this.grpRacerSettings.SuspendLayout();
@@ -76,16 +76,6 @@
             this.lblRacerClass.TabIndex = 4;
             this.lblRacerClass.Text = "AI Class:";
             // 
-            // lblStatus
-            // 
-            this.lblStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(12, 388);
-            this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(46, 13);
-            this.lblStatus.TabIndex = 21;
-            this.lblStatus.Text = "Status...";
-            // 
             // lblRacerSkill
             // 
             this.lblRacerSkill.AutoSize = true;
@@ -99,9 +89,9 @@
             // 
             this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSaveSettings.Enabled = false;
-            this.btnSaveSettings.Location = new System.Drawing.Point(170, 383);
+            this.btnSaveSettings.Location = new System.Drawing.Point(192, 383);
             this.btnSaveSettings.Name = "btnSaveSettings";
-            this.btnSaveSettings.Size = new System.Drawing.Size(75, 23);
+            this.btnSaveSettings.Size = new System.Drawing.Size(64, 23);
             this.btnSaveSettings.TabIndex = 20;
             this.btnSaveSettings.Text = "Save As...";
             this.btnSaveSettings.UseVisualStyleBackColor = true;
@@ -121,9 +111,9 @@
             // 
             this.btnLoadSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnLoadSettings.Enabled = false;
-            this.btnLoadSettings.Location = new System.Drawing.Point(251, 383);
+            this.btnLoadSettings.Location = new System.Drawing.Point(262, 383);
             this.btnLoadSettings.Name = "btnLoadSettings";
-            this.btnLoadSettings.Size = new System.Drawing.Size(75, 23);
+            this.btnLoadSettings.Size = new System.Drawing.Size(64, 23);
             this.btnLoadSettings.TabIndex = 19;
             this.btnLoadSettings.Text = "Load...";
             this.btnLoadSettings.UseVisualStyleBackColor = true;
@@ -155,17 +145,17 @@
             this.grpMiscSettings.Size = new System.Drawing.Size(320, 42);
             this.grpMiscSettings.TabIndex = 18;
             this.grpMiscSettings.TabStop = false;
-            this.grpMiscSettings.Text = "Misc Settings";
+            this.grpMiscSettings.Text = "Misc AI Settings";
             // 
             // chkSpikeStripFix
             // 
             this.chkSpikeStripFix.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkSpikeStripFix.AutoSize = true;
-            this.chkSpikeStripFix.Location = new System.Drawing.Point(79, 19);
+            this.chkSpikeStripFix.Location = new System.Drawing.Point(105, 19);
             this.chkSpikeStripFix.Name = "chkSpikeStripFix";
-            this.chkSpikeStripFix.Size = new System.Drawing.Size(117, 17);
+            this.chkSpikeStripFix.Size = new System.Drawing.Size(104, 17);
             this.chkSpikeStripFix.TabIndex = 1;
-            this.chkSpikeStripFix.Text = "AI Use Spike Strips";
+            this.chkSpikeStripFix.Text = "Use Spike Strips";
             this.chkSpikeStripFix.UseVisualStyleBackColor = true;
             this.chkSpikeStripFix.CheckedChanged += new System.EventHandler(this.chkSpikeStripFix_CheckedChanged);
             // 
@@ -173,11 +163,11 @@
             // 
             this.chkEqualWeaponUse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkEqualWeaponUse.AutoSize = true;
-            this.chkEqualWeaponUse.Location = new System.Drawing.Point(202, 19);
+            this.chkEqualWeaponUse.Location = new System.Drawing.Point(215, 19);
             this.chkEqualWeaponUse.Name = "chkEqualWeaponUse";
-            this.chkEqualWeaponUse.Size = new System.Drawing.Size(112, 17);
+            this.chkEqualWeaponUse.Size = new System.Drawing.Size(99, 17);
             this.chkEqualWeaponUse.TabIndex = 0;
-            this.chkEqualWeaponUse.Text = "AI Target Other AI";
+            this.chkEqualWeaponUse.Text = "Target Other AI";
             this.chkEqualWeaponUse.UseVisualStyleBackColor = true;
             this.chkEqualWeaponUse.CheckedChanged += new System.EventHandler(this.chkEqualWeaponUse_CheckedChanged);
             // 
@@ -232,6 +222,7 @@
             // pnlRacerCustom
             // 
             this.pnlRacerCustom.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.pnlRacerCustom.BackColor = System.Drawing.SystemColors.Window;
             this.pnlRacerCustom.Controls.Add(this.lblRacerSkill);
             this.pnlRacerCustom.Controls.Add(this.lblRacerClass);
             this.pnlRacerCustom.Controls.Add(this.cmbRacerClass);
@@ -245,10 +236,11 @@
             // 
             this.txtRacerDifficultyDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtRacerDifficultyDescription.Enabled = false;
+            this.txtRacerDifficultyDescription.BackColor = System.Drawing.SystemColors.Window;
             this.txtRacerDifficultyDescription.Location = new System.Drawing.Point(6, 46);
             this.txtRacerDifficultyDescription.Multiline = true;
             this.txtRacerDifficultyDescription.Name = "txtRacerDifficultyDescription";
+            this.txtRacerDifficultyDescription.ReadOnly = true;
             this.txtRacerDifficultyDescription.Size = new System.Drawing.Size(308, 40);
             this.txtRacerDifficultyDescription.TabIndex = 3;
             this.txtRacerDifficultyDescription.Text = "Sample Difficulty: Prepare to be difficulty\'d!";
@@ -310,10 +302,11 @@
             this.txtCopHeatIntensityDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCopHeatIntensityDescription.Enabled = false;
+            this.txtCopHeatIntensityDescription.BackColor = System.Drawing.SystemColors.Window;
             this.txtCopHeatIntensityDescription.Location = new System.Drawing.Point(6, 146);
             this.txtCopHeatIntensityDescription.Multiline = true;
             this.txtCopHeatIntensityDescription.Name = "txtCopHeatIntensityDescription";
+            this.txtCopHeatIntensityDescription.ReadOnly = true;
             this.txtCopHeatIntensityDescription.Size = new System.Drawing.Size(308, 40);
             this.txtCopHeatIntensityDescription.TabIndex = 9;
             this.txtCopHeatIntensityDescription.Text = "Sample Heat: Prepate to be mildly warm!";
@@ -376,6 +369,7 @@
             // pnlCopCustom
             // 
             this.pnlCopCustom.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.pnlCopCustom.BackColor = System.Drawing.SystemColors.Window;
             this.pnlCopCustom.Controls.Add(this.lblCopSkill);
             this.pnlCopCustom.Controls.Add(this.lblCopClass);
             this.pnlCopCustom.Controls.Add(this.cmbCopClass);
@@ -435,10 +429,11 @@
             // 
             this.txtCopDifficultyDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCopDifficultyDescription.Enabled = false;
+            this.txtCopDifficultyDescription.BackColor = System.Drawing.SystemColors.Window;
             this.txtCopDifficultyDescription.Location = new System.Drawing.Point(6, 46);
             this.txtCopDifficultyDescription.Multiline = true;
             this.txtCopDifficultyDescription.Name = "txtCopDifficultyDescription";
+            this.txtCopDifficultyDescription.ReadOnly = true;
             this.txtCopDifficultyDescription.Size = new System.Drawing.Size(308, 40);
             this.txtCopDifficultyDescription.TabIndex = 3;
             this.txtCopDifficultyDescription.Text = "Sample Difficulty: Prepare to be difficulty\'d!";
@@ -501,13 +496,26 @@
             this.tmrFindProcess.Interval = 1000;
             this.tmrFindProcess.Tick += new System.EventHandler(this.tmrFindProcess_Tick);
             // 
+            // txtStatus
+            // 
+            this.txtStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtStatus.BackColor = System.Drawing.SystemColors.Window;
+            this.txtStatus.Location = new System.Drawing.Point(18, 385);
+            this.txtStatus.Name = "txtStatus";
+            this.txtStatus.ReadOnly = true;
+            this.txtStatus.Size = new System.Drawing.Size(168, 20);
+            this.txtStatus.TabIndex = 24;
+            this.txtStatus.Text = "Status...";
+            this.txtStatus.WordWrap = false;
+            // 
             // DifficultyForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(344, 452);
+            this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.lnkBitbucket);
-            this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnSaveSettings);
             this.Controls.Add(this.btnLoadSettings);
             this.Controls.Add(this.grpMiscSettings);
@@ -538,7 +546,6 @@
         #endregion
 
         private System.Windows.Forms.Label lblRacerClass;
-        private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.Label lblRacerSkill;
         private System.Windows.Forms.Button btnSaveSettings;
         private System.Windows.Forms.Label lblRacerDensity;
@@ -571,6 +578,7 @@
         private System.Windows.Forms.Label lblInfoName;
         private System.Windows.Forms.LinkLabel lnkBitbucket;
         private System.Windows.Forms.Timer tmrFindProcess;
+        private System.Windows.Forms.TextBox txtStatus;
 
     }
 }

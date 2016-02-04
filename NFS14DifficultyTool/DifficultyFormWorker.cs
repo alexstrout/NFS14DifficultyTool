@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 using System.Threading;
 
 namespace NFS14DifficultyTool {
@@ -41,32 +38,33 @@ namespace NFS14DifficultyTool {
     }
 
     public class DifficultyFormWorker {
-        public MemoryManager MemManager { get; set; }
-        public Dictionary<String, NFSObject> ObjectList { get; protected set; }
-
-        protected DifficultyForm parent;
+        //TODO use ConcurrentDictionary instead of locking Dictionary, would be much faster for these uses
+        protected MemoryManager memManager;
+        protected Dictionary<String, NFSObject> objectList;
         protected Dictionary<String, Thread> threadList;
+        protected DifficultyForm parent;
 
         public DifficultyFormWorker(DifficultyForm parent) {
-            MemManager = new MemoryManager();
-            ObjectList = new Dictionary<String, NFSObject>();
-            this.parent = parent;
+            memManager = new MemoryManager();
+            objectList = new Dictionary<String, NFSObject>();
             threadList = new Dictionary<String, Thread>();
+            this.parent = parent;
         }
 
         //Useful functions
         public void ResetAll(bool isClosing = false) {
-            parent.SetStatus("Killing threads...");
-            foreach (Thread t in threadList.Values)
-                t.Abort();
+            parent.SetStatus("Aborting searches...");
+            memManager.AbortFindObject();
 
             parent.SetStatus("Reverting changes...");
-            foreach (NFSObject n in ObjectList.Values)
-                n.ResetFieldsToDefault();
+            lock (objectList) {
+                foreach (NFSObject n in objectList.Values)
+                    n.ResetFieldsToDefault();
+            }
 
             parent.SetStatus("Closing nfs14 handle...");
-            if (MemManager != null)
-                MemManager.CloseHandle();
+            if (memManager != null)
+                memManager.CloseHandle();
 
             parent.SetStatus();
 
@@ -76,42 +74,42 @@ namespace NFS14DifficultyTool {
         }
 
         public NFSObject GetObject(string name) {
-            if (!MemManager.ProcessOpen)
+            if (!memManager.ProcessOpen)
                 return null;
 
             NFSObject type = null;
-            lock (ObjectList) {
+            lock (objectList) {
                 //If we're testing for game objects in general, don't show the Finding... message yet
                 if (name == "TestObject")
                     name = "SpikestripWeapon";
                 else
                     parent.SetStatus("Finding " + name + "...");
 
-                if (ObjectList.ContainsKey(name)) {
-                    type = ObjectList[name];
+                if (objectList.ContainsKey(name)) {
+                    type = objectList[name];
                     parent.SetStatus();
                 }
                 else {
                     try {
                         switch (name) {
                             case "AiDirectorEntityData":
-                                type = new NFSObjectAiDirectorEntityData(MemManager); break;
+                                type = new NFSObjectAiDirectorEntityData(memManager); break;
                             case "PacingLibraryEntityData":
-                                type = new NFSObjectPacingLibraryEntityData(MemManager); break;
+                                type = new NFSObjectPacingLibraryEntityData(memManager); break;
                             case "HealthProfilesListEntityData":
-                                type = new NFSObjectHealthProfilesListEntityData(MemManager); break;
+                                type = new NFSObjectHealthProfilesListEntityData(memManager); break;
                             case "PersonaLibraryPrefab":
-                                type = new NFSObjectPersonaLibraryPrefab(MemManager); break;
+                                type = new NFSObjectPersonaLibraryPrefab(memManager); break;
                             case "GameTime":
-                                type = new NFSObjectGameTime(MemManager); break;
+                                type = new NFSObjectGameTime(memManager); break;
                             case "SpikestripWeapon":
-                                type = new NFSObjectSpikestripWeapon(MemManager); break;
+                                type = new NFSObjectSpikestripWeapon(memManager); break;
                             case "HeliSpikestripWeapon":
-                                type = new NFSObjectHeliSpikestripWeapon(MemManager); break;
+                                type = new NFSObjectHeliSpikestripWeapon(memManager); break;
                             default:
                                 return null;
                         }
-                        ObjectList.Add(name, type);
+                        objectList.Add(name, type);
                         parent.SetStatus();
                     }
                     catch (Exception e) {
@@ -124,27 +122,66 @@ namespace NFS14DifficultyTool {
         }
 
         protected void LaunchThread(ThreadStart obj) {
-            string threadName = obj.Method.ToString();
-            if (!threadList.ContainsKey(threadName))
-                threadList.Add(threadName, new Thread(obj));
-
-            Thread thread = threadList[threadName];
-            if (thread.ThreadState != ThreadState.Stopped)
-                thread.Abort();
-
-            thread = new Thread(obj);
-            threadList[threadName] = thread;
+            Thread thread = new Thread(obj);
+            thread.Name = obj.Method.ToString();
             thread.Start();
         }
 
+        protected bool CheckThread() {
+            string threadName = Thread.CurrentThread.Name;
+
+            //If our threadList doesn't contain anything, just add this thread and return
+            lock (threadList) {
+                if (!threadList.ContainsKey(threadName)) {
+                    threadList.Add(threadName, Thread.CurrentThread);
+                    return false;
+                }
+            }
+
+            //Otherwise, register this thread instead and wait on it (it should either exit gracefully or just finish)
+            //Threads created after will then wait on us, forming a queue
+            Thread oldThread = threadList[threadName];
+            if (oldThread != Thread.CurrentThread) {
+                lock (threadList) {
+                    threadList[threadName] = Thread.CurrentThread;
+                }
+
+                //Before we wait, mention we're waiting on it by bumping its priority
+                //This will signal it to exit after joining if it was in turn waiting on another thread
+                if (oldThread.IsAlive) {
+                    oldThread.Priority = ThreadPriority.AboveNormal;
+                    oldThread.Join();
+                }
+            }
+
+            //If we're deferring to a thread created after us, signal this to our caller so that it might exit early
+            return Thread.CurrentThread.Priority > ThreadPriority.Normal;
+        }
+
         public bool CheckIfReady() {
-            LaunchThread(CheckGameTime);
-            return ObjectList.Count > 0;
+            if (!memManager.ProcessOpen) {
+                parent.SetStatus("Waiting for game...");
+                if (!memManager.OpenProcess("nfs14")) // && !MemManager.OpenProcess("nfs14_x86")
+                    return false;
+
+                //Found it, we can slow down our checks
+                parent.SetStatus("Found it! Waiting for game world...");
+                parent.FindProcessTimer.Interval = 10000;
+            }
+
+            lock (objectList) {
+                if (objectList.Count == 0)
+                    LaunchThread(CheckGameTime);
+                return objectList.Count > 0;
+            }
         }
-        protected string poop(ParameterizedThreadStart obj) {
-            return obj.ToString();
-        }
-        public void CheckGameTime() {
+        protected void CheckGameTime() {
+            //This should only run at start, while we're waiting for the game to be ready, on a loop
+            //If it's been this long we probably want to start new search from beginning
+            //So run AbortFindObject before even checking our old thread, because we don't care about its search
+            memManager.AbortFindObject();
+            if (CheckThread())
+                return;
             GetObject("TestObject");
         }
 
@@ -156,7 +193,7 @@ namespace NFS14DifficultyTool {
         }
         protected int copClass;
         protected void UpdateCopClass() {
-            if (!MemManager.ProcessOpen)
+            if (!memManager.ProcessOpen || CheckThread())
                 return;
             int index = copClass;
             bool eqWeapUse = equalWeaponUse;
@@ -278,7 +315,7 @@ namespace NFS14DifficultyTool {
         }
         protected int racerClass;
         protected void UpdateRacerClass() {
-            if (!MemManager.ProcessOpen)
+            if (!memManager.ProcessOpen || CheckThread())
                 return;
             int index = racerClass;
             bool eqWeapUse = equalWeaponUse;
@@ -533,7 +570,7 @@ namespace NFS14DifficultyTool {
         }
         protected float copSkill;
         protected void UpdateCopSkill() {
-            if (!MemManager.ProcessOpen)
+            if (!memManager.ProcessOpen || CheckThread())
                 return;
             float skill = copSkill;
 
@@ -554,7 +591,7 @@ namespace NFS14DifficultyTool {
         }
         protected float racerSkill;
         protected void UpdateRacerSkill() {
-            if (!MemManager.ProcessOpen)
+            if (!memManager.ProcessOpen || CheckThread())
                 return;
             float skill = racerSkill;
 
@@ -590,7 +627,7 @@ namespace NFS14DifficultyTool {
         }
         protected int copDensity;
         protected void UpdateCopDensity() {
-            if (!MemManager.ProcessOpen)
+            if (!memManager.ProcessOpen || CheckThread())
                 return;
             int density = copDensity;
 
@@ -611,7 +648,7 @@ namespace NFS14DifficultyTool {
         }
         protected int racerDensity;
         protected void UpdateRacerDensity() {
-            if (!MemManager.ProcessOpen)
+            if (!memManager.ProcessOpen || CheckThread())
                 return;
             int density = racerDensity;
 
@@ -631,7 +668,7 @@ namespace NFS14DifficultyTool {
         }
         protected int copMinHeat;
         protected void UpdateCopMinHeat() {
-            if (!MemManager.ProcessOpen)
+            if (!memManager.ProcessOpen || CheckThread())
                 return;
             int heat = copMinHeat;
 
@@ -657,7 +694,7 @@ namespace NFS14DifficultyTool {
         }
         protected int copHeatIntensity;
         protected void UpdateCopHeatIntensity() {
-            if (!MemManager.ProcessOpen)
+            if (!memManager.ProcessOpen || CheckThread())
                 return;
             int index = copHeatIntensity;
 
@@ -818,7 +855,7 @@ namespace NFS14DifficultyTool {
         }
         protected bool useSpikeStripFix;
         protected void UpdateSpikeStripFix() {
-            if (!MemManager.ProcessOpen)
+            if (!memManager.ProcessOpen || CheckThread())
                 return;
             bool useFix = useSpikeStripFix;
 
@@ -838,7 +875,7 @@ namespace NFS14DifficultyTool {
         }
         protected bool equalWeaponUse;
         protected void UpdateEqualWeaponUse() {
-            if (!MemManager.ProcessOpen)
+            if (!memManager.ProcessOpen || CheckThread())
                 return;
             bool weaponUse = equalWeaponUse;
 

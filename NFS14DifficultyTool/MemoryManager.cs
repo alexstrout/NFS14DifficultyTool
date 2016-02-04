@@ -103,9 +103,19 @@ namespace NFS14DifficultyTool {
         protected IntPtr processHandle;
         protected SystemInfo sysInfo;
 
+        protected struct FindObjectInfo {
+            public bool aborting;
+            public int numRunning;
+        }
+        protected FindObjectInfo findObjectInfo;
+        protected Object findObjectLock;
+
         public MemoryManager() {
             ProcessOpen = false;
             GetSystemInfo(out sysInfo);
+            findObjectInfo.aborting = false;
+            findObjectInfo.numRunning = 0;
+            findObjectLock = new Object();
         }
 
         public bool OpenProcess(string processName) {
@@ -146,13 +156,24 @@ namespace NFS14DifficultyTool {
                 .ToArray();
         }
 
+        public void AbortFindObject() {
+            if (findObjectInfo.numRunning > 0)
+                findObjectInfo.aborting = true;
+        }
+
         public IntPtr FindObject(byte[] searchBytes, int byteAlignment = 4) {
+            lock (findObjectLock) {
+                findObjectInfo.numRunning++;
+            }
+
             byte[] buff = new byte[sysInfo.AllocationGranularity];
             IntPtr bytesRead;
             //TODO maybe i should be long or uint with UIntPtrs
             int i = 0,
                 j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead - though in practice this should never happen
             for (IntPtr PTR = IntPtr.Zero; (long)PTR < (long)sysInfo.MaximumApplicationAddress; PTR += buff.Length) {
+                if (findObjectInfo.aborting)
+                    break;
                 if (ReadProcessMemory(PTR, buff, out bytesRead)) {
                     for (i = 0; i < (int)bytesRead; i += byteAlignment) {
                         while (j < searchBytes.Length && i + j < (int)bytesRead) {
@@ -167,6 +188,13 @@ namespace NFS14DifficultyTool {
                     }
                 }
             }
+
+            lock (findObjectLock) {
+                findObjectInfo.numRunning--;
+                if (findObjectInfo.numRunning < 1)
+                    findObjectInfo.aborting = false;
+            }
+
             return IntPtr.Zero;
         }
 

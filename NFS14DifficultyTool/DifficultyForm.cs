@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Threading;
 
 namespace NFS14DifficultyTool {
     public partial class DifficultyForm : Form {
@@ -56,16 +49,6 @@ namespace NFS14DifficultyTool {
         }
 
         private void FindProcessTimer_Tick(object sender, EventArgs e) {
-            if (!worker.MemManager.ProcessOpen) {
-                SetStatus("Waiting for game...");
-                if (!worker.MemManager.OpenProcess("nfs14")) // && !MemManager.OpenProcess("nfs14_x86")
-                    return;
-
-                //Found it, we can slow down our checks
-                SetStatus("Found it!");
-                FindProcessTimer.Interval = 10000;
-            }
-
             //Wait until we're ready to go
             if (!worker.CheckIfReady())
                 return;

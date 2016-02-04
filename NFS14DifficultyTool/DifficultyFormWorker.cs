@@ -53,14 +53,17 @@ namespace NFS14DifficultyTool {
 
         //Useful functions
         public void ResetAll(bool isClosing = false) {
+            parent.SetStatus("Signalling threads...");
+            foreach (Thread t in threadList.Values)
+                if (t.IsAlive)
+                    t.Priority = ThreadPriority.AboveNormal;
+
             parent.SetStatus("Aborting searches...");
             memManager.AbortFindObject();
 
             parent.SetStatus("Reverting changes...");
-            lock (objectList) {
-                foreach (NFSObject n in objectList.Values)
-                    n.ResetFieldsToDefault();
-            }
+            foreach (NFSObject n in objectList.Values)
+                n.ResetFieldsToDefault();
 
             parent.SetStatus("Closing nfs14 handle...");
             if (memManager != null)
@@ -73,18 +76,22 @@ namespace NFS14DifficultyTool {
                 parent.FindProcessTimer.Start();
         }
 
+        public bool TryGetObject(string name, out NFSObject obj) {
+            obj = GetObject(name);
+            return obj != null;
+        }
         public NFSObject GetObject(string name) {
             if (!memManager.ProcessOpen)
                 return null;
 
             NFSObject type = null;
             lock (objectList) {
-                //If we're testing for game objects in general, don't show the Finding... message yet
-                if (name == "TestObject")
-                    name = "SpikestripWeapon";
-                else
+                //If we're testing for game objects in general (not in game world yet), don't show the Finding... message
+                if (objectList.Count > 0)
                     parent.SetStatus("Finding " + name + "...");
 
+                if (name == "TestObject")
+                    name = "SpikestripWeapon";
                 if (objectList.ContainsKey(name)) {
                     type = objectList[name];
                     parent.SetStatus();
@@ -113,7 +120,9 @@ namespace NFS14DifficultyTool {
                         parent.SetStatus();
                     }
                     catch (Exception e) {
-                        parent.SetStatus(e.Message);
+                        //Don't start printing errors until we've at least found something once, otherwise we probably aren't even in the game world yet
+                        if (objectList.Count > 0)
+                            parent.SetStatus(e.Message);
                     }
                 }
             }
@@ -169,11 +178,9 @@ namespace NFS14DifficultyTool {
                 parent.FindProcessTimer.Interval = 10000;
             }
 
-            lock (objectList) {
-                if (objectList.Count == 0)
-                    LaunchThread(CheckGameTime);
-                return objectList.Count > 0;
-            }
+            if (objectList.Count == 0)
+                LaunchThread(CheckGameTime);
+            return objectList.Count > 0;
         }
         protected void CheckGameTime() {
             //This should only run at start, while we're waiting for the game to be ready, on a loop
@@ -212,8 +219,9 @@ namespace NFS14DifficultyTool {
                 default:
                     return;
             }
-            NFSObject PacingLibraryEntityData = GetObject("PacingLibraryEntityData");
-            NFSObject PersonaLibraryPrefab = GetObject("PersonaLibraryPrefab");
+            NFSObject PacingLibraryEntityData, PersonaLibraryPrefab;
+            if (!TryGetObject("PacingLibraryEntityData", out PacingLibraryEntityData) || !TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
+                return;
             PersonaLibraryPrefab.FieldList["AggressorCopPersonality - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
             PersonaLibraryPrefab.FieldList["BruteCopPersonality - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
             PersonaLibraryPrefab.FieldList["BasicCopPersonality - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
@@ -246,7 +254,9 @@ namespace NFS14DifficultyTool {
                 default:
                     return;
             }
-            NFSObject HealthProfilesListEntityData = GetObject("HealthProfilesListEntityData");
+            NFSObject HealthProfilesListEntityData;
+            if (!TryGetObject("HealthProfilesListEntityData", out HealthProfilesListEntityData))
+                return;
             PersonaLibraryPrefab.FieldList["AggressorCopPersonality - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
             PersonaLibraryPrefab.FieldList["BruteCopPersonality - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
             PersonaLibraryPrefab.FieldList["BasicCopPersonality - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
@@ -321,7 +331,9 @@ namespace NFS14DifficultyTool {
             bool eqWeapUse = equalWeaponUse;
 
             //Adjust some AiDirectorEntityData values based on class
-            NFSObject AiDirectorEntityData = GetObject("AiDirectorEntityData");
+            NFSObject AiDirectorEntityData;
+            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
+                return;
             AiDirectorEntityData.FieldList["BonusStartingHeat"].Field = (int)AiDirectorEntityData.FieldList["BonusStartingHeat"].FieldDefault + Math.Max(0, 2 * (index - 1));
 
             //Swap PacingLibraryEntityData pointers, both directly and inside PersonaLibraryPrefab objects
@@ -338,14 +350,18 @@ namespace NFS14DifficultyTool {
                 default:
                     return;
             }
-            NFSObject PacingLibraryEntityData = GetObject("PacingLibraryEntityData");
+            NFSObject PacingLibraryEntityData;
+            if (!TryGetObject("PacingLibraryEntityData", out PacingLibraryEntityData))
+                return;
             PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Default"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
             PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
             PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Easy"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
             PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Medium"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
             PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Hard"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
 
-            NFSObject PersonaLibraryPrefab = GetObject("PersonaLibraryPrefab");
+            NFSObject PersonaLibraryPrefab;
+            if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
+                return;
             PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
             PersonaLibraryPrefab.FieldList["RecklessRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
             PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
@@ -429,7 +445,9 @@ namespace NFS14DifficultyTool {
                 default:
                     return;
             }
-            NFSObject HealthProfilesListEntityData = GetObject("HealthProfilesListEntityData");
+            NFSObject HealthProfilesListEntityData;
+            if (!TryGetObject("HealthProfilesListEntityData", out HealthProfilesListEntityData))
+                return;
             PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
             PersonaLibraryPrefab.FieldList["RecklessRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
             PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
@@ -575,7 +593,9 @@ namespace NFS14DifficultyTool {
             float skill = copSkill;
 
             //Adjust PacingSkill values inside PersonaLibraryPrefab objects
-            NFSObject PersonaLibraryPrefab = GetObject("PersonaLibraryPrefab");
+            NFSObject PersonaLibraryPrefab;
+            if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
+                return;
             PersonaLibraryPrefab.FieldList["AggressorCopPersonality - PacingSkill"].Field = skill;
             PersonaLibraryPrefab.FieldList["BruteCopPersonality - PacingSkill"].Field = skill;
             PersonaLibraryPrefab.FieldList["BasicCopPersonality - PacingSkill"].Field = skill;
@@ -596,11 +616,15 @@ namespace NFS14DifficultyTool {
             float skill = racerSkill;
 
             //Adjust HeatTime based on skill
-            NFSObject AiDirectorEntityData = GetObject("AiDirectorEntityData");
+            NFSObject AiDirectorEntityData;
+            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
+                return;
             AiDirectorEntityData.FieldList["HeatTime"].Field = Convert.ToInt32((int)AiDirectorEntityData.FieldList["HeatTime"].FieldDefault / Math.Pow(Math.Max(0.34d, skill) * 3d, 2));
 
             //Adjust PacingSkill values inside PersonaLibraryPrefab objects
-            NFSObject PersonaLibraryPrefab = GetObject("PersonaLibraryPrefab");
+            NFSObject PersonaLibraryPrefab;
+            if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
+                return;
             PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - PacingSkill"].Field = skill;
             PersonaLibraryPrefab.FieldList["RecklessRacer - PacingSkill"].Field = skill;
             PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - PacingSkill"].Field = skill;
@@ -632,7 +656,9 @@ namespace NFS14DifficultyTool {
             int density = copDensity;
 
             //Adjust spawn caps and times based on density
-            NFSObject AiDirectorEntityData = GetObject("AiDirectorEntityData");
+            NFSObject AiDirectorEntityData;
+            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
+                return;
             //AiDirectorEntityData.FieldList["NumberOfPawnCopsWanted"].Field = (int)((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * (density / 2f));
             AiDirectorEntityData.FieldList["GlobalNumberOfCops"].Field = (density == 0) ? 0 : Math.Max(1, density - 1); //0, 1 (with low spawn rates), 1 (normal), 2 (high), 3 (v. high), 4 (most wanted)
             AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].Field = Math.Min(100, (int)AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].FieldDefault * density);
@@ -653,7 +679,9 @@ namespace NFS14DifficultyTool {
             int density = racerDensity;
 
             //Adjust spawn caps and times based on density
-            NFSObject AiDirectorEntityData = GetObject("AiDirectorEntityData");
+            NFSObject AiDirectorEntityData;
+            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
+                return;
             AiDirectorEntityData.FieldList["MaxNumberOfAiOnlySpontaneousRaces"].Field = density;
             AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].Field = (int)((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * (density / 2f));
             AiDirectorEntityData.FieldList["NumberOfRacers"].Field = (density == 0) ? 0 : Math.Max(1, density - 1); //0, 1 (with low spawn rates), 1 (normal), 2 (high), 3 (v. high)
@@ -673,7 +701,9 @@ namespace NFS14DifficultyTool {
             int heat = copMinHeat;
 
             //Set Min/MaxHeat of each heat appropriately...
-            NFSObject AiDirectorEntityData = GetObject("AiDirectorEntityData");
+            NFSObject AiDirectorEntityData;
+            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
+                return;
             for (int i = 1; i < heat; i++) {
                 AiDirectorEntityData.FieldList["Heat" + i + " - MinHeat"].Field = 0;
                 AiDirectorEntityData.FieldList["Heat" + i + " - MaxHeat"].Field = 0;
@@ -699,7 +729,9 @@ namespace NFS14DifficultyTool {
             int index = copHeatIntensity;
 
             //Go crazy! Default everything to selectively override it later
-            NFSObject AiDirectorEntityData = GetObject("AiDirectorEntityData");
+            NFSObject AiDirectorEntityData;
+            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
+                return;
             AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].FieldDefault;
             AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = AiDirectorEntityData.FieldList["BlockHeatThreshold"].FieldDefault;
             for (int i = 1; i <= 10; i++) {
@@ -859,7 +891,9 @@ namespace NFS14DifficultyTool {
                 return;
             bool useFix = useSpikeStripFix;
 
-            NFSObject SpikestripWeapon = GetObject("SpikestripWeapon");
+            NFSObject SpikestripWeapon;
+            if (!TryGetObject("SpikestripWeapon", out SpikestripWeapon))
+                return;
             if (useFix) {
                 SpikestripWeapon.FieldList["Classification"].Field = NFSObjectSpikestripWeapon.VehicleWeaponClassification.VehicleWeaponClassification_BackwardFiring;
                 SpikestripWeapon.FieldList["MinimumTriggerDistance-Low"].Field = 2f;

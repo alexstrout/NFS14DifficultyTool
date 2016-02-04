@@ -172,7 +172,7 @@ namespace NFS14DifficultyTool {
             int i = 0,
                 j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead - though in practice this should never happen
             for (IntPtr PTR = IntPtr.Zero; (long)PTR < (long)sysInfo.MaximumApplicationAddress; PTR += buff.Length) {
-                if (findObjectInfo.aborting)
+                if (findObjectInfo.aborting || !ProcessOpen)
                     break;
                 if (ReadProcessMemory(PTR, buff, out bytesRead)) {
                     for (i = 0; i < (int)bytesRead; i += byteAlignment) {

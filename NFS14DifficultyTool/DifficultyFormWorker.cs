@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -40,14 +41,16 @@ namespace NFS14DifficultyTool {
     public class DifficultyFormWorker {
         //TODO use ConcurrentDictionary instead of locking Dictionary, would be much faster for these uses
         protected MemoryManager memManager;
-        protected Dictionary<String, NFSObject> objectList;
-        protected Dictionary<String, Thread> threadList;
+        protected ConcurrentDictionary<string, NFSObject> objectList;
+        protected ConcurrentDictionary<string, Thread> threadList;
+        protected List<string> statusList;
         protected DifficultyForm parent;
 
         public DifficultyFormWorker(DifficultyForm parent) {
             memManager = new MemoryManager();
-            objectList = new Dictionary<String, NFSObject>();
-            threadList = new Dictionary<String, Thread>();
+            objectList = new ConcurrentDictionary<string, NFSObject>();
+            threadList = new ConcurrentDictionary<string, Thread>();
+            statusList = new List<string>();
             this.parent = parent;
         }
 
@@ -85,45 +88,44 @@ namespace NFS14DifficultyTool {
                 return null;
 
             NFSObject type = null;
-            lock (objectList) {
-                //If we're testing for game objects in general (not in game world yet), don't show the Finding... message
-                if (objectList.Count > 0)
-                    parent.SetStatus("Finding " + name + "...");
+            if (!objectList.TryGetValue(name, out type)) {
+                //If we haven't found any objects yet, we're still waiting for the game world to load
+                string status = (objectList.Count == 0) ? "Waiting for game world..." : "Finding " + name + "...";
+                lock (statusList)
+                    statusList.Add(status);
+                parent.SetStatus(status);
 
-                if (name == "TestObject")
-                    name = "SpikestripWeapon";
-                if (objectList.ContainsKey(name)) {
-                    type = objectList[name];
-                    parent.SetStatus();
+                try {
+                    switch (name) {
+                        case "AiDirectorEntityData":
+                            type = objectList.GetOrAdd(name, new NFSObjectAiDirectorEntityData(memManager)); break;
+                        case "PacingLibraryEntityData":
+                            type = objectList.GetOrAdd(name, new NFSObjectPacingLibraryEntityData(memManager)); break;
+                        case "HealthProfilesListEntityData":
+                            type = objectList.GetOrAdd(name, new NFSObjectHealthProfilesListEntityData(memManager)); break;
+                        case "PersonaLibraryPrefab":
+                            type = objectList.GetOrAdd(name, new NFSObjectPersonaLibraryPrefab(memManager)); break;
+                        case "GameTime":
+                            type = objectList.GetOrAdd(name, new NFSObjectGameTime(memManager)); break;
+                        case "SpikestripWeapon":
+                            type = objectList.GetOrAdd(name, new NFSObjectSpikestripWeapon(memManager)); break;
+                        case "HeliSpikestripWeapon":
+                            type = objectList.GetOrAdd(name, new NFSObjectHeliSpikestripWeapon(memManager)); break;
+                        default:
+                            return null;
+                    }
+                    lock (statusList) {
+                        statusList.Remove(status);
+                        if (statusList.Count > 0)
+                            parent.SetStatus(statusList[0]);
+                        else
+                            parent.SetStatus();
+                    }
                 }
-                else {
-                    try {
-                        switch (name) {
-                            case "AiDirectorEntityData":
-                                type = new NFSObjectAiDirectorEntityData(memManager); break;
-                            case "PacingLibraryEntityData":
-                                type = new NFSObjectPacingLibraryEntityData(memManager); break;
-                            case "HealthProfilesListEntityData":
-                                type = new NFSObjectHealthProfilesListEntityData(memManager); break;
-                            case "PersonaLibraryPrefab":
-                                type = new NFSObjectPersonaLibraryPrefab(memManager); break;
-                            case "GameTime":
-                                type = new NFSObjectGameTime(memManager); break;
-                            case "SpikestripWeapon":
-                                type = new NFSObjectSpikestripWeapon(memManager); break;
-                            case "HeliSpikestripWeapon":
-                                type = new NFSObjectHeliSpikestripWeapon(memManager); break;
-                            default:
-                                return null;
-                        }
-                        objectList.Add(name, type);
-                        parent.SetStatus();
-                    }
-                    catch (Exception e) {
-                        //Don't start printing errors until we've at least found something once, otherwise we probably aren't even in the game world yet
-                        if (objectList.Count > 0)
-                            parent.SetStatus(e.Message);
-                    }
+                catch (Exception e) {
+                    //Don't start printing errors until we've at least found something once, otherwise we probably aren't even in the game world yet
+                    if (objectList.Count > 0)
+                        parent.SetStatus(e.Message);
                 }
             }
 
@@ -137,33 +139,20 @@ namespace NFS14DifficultyTool {
         }
 
         protected bool CheckThread() {
-            string threadName = Thread.CurrentThread.Name;
+            //If we successfully add our thread (no thread for this name ever existed before), we're good to go
+            Thread oldThread = threadList.GetOrAdd(Thread.CurrentThread.Name, Thread.CurrentThread);
+            if (oldThread == Thread.CurrentThread)
+                return false;
 
-            //If our threadList doesn't contain anything, just add this thread and return
-            lock (threadList) {
-                if (!threadList.ContainsKey(threadName)) {
-                    threadList.Add(threadName, Thread.CurrentThread);
-                    return false;
-                }
+            //Otherwise, wait on the old thread - while waiting, threads created after will then wait on us, forming a queue
+            threadList[Thread.CurrentThread.Name] = Thread.CurrentThread;
+            if (oldThread.IsAlive) {
+                //Thus, before we wait, tell our old thread we're waiting on it by bumping its priority
+                oldThread.Priority = ThreadPriority.AboveNormal;
+                oldThread.Join();
             }
 
-            //Otherwise, register this thread instead and wait on it (it should either exit gracefully or just finish)
-            //Threads created after will then wait on us, forming a queue
-            Thread oldThread = threadList[threadName];
-            if (oldThread != Thread.CurrentThread) {
-                lock (threadList) {
-                    threadList[threadName] = Thread.CurrentThread;
-                }
-
-                //Before we wait, mention we're waiting on it by bumping its priority
-                //This will signal it to exit after joining if it was in turn waiting on another thread
-                if (oldThread.IsAlive) {
-                    oldThread.Priority = ThreadPriority.AboveNormal;
-                    oldThread.Join();
-                }
-            }
-
-            //If we're deferring to a thread created after us, signal this to our caller so that it might exit early
+            //If we're deferring to a later thread (per above), let our caller know so that it might exit early
             return Thread.CurrentThread.Priority > ThreadPriority.Normal;
         }
 
@@ -174,7 +163,7 @@ namespace NFS14DifficultyTool {
                     return false;
 
                 //Found it, we can slow down our checks
-                parent.SetStatus("Found it! Waiting for game world...");
+                parent.SetStatus("Found it!");
                 parent.FindProcessTimer.Interval = 10000;
             }
 
@@ -189,7 +178,10 @@ namespace NFS14DifficultyTool {
             memManager.AbortFindObject();
             if (CheckThread())
                 return;
-            GetObject("TestObject");
+
+            //I'd use GameTime here, but that seems to sometimes be created before the game world is actually ready
+            //So in this case we'll use SpikestripWeapon, which definitely won't be ready until we've loaded in
+            GetObject("SpikestripWeapon");
         }
 
         //Class events

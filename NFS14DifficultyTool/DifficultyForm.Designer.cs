@@ -309,7 +309,6 @@
             // 
             // lblCopMinHeat
             // 
-            this.lblCopMinHeat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCopMinHeat.AutoSize = true;
             this.lblCopMinHeat.Location = new System.Drawing.Point(6, 95);
             this.lblCopMinHeat.Name = "lblCopMinHeat";
@@ -570,7 +569,7 @@
             this.Controls.Add(this.grpRacerSettings);
             this.Controls.Add(this.grpCopSettings);
             this.Controls.Add(this.lblInfoName);
-            this.MinimumSize = new System.Drawing.Size(294, 482);
+            this.MinimumSize = new System.Drawing.Size(315, 482);
             this.Name = "DifficultyForm";
             this.Text = "NFS Rivals Difficulty Tool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DifficultyForm_FormClosing);

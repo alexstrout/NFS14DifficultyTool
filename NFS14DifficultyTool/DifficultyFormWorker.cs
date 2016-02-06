@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace NFS14DifficultyTool {
@@ -213,6 +214,16 @@ namespace NFS14DifficultyTool {
             int index = copClass;
             bool eqWeapUse = equalWeaponUse;
 
+            string[] personalityList = new string[] {
+                "AggressorCopPersonality",
+                "BruteCopPersonality",
+                "BasicCopPersonality",
+                "AdvAggressorCopPersonality",
+                "ChaserCopPersonality",
+                "RacerTutorialCop",
+                "CopTutorialCop"
+            };
+
             //Swap PacingLibraryEntityData pointers, both directly and inside PersonaLibraryPrefab objects
             //PacingScheduleGroupSpontaneousRace (note we don't swap these directly - only set the (probably unused) PersonaLibraryPrefab values)
             string difficulty;
@@ -230,13 +241,8 @@ namespace NFS14DifficultyTool {
             NFSObject PacingLibraryEntityData, PersonaLibraryPrefab;
             if (!TryGetObject("PacingLibraryEntityData", out PacingLibraryEntityData) || !TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
                 return;
-            PersonaLibraryPrefab.FieldList["AggressorCopPersonality - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["BruteCopPersonality - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["BasicCopPersonality - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["AdvAggressorCopPersonality - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["ChaserCopPersonality - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["RacerTutorialCop - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CopTutorialCop - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
+            foreach (string s in personalityList)
+                PersonaLibraryPrefab.FieldList[s + " - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
 
             //PacingSchedulePursuit
             PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Default"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
@@ -244,13 +250,8 @@ namespace NFS14DifficultyTool {
             PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Hard"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
             PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
 
-            PersonaLibraryPrefab.FieldList["AggressorCopPersonality - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["BruteCopPersonality - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["BasicCopPersonality - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["AdvAggressorCopPersonality - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["ChaserCopPersonality - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["RacerTutorialCop - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CopTutorialCop - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
+            foreach (string s in personalityList)
+                PersonaLibraryPrefab.FieldList[s + " - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
 
             //Swap HealthProfilesListEntityData pointers inside PersonaLibraryPrefab objects (but not directly, for now, as that causes weird HUD issues)
             switch ((ClassEnum)index) {
@@ -265,65 +266,29 @@ namespace NFS14DifficultyTool {
             NFSObject HealthProfilesListEntityData;
             if (!TryGetObject("HealthProfilesListEntityData", out HealthProfilesListEntityData))
                 return;
-            PersonaLibraryPrefab.FieldList["AggressorCopPersonality - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["BruteCopPersonality - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["BasicCopPersonality - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["AdvAggressorCopPersonality - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["ChaserCopPersonality - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["RacerTutorialCop - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CopTutorialCop - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
+            foreach (string s in personalityList)
+                PersonaLibraryPrefab.FieldList[s + " - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
 
             //Adjust WeaponSkill values inside PersonaLibraryPrefab objects
             float skillVsCop = 0f;
             float skillVsRacer = (float)(0.01 + (1 + index) * 0.33);
             float skill = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["AggressorCopPersonality - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["BruteCopPersonality - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["BasicCopPersonality - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["AdvAggressorCopPersonality - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["ChaserCopPersonality - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["RacerTutorialCop - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["CopTutorialCop - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["AggressorCopPersonality - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["BruteCopPersonality - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["BasicCopPersonality - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["AdvAggressorCopPersonality - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["ChaserCopPersonality - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["RacerTutorialCop - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["CopTutorialCop - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["AggressorCopPersonality - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["BruteCopPersonality - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["BasicCopPersonality - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["AdvAggressorCopPersonality - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["ChaserCopPersonality - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["RacerTutorialCop - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["CopTutorialCop - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
+            foreach (string s in personalityList) {
+                PersonaLibraryPrefab.FieldList[s + " - WeaponSkill"].Field = skill;
+                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanCop"].Field = skillVsCop;
+                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
+            }
             if (!eqWeapUse)
                 skillVsRacer /= 2f;
-            PersonaLibraryPrefab.FieldList["AggressorCopPersonality - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["BruteCopPersonality - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["BasicCopPersonality - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["AdvAggressorCopPersonality - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["ChaserCopPersonality - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["RacerTutorialCop - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["CopTutorialCop - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["AggressorCopPersonality - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["BruteCopPersonality - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["BasicCopPersonality - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["AdvAggressorCopPersonality - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["ChaserCopPersonality - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["RacerTutorialCop - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["CopTutorialCop - WeaponSkillVsAIRacer"].Field = skillVsRacer;
+            foreach (string s in personalityList) {
+                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
+                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
+            }
 
             //Set speed matching inside PersonaLibraryPrefab objects based on class
             bool matchSpeed = index < (int)ClassEnum.Hard;
-            PersonaLibraryPrefab.FieldList["AggressorCopPersonality - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["BruteCopPersonality - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["BasicCopPersonality - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["AdvAggressorCopPersonality - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["ChaserCopPersonality - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["RacerTutorialCop - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["CopTutorialCop - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
+            foreach (string s in personalityList)
+                PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
         }
 
         public void UpdateRacerClass(int index, bool eqWeapUse) {
@@ -337,6 +302,26 @@ namespace NFS14DifficultyTool {
                 return;
             int index = racerClass;
             bool eqWeapUse = equalWeaponUse;
+
+            string[] personalityList = new string[] {
+                "Tier1WeaponRacer",
+                "RecklessRacer",
+                "Tier2CautiousRacer",
+                "Tier1ViolentRacer",
+                "Tier1RecklessRacer",
+                "Tier1CautiousRacer",
+                "RacerTutorialRacer",
+                "CleanRacer",
+                "Tier2WeaponRacer",
+                "Tier1CleanRacer",
+                "Tier2ViolentRacer",
+                "Tier2RecklessRacer",
+                "Tier2CleanRacer",
+                "WeaponRacer",
+                "CopTutorialRacer",
+                "CautiousRacer",
+                "ViolentRacer"
+            };
 
             //Adjust some AiDirectorEntityData values based on class
             NFSObject AiDirectorEntityData;
@@ -370,23 +355,8 @@ namespace NFS14DifficultyTool {
             NFSObject PersonaLibraryPrefab;
             if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
                 return;
-            PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["RecklessRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1ViolentRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1RecklessRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1CautiousRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["RacerTutorialRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CleanRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2WeaponRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1CleanRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2ViolentRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2RecklessRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2CleanRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["WeaponRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CopTutorialRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CautiousRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["ViolentRacer - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
+            foreach (string s in personalityList)
+                PersonaLibraryPrefab.FieldList[s + " - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
 
             //PacingScheduleEscape
             PacingLibraryEntityData.FieldList["PacingScheduleEscape_Default"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
@@ -394,23 +364,8 @@ namespace NFS14DifficultyTool {
             PacingLibraryEntityData.FieldList["PacingScheduleEscape_Hard"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
             PacingLibraryEntityData.FieldList["PacingScheduleEscape_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
 
-            PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["RecklessRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1ViolentRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1RecklessRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1CautiousRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["RacerTutorialRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CleanRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2WeaponRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1CleanRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2ViolentRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2RecklessRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2CleanRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["WeaponRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CopTutorialRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CautiousRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["ViolentRacer - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
+            foreach (string s in personalityList)
+                PersonaLibraryPrefab.FieldList[s + " - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
 
             //PacingScheduleGroupCopHotPursuit
             switch ((ClassEnum)index) {
@@ -456,137 +411,31 @@ namespace NFS14DifficultyTool {
             NFSObject HealthProfilesListEntityData;
             if (!TryGetObject("HealthProfilesListEntityData", out HealthProfilesListEntityData))
                 return;
-            PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["RecklessRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1ViolentRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1RecklessRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1CautiousRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["RacerTutorialRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CleanRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2WeaponRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier1CleanRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2ViolentRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2RecklessRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["Tier2CleanRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["WeaponRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CopTutorialRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["CautiousRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
-            PersonaLibraryPrefab.FieldList["ViolentRacer - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
+            foreach (string s in personalityList)
+                PersonaLibraryPrefab.FieldList[s + " - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
 
             //Adjust WeaponSkill values inside PersonaLibraryPrefab objects
             float skillVsCop = Math.Min(1f, (float)(0.01 + (1 + index) * 0.33));
             float skillVsRacer = Math.Min(1f, (float)((1 + index) * 0.25));
             float skill = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["RecklessRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier1ViolentRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier1RecklessRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier1CautiousRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["RacerTutorialRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["CleanRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier2WeaponRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier1CleanRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier2ViolentRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier2RecklessRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier2CleanRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["WeaponRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["CopTutorialRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["CautiousRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["ViolentRacer - WeaponSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["RecklessRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier1ViolentRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier1RecklessRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier1CautiousRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["RacerTutorialRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["CleanRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier2WeaponRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier1CleanRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier2ViolentRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier2RecklessRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier2CleanRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["WeaponRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["CopTutorialRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["CautiousRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["ViolentRacer - WeaponSkillVsHumanCop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["RecklessRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier1ViolentRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier1RecklessRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier1CautiousRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["RacerTutorialRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["CleanRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier2WeaponRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier1CleanRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier2ViolentRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier2RecklessRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier2CleanRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["WeaponRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["CopTutorialRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["CautiousRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["ViolentRacer - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
+            foreach (string s in personalityList) {
+                PersonaLibraryPrefab.FieldList[s + " - WeaponSkill"].Field = skill;
+                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanCop"].Field = skillVsCop;
+                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
+            }
             if (!eqWeapUse) {
                 skillVsCop /= 2f;
                 skillVsRacer = 0f;
             }
-            PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["RecklessRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier1ViolentRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier1RecklessRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier1CautiousRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["RacerTutorialRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["CleanRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier2WeaponRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier1CleanRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier2ViolentRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier2RecklessRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier2CleanRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["WeaponRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["CopTutorialRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["CautiousRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["ViolentRacer - WeaponSkillVsAICop"].Field = skillVsCop;
-            PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["RecklessRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier1ViolentRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier1RecklessRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier1CautiousRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["RacerTutorialRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["CleanRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier2WeaponRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier1CleanRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier2ViolentRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier2RecklessRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["Tier2CleanRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["WeaponRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["CopTutorialRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["CautiousRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            PersonaLibraryPrefab.FieldList["ViolentRacer - WeaponSkillVsAIRacer"].Field = skillVsRacer;
+            foreach (string s in personalityList) {
+                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
+                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
+            }
 
             //Set speed matching inside PersonaLibraryPrefab objects based on class
             bool matchSpeed = index < (int)ClassEnum.Hard;
-            PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["RecklessRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["Tier1ViolentRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["Tier1RecklessRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["Tier1CautiousRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["RacerTutorialRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["CleanRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["Tier2WeaponRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["Tier1CleanRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["Tier2ViolentRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["Tier2RecklessRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["Tier2CleanRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["WeaponRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["CopTutorialRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["CautiousRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-            PersonaLibraryPrefab.FieldList["ViolentRacer - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
+            foreach (string s in personalityList)
+                PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
         }
 
         //Skill events
@@ -600,17 +449,32 @@ namespace NFS14DifficultyTool {
                 return;
             float skill = copSkill;
 
+            string[] personalityList = new string[] {
+                "Tier1WeaponRacer",
+                "RecklessRacer",
+                "Tier2CautiousRacer",
+                "Tier1ViolentRacer",
+                "Tier1RecklessRacer",
+                "Tier1CautiousRacer",
+                "RacerTutorialRacer",
+                "CleanRacer",
+                "Tier2WeaponRacer",
+                "Tier1CleanRacer",
+                "Tier2ViolentRacer",
+                "Tier2RecklessRacer",
+                "Tier2CleanRacer",
+                "WeaponRacer",
+                "CopTutorialRacer",
+                "CautiousRacer",
+                "ViolentRacer"
+            };
+
             //Adjust PacingSkill values inside PersonaLibraryPrefab objects
             NFSObject PersonaLibraryPrefab;
             if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
                 return;
-            PersonaLibraryPrefab.FieldList["AggressorCopPersonality - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["BruteCopPersonality - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["BasicCopPersonality - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["AdvAggressorCopPersonality - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["ChaserCopPersonality - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["RacerTutorialCop - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["CopTutorialCop - PacingSkill"].Field = skill;
+            foreach (string s in personalityList)
+                PersonaLibraryPrefab.FieldList[s + " - PacingSkill"].Field = skill;
         }
 
         public void UpdateRacerSkill(float skill) {
@@ -623,6 +487,26 @@ namespace NFS14DifficultyTool {
                 return;
             float skill = racerSkill;
 
+            string[] personalityList = new string[] {
+                "Tier1WeaponRacer",
+                "RecklessRacer",
+                "Tier2CautiousRacer",
+                "Tier1ViolentRacer",
+                "Tier1RecklessRacer",
+                "Tier1CautiousRacer",
+                "RacerTutorialRacer",
+                "CleanRacer",
+                "Tier2WeaponRacer",
+                "Tier1CleanRacer",
+                "Tier2ViolentRacer",
+                "Tier2RecklessRacer",
+                "Tier2CleanRacer",
+                "WeaponRacer",
+                "CopTutorialRacer",
+                "CautiousRacer",
+                "ViolentRacer"
+            };
+
             //Adjust HeatTime based on skill
             NFSObject AiDirectorEntityData;
             if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
@@ -633,23 +517,8 @@ namespace NFS14DifficultyTool {
             NFSObject PersonaLibraryPrefab;
             if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
                 return;
-            PersonaLibraryPrefab.FieldList["Tier1WeaponRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["RecklessRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier2CautiousRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier1ViolentRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier1RecklessRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier1CautiousRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["RacerTutorialRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["CleanRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier2WeaponRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier1CleanRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier2ViolentRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier2RecklessRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["Tier2CleanRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["WeaponRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["CopTutorialRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["CautiousRacer - PacingSkill"].Field = skill;
-            PersonaLibraryPrefab.FieldList["ViolentRacer - PacingSkill"].Field = skill;
+            foreach (string s in personalityList)
+                PersonaLibraryPrefab.FieldList[s + " - PacingSkill"].Field = skill;
         }
 
         //Density events
@@ -669,7 +538,7 @@ namespace NFS14DifficultyTool {
                 return;
             //AiDirectorEntityData.FieldList["NumberOfPawnCopsWanted"].Field = (int)((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * (density / 2f));
             AiDirectorEntityData.FieldList["GlobalNumberOfCops"].Field = (density == 0) ? 0 : Math.Max(1, density - 1); //0, 1 (with low spawn rates), 1 (normal), 2 (high), 3 (v. high), 4 (most wanted)
-            AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].Field = Math.Min(100, (int)AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].FieldDefault * density);
+            AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].Field = Math.Min(90, (int)AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].FieldDefault * density);
             AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].FieldDefault / (density / 2f + 0.01f);
             AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].FieldDefault / (density / 2f + 0.01f);
             AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].FieldDefault / (density / 2f + 0.01f);
@@ -736,6 +605,14 @@ namespace NFS14DifficultyTool {
                 return;
             int index = copHeatIntensity;
 
+            string[] copTypeList = new string[] {
+                "Basic",
+                "Chaser",
+                "Brute",
+                "Aggressor",
+                "AdvancedAggressor"
+            };
+
             //Go crazy! Default everything to selectively override it later
             NFSObject AiDirectorEntityData;
             if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
@@ -744,15 +621,12 @@ namespace NFS14DifficultyTool {
             AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = AiDirectorEntityData.FieldList["BlockHeatThreshold"].FieldDefault;
             for (int i = 1; i <= 10; i++) {
                 //Adjust CopCount based on option (up one for every option above Normal, down one for Cool)
-                AiDirectorEntityData.FieldList["Heat" + i + " - CopCountHeatBased"].Field = (int)AiDirectorEntityData.FieldList["Heat" + i + " - CopCountHeatBased"].FieldDefault
-                    + index - (int)HeatEnum.Normal;
+                AiDirectorEntityData.FieldList["Heat" + i + " - CopCountHeatBased"].Field = Math.Max(1,
+                    (int)AiDirectorEntityData.FieldList["Heat" + i + " - CopCountHeatBased"].FieldDefault + index - (int)HeatEnum.Normal);
 
                 //Everything else just gets reset
-                AiDirectorEntityData.FieldList["Heat" + i + " - Basic"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - Basic"].FieldDefault;
-                AiDirectorEntityData.FieldList["Heat" + i + " - Chaser"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - Chaser"].FieldDefault;
-                AiDirectorEntityData.FieldList["Heat" + i + " - Brute"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - Brute"].FieldDefault;
-                AiDirectorEntityData.FieldList["Heat" + i + " - Aggressor"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - Aggressor"].FieldDefault;
-                AiDirectorEntityData.FieldList["Heat" + i + " - AdvancedAggressor"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - AdvancedAggressor"].FieldDefault;
+                foreach (string s in copTypeList)
+                    AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field = AiDirectorEntityData.FieldList["Heat" + i + " - " + s].FieldDefault;
                 AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].FieldDefault;
                 AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault;
                 AiDirectorEntityData.FieldList["Heat" + i + " - MaxHelicoptersPerBubble"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MaxHelicoptersPerBubble"].FieldDefault;
@@ -761,130 +635,61 @@ namespace NFS14DifficultyTool {
             }
 
             //Now do specific overrides by heat intensity
+            int count, lastCount;
+            float fCount;
             switch ((HeatEnum)index) {
                 case HeatEnum.Cool:
-                    AiDirectorEntityData.FieldList["Heat2 - Basic"].Field = 1;
-                    AiDirectorEntityData.FieldList["Heat3 - Chaser"].Field = 1;
-                    AiDirectorEntityData.FieldList["Heat4 - Brute"].Field = 1;
-                    AiDirectorEntityData.FieldList["Heat5 - Brute"].Field = 1;
-                    AiDirectorEntityData.FieldList["Heat6 - Aggressor"].Field = 1;
-                    AiDirectorEntityData.FieldList["Heat7 - Aggressor"].Field = 1;
-                    AiDirectorEntityData.FieldList["Heat8 - AdvancedAggressor"].Field = 1;
-                    AiDirectorEntityData.FieldList["Heat9 - AdvancedAggressor"].Field = 2;
-                    AiDirectorEntityData.FieldList["Heat10 - AdvancedAggressor"].Field = 3;
-                    AiDirectorEntityData.FieldList["Heat1 - ChanceOfSpawningRoamingCopHeatBased"].Field = 1;
-                    AiDirectorEntityData.FieldList["Heat2 - ChanceOfSpawningRoamingCopHeatBased"].Field = 1;
-                    AiDirectorEntityData.FieldList["Heat3 - ChanceOfSpawningRoamingCopHeatBased"].Field = 2;
-                    AiDirectorEntityData.FieldList["Heat4 - ChanceOfSpawningRoamingCopHeatBased"].Field = 2;
-                    AiDirectorEntityData.FieldList["Heat5 - ChanceOfSpawningRoamingCopHeatBased"].Field = 3;
-                    AiDirectorEntityData.FieldList["Heat6 - ChanceOfSpawningRoamingCopHeatBased"].Field = 3;
-                    AiDirectorEntityData.FieldList["Heat7 - ChanceOfSpawningRoamingCopHeatBased"].Field = 5;
-                    AiDirectorEntityData.FieldList["Heat8 - ChanceOfSpawningRoamingCopHeatBased"].Field = 7;
-                    AiDirectorEntityData.FieldList["Heat9 - ChanceOfSpawningRoamingCopHeatBased"].Field = 10;
-                    AiDirectorEntityData.FieldList["Heat10 - ChanceOfSpawningRoamingCopHeatBased"].Field = 15;
-                    AiDirectorEntityData.FieldList["Heat5 - MinimumHelicopterSpawnInterval"].Field = -1f;
-                    AiDirectorEntityData.FieldList["Heat6 - MinimumHelicopterSpawnInterval"].Field = 50f;
-                    AiDirectorEntityData.FieldList["Heat7 - MinimumHelicopterSpawnInterval"].Field = 40f;
-                    AiDirectorEntityData.FieldList["Heat8 - MinimumHelicopterSpawnInterval"].Field = 30f;
-                    AiDirectorEntityData.FieldList["Heat9 - MinimumHelicopterSpawnInterval"].Field = 25f;
-                    AiDirectorEntityData.FieldList["Heat10 - MinimumHelicopterSpawnInterval"].Field = 20f;
-                    AiDirectorEntityData.FieldList["Heat3 - MinimumRoadblockSpawnInterval"].Field = -1f;
-                    AiDirectorEntityData.FieldList["Heat4 - MinimumRoadblockSpawnInterval"].Field = 50f;
-                    AiDirectorEntityData.FieldList["Heat5 - MinimumRoadblockSpawnInterval"].Field = 45f;
-                    AiDirectorEntityData.FieldList["Heat6 - MinimumRoadblockSpawnInterval"].Field = 30f;
-                    AiDirectorEntityData.FieldList["Heat7 - MinimumRoadblockSpawnInterval"].Field = 25f;
-                    AiDirectorEntityData.FieldList["Heat8 - MinimumRoadblockSpawnInterval"].Field = 20f;
-                    AiDirectorEntityData.FieldList["Heat9 - MinimumRoadblockSpawnInterval"].Field = 15f;
-                    AiDirectorEntityData.FieldList["Heat10 - MinimumRoadblockSpawnInterval"].Field = 10f;
+                    for (int i = 1; i <= 10; i++) {
+                        foreach (string s in copTypeList.Reverse()) {
+                            count = (int)AiDirectorEntityData.FieldList["Heat" + i + " - " + s].FieldDefault;
+                            if (count > 1) {
+                                AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field = count - 1;
+                                break;
+                            }
+                        }
+                        if (i > 1) {
+                            AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - ChanceOfSpawningRoamingCopHeatBased"].FieldDefault;
+                            AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - MinimumHelicopterSpawnInterval"].FieldDefault;
+                            AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - MinimumRoadblockSpawnInterval"].FieldDefault;
+                        }
+                    }
                     break;
                 case HeatEnum.Normal:
                     //Do nothing, already reset above
                     break;
                 default: //Hot, Very Hot, Blazing
+                    for (int i = 10; i >= 1; i--) {
+                        for (int j = (int)HeatEnum.Hot; j <= index; j++) {
+                            lastCount = 0;
+                            foreach (string s in copTypeList) {
+                                //We want this to compound, so use Field instead of FieldDefault - safe as we already defaulted it above
+                                count = (int)AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field;
+                                if (s == "AdvancedAggressor" || (count == 0 && lastCount > 0)) {
+                                    AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field = count + 1;
+                                    break;
+                                }
+                                lastCount = count;
+                            }
+                        }
+                        if (index >= (int)HeatEnum.Hot) {
+                            if (i < 10) {
+                                fCount = (float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault;
+                                if (fCount == -1f)
+                                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumHelicopterSpawnInterval"].FieldDefault;
+                                fCount = (float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault;
+                                if (fCount == -1f)
+                                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumRoadblockSpawnInterval"].FieldDefault;
+                            }
+                            AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 30f - (i - 1) * 3;
+                        }
+                        AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = Math.Min(90, i * 9 * (index - (int)HeatEnum.Normal));
+                    }
                     if (index >= (int)HeatEnum.Hot) {
                         AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = 1;
                         AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat1 - Chaser"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat2 - Chaser"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat3 - Brute"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat4 - Aggressor"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat5 - Aggressor"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat6 - AdvancedAggressor"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat7 - AdvancedAggressor"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat8 - AdvancedAggressor"].Field = 3;
-                        AiDirectorEntityData.FieldList["Heat9 - AdvancedAggressor"].Field = 4;
-                        AiDirectorEntityData.FieldList["Heat10 - AdvancedAggressor"].Field = 5;
-                        AiDirectorEntityData.FieldList["Heat1 - ChanceOfSpawningRoamingCopHeatBased"].Field = 9;
-                        AiDirectorEntityData.FieldList["Heat2 - ChanceOfSpawningRoamingCopHeatBased"].Field = 18;
-                        AiDirectorEntityData.FieldList["Heat3 - ChanceOfSpawningRoamingCopHeatBased"].Field = 27;
-                        AiDirectorEntityData.FieldList["Heat4 - ChanceOfSpawningRoamingCopHeatBased"].Field = 36;
-                        AiDirectorEntityData.FieldList["Heat5 - ChanceOfSpawningRoamingCopHeatBased"].Field = 45;
-                        AiDirectorEntityData.FieldList["Heat6 - ChanceOfSpawningRoamingCopHeatBased"].Field = 54;
-                        AiDirectorEntityData.FieldList["Heat7 - ChanceOfSpawningRoamingCopHeatBased"].Field = 63;
-                        AiDirectorEntityData.FieldList["Heat8 - ChanceOfSpawningRoamingCopHeatBased"].Field = 72;
-                        AiDirectorEntityData.FieldList["Heat9 - ChanceOfSpawningRoamingCopHeatBased"].Field = 81;
-                        AiDirectorEntityData.FieldList["Heat10 - ChanceOfSpawningRoamingCopHeatBased"].Field = 90;
-                        AiDirectorEntityData.FieldList["Heat1 - MinimumHelicopterSpawnInterval"].Field = 50f;
-                        AiDirectorEntityData.FieldList["Heat2 - MinimumHelicopterSpawnInterval"].Field = 50f;
-                        AiDirectorEntityData.FieldList["Heat3 - MinimumHelicopterSpawnInterval"].Field = 50f;
-                        AiDirectorEntityData.FieldList["Heat4 - MinimumHelicopterSpawnInterval"].Field = 50f;
-                        AiDirectorEntityData.FieldList["Heat1 - MinimumRoadblockSpawnInterval"].Field = 50f;
-                        AiDirectorEntityData.FieldList["Heat2 - MinimumRoadblockSpawnInterval"].Field = 50f;
-                        AiDirectorEntityData.FieldList["Heat1 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 30f;
-                        AiDirectorEntityData.FieldList["Heat2 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 27f;
-                        AiDirectorEntityData.FieldList["Heat3 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 24f;
-                        AiDirectorEntityData.FieldList["Heat4 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 21f;
-                        AiDirectorEntityData.FieldList["Heat5 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 18f;
-                        AiDirectorEntityData.FieldList["Heat6 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 15f;
-                        AiDirectorEntityData.FieldList["Heat7 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 12f;
-                        AiDirectorEntityData.FieldList["Heat8 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 9f;
-                        AiDirectorEntityData.FieldList["Heat9 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 6f;
-                        AiDirectorEntityData.FieldList["Heat10 - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 3f;
                     }
-                    if (index >= (int)HeatEnum.VeryHot) {
-                        AiDirectorEntityData.FieldList["Heat1 - Brute"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat2 - Brute"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat3 - Aggressor"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat4 - AdvancedAggressor"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat5 - AdvancedAggressor"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat6 - AdvancedAggressor"].Field = 2;
-                        AiDirectorEntityData.FieldList["Heat7 - AdvancedAggressor"].Field = 2;
-                        AiDirectorEntityData.FieldList["Heat8 - AdvancedAggressor"].Field = 4;
-                        AiDirectorEntityData.FieldList["Heat9 - AdvancedAggressor"].Field = 5;
-                        AiDirectorEntityData.FieldList["Heat10 - AdvancedAggressor"].Field = 6;
-                        AiDirectorEntityData.FieldList["Heat1 - ChanceOfSpawningRoamingCopHeatBased"].Field = 18;
-                        AiDirectorEntityData.FieldList["Heat2 - ChanceOfSpawningRoamingCopHeatBased"].Field = 27;
-                        AiDirectorEntityData.FieldList["Heat3 - ChanceOfSpawningRoamingCopHeatBased"].Field = 36;
-                        AiDirectorEntityData.FieldList["Heat4 - ChanceOfSpawningRoamingCopHeatBased"].Field = 45;
-                        AiDirectorEntityData.FieldList["Heat5 - ChanceOfSpawningRoamingCopHeatBased"].Field = 54;
-                        AiDirectorEntityData.FieldList["Heat6 - ChanceOfSpawningRoamingCopHeatBased"].Field = 63;
-                        AiDirectorEntityData.FieldList["Heat7 - ChanceOfSpawningRoamingCopHeatBased"].Field = 72;
-                        AiDirectorEntityData.FieldList["Heat8 - ChanceOfSpawningRoamingCopHeatBased"].Field = 81;
-                        AiDirectorEntityData.FieldList["Heat9 - ChanceOfSpawningRoamingCopHeatBased"].Field = 90;
-                        AiDirectorEntityData.FieldList["Heat10 - ChanceOfSpawningRoamingCopHeatBased"].Field = 100;
-                    }
-                    if (index >= (int)HeatEnum.Blazing) {
-                        AiDirectorEntityData.FieldList["Heat1 - Aggressor"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat2 - Aggressor"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat3 - AdvancedAggressor"].Field = 1;
-                        AiDirectorEntityData.FieldList["Heat4 - AdvancedAggressor"].Field = 2;
-                        AiDirectorEntityData.FieldList["Heat5 - AdvancedAggressor"].Field = 2;
-                        AiDirectorEntityData.FieldList["Heat6 - AdvancedAggressor"].Field = 3;
-                        AiDirectorEntityData.FieldList["Heat7 - AdvancedAggressor"].Field = 3;
-                        AiDirectorEntityData.FieldList["Heat8 - AdvancedAggressor"].Field = 5;
-                        AiDirectorEntityData.FieldList["Heat9 - AdvancedAggressor"].Field = 6;
-                        AiDirectorEntityData.FieldList["Heat10 - AdvancedAggressor"].Field = 7;
-                        AiDirectorEntityData.FieldList["Heat1 - ChanceOfSpawningRoamingCopHeatBased"].Field = 27;
-                        AiDirectorEntityData.FieldList["Heat2 - ChanceOfSpawningRoamingCopHeatBased"].Field = 36;
-                        AiDirectorEntityData.FieldList["Heat3 - ChanceOfSpawningRoamingCopHeatBased"].Field = 45;
-                        AiDirectorEntityData.FieldList["Heat4 - ChanceOfSpawningRoamingCopHeatBased"].Field = 54;
-                        AiDirectorEntityData.FieldList["Heat5 - ChanceOfSpawningRoamingCopHeatBased"].Field = 63;
-                        AiDirectorEntityData.FieldList["Heat6 - ChanceOfSpawningRoamingCopHeatBased"].Field = 72;
-                        AiDirectorEntityData.FieldList["Heat7 - ChanceOfSpawningRoamingCopHeatBased"].Field = 81;
-                        AiDirectorEntityData.FieldList["Heat8 - ChanceOfSpawningRoamingCopHeatBased"].Field = 90;
-                        AiDirectorEntityData.FieldList["Heat9 - ChanceOfSpawningRoamingCopHeatBased"].Field = 100;
+                    if (index >= (int)HeatEnum.Blazing)
                         AiDirectorEntityData.FieldList["Heat10 - MaxHelicoptersPerBubble"].Field = 2;
-                    }
                     break;
             }
         }

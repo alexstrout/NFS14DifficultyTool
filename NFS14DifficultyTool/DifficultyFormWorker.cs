@@ -600,7 +600,6 @@ namespace NFS14DifficultyTool {
 
             //Now do specific overrides by heat intensity
             int count, lastCount;
-            float fCount;
             switch ((HeatEnum)index) {
                 case HeatEnum.Cool:
                     for (int i = 1; i <= 10; i++) {
@@ -626,7 +625,7 @@ namespace NFS14DifficultyTool {
                         for (int j = (int)HeatEnum.Hot; j <= index; j++) {
                             lastCount = 0;
                             foreach (string s in copTypeList) {
-                                //We want this to compound, so use Field instead of FieldDefault - safe as we already defaulted it above
+                                //We want these to compound, so use Field instead of FieldDefault - safe as we already reset above
                                 count = (int)AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field;
                                 if (s == "AdvancedAggressor" || (count == 0 && lastCount > 0)) {
                                     AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field = count + 1;
@@ -637,12 +636,11 @@ namespace NFS14DifficultyTool {
                         }
                         if (index >= (int)HeatEnum.Hot) {
                             if (i < 10) {
-                                fCount = (float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault;
-                                if (fCount == -1f)
-                                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumHelicopterSpawnInterval"].FieldDefault;
-                                fCount = (float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault;
-                                if (fCount == -1f)
-                                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumRoadblockSpawnInterval"].FieldDefault;
+                                //We want these to trickle down heat levels, so use Field instead of FieldDefault - safe as we already reset above
+                                if ((float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault == -1f)
+                                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumHelicopterSpawnInterval"].Field;
+                                if ((float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault == -1f)
+                                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumRoadblockSpawnInterval"].Field;
                             }
                             AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 30f - (i - 1) * 3;
                         }

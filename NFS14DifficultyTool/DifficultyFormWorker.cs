@@ -59,7 +59,7 @@ namespace NFS14DifficultyTool {
             parent.SetStatus("Signalling threads...");
             foreach (Thread t in threadList.Values)
                 if (t.IsAlive)
-                    t.Priority = ThreadPriority.AboveNormal;
+                    t.Priority = ThreadPriority.Normal;
 
             parent.SetStatus("Aborting searches...");
             memManager.AbortFindObject();
@@ -134,8 +134,19 @@ namespace NFS14DifficultyTool {
         }
 
         protected void LaunchThread(ThreadStart obj) {
-            Thread thread = new Thread(obj);
-            thread.Name = obj.Method.ToString();
+            string threadName = obj.Method.ToString();
+            Thread thread;
+
+            //If the current thread for this method is waiting, don't bother spawning a new one at all
+            //Note: https://msdn.microsoft.com/en-us/library/system.threading.thread.threadstate.aspx states this is bad practice
+            //      However, as this is merely a convenience shortcut and not anything critical, I'm using it anyway :)
+            if (threadList.TryGetValue(threadName, out thread)
+            && thread.ThreadState == ThreadState.WaitSleepJoin)
+                return;
+
+            thread = new Thread(obj);
+            thread.Priority = ThreadPriority.BelowNormal;
+            thread.Name = threadName;
             thread.Start();
         }
 
@@ -145,16 +156,20 @@ namespace NFS14DifficultyTool {
             if (oldThread == Thread.CurrentThread)
                 return false;
 
+            //Also as a convenience shortcut, if the old thread is waiting, don't bother (see warnings on this above)
+            if (oldThread.ThreadState == ThreadState.WaitSleepJoin)
+                return true;
+
             //Otherwise, wait on the old thread - while waiting, threads created after will then wait on us, forming a queue
             threadList[Thread.CurrentThread.Name] = Thread.CurrentThread;
             if (oldThread.IsAlive) {
                 //Thus, before we wait, tell our old thread we're waiting on it by bumping its priority
-                oldThread.Priority = ThreadPriority.AboveNormal;
+                oldThread.Priority = ThreadPriority.Normal;
                 oldThread.Join();
             }
 
             //If we're deferring to a later thread (per above), let our caller know so that it might exit early
-            return Thread.CurrentThread.Priority > ThreadPriority.Normal;
+            return Thread.CurrentThread.Priority > ThreadPriority.BelowNormal;
         }
 
         public bool CheckIfReady() {

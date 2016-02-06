@@ -47,12 +47,54 @@ namespace NFS14DifficultyTool {
         protected List<string> statusList;
         protected DifficultyForm parent;
 
+        protected string[] copPersonalityList;
+        protected string[] racerPersonalityList;
+        protected string[] copTypeList;
+
         public DifficultyFormWorker(DifficultyForm parent) {
             memManager = new MemoryManager();
             objectList = new ConcurrentDictionary<string, NFSObject>();
             threadList = new ConcurrentDictionary<string, Thread>();
             statusList = new List<string>();
             this.parent = parent;
+
+            copPersonalityList = new string[] {
+                "AggressorCopPersonality",
+                "BruteCopPersonality",
+                "BasicCopPersonality",
+                "AdvAggressorCopPersonality",
+                "ChaserCopPersonality",
+                "RacerTutorialCop",
+                "CopTutorialCop"
+            };
+
+            racerPersonalityList = new string[] {
+                "Tier1WeaponRacer",
+                "RecklessRacer",
+                "Tier2CautiousRacer",
+                "Tier1ViolentRacer",
+                "Tier1RecklessRacer",
+                "Tier1CautiousRacer",
+                "RacerTutorialRacer",
+                "CleanRacer",
+                "Tier2WeaponRacer",
+                "Tier1CleanRacer",
+                "Tier2ViolentRacer",
+                "Tier2RecklessRacer",
+                "Tier2CleanRacer",
+                "WeaponRacer",
+                "CopTutorialRacer",
+                "CautiousRacer",
+                "ViolentRacer"
+            };
+
+            copTypeList = new string[] {
+                "Basic",
+                "Chaser",
+                "Brute",
+                "Aggressor",
+                "AdvancedAggressor"
+            };
         }
 
         //Useful functions
@@ -214,16 +256,6 @@ namespace NFS14DifficultyTool {
             int index = copClass;
             bool eqWeapUse = equalWeaponUse;
 
-            string[] personalityList = new string[] {
-                "AggressorCopPersonality",
-                "BruteCopPersonality",
-                "BasicCopPersonality",
-                "AdvAggressorCopPersonality",
-                "ChaserCopPersonality",
-                "RacerTutorialCop",
-                "CopTutorialCop"
-            };
-
             //Swap PacingLibraryEntityData pointers, both directly and inside PersonaLibraryPrefab objects
             //PacingScheduleGroupSpontaneousRace (note we don't swap these directly - only set the (probably unused) PersonaLibraryPrefab values)
             string difficulty;
@@ -241,7 +273,7 @@ namespace NFS14DifficultyTool {
             NFSObject PacingLibraryEntityData, PersonaLibraryPrefab;
             if (!TryGetObject("PacingLibraryEntityData", out PacingLibraryEntityData) || !TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
                 return;
-            foreach (string s in personalityList)
+            foreach (string s in copPersonalityList)
                 PersonaLibraryPrefab.FieldList[s + " - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
 
             //PacingSchedulePursuit
@@ -250,7 +282,7 @@ namespace NFS14DifficultyTool {
             PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Hard"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
             PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
 
-            foreach (string s in personalityList)
+            foreach (string s in copPersonalityList)
                 PersonaLibraryPrefab.FieldList[s + " - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
 
             //Swap HealthProfilesListEntityData pointers inside PersonaLibraryPrefab objects (but not directly, for now, as that causes weird HUD issues)
@@ -266,28 +298,28 @@ namespace NFS14DifficultyTool {
             NFSObject HealthProfilesListEntityData;
             if (!TryGetObject("HealthProfilesListEntityData", out HealthProfilesListEntityData))
                 return;
-            foreach (string s in personalityList)
+            foreach (string s in copPersonalityList)
                 PersonaLibraryPrefab.FieldList[s + " - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
 
             //Adjust WeaponSkill values inside PersonaLibraryPrefab objects
             float skillVsCop = 0f;
             float skillVsRacer = (float)(0.01 + (1 + index) * 0.33);
             float skill = skillVsRacer;
-            foreach (string s in personalityList) {
+            foreach (string s in copPersonalityList) {
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkill"].Field = skill;
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanCop"].Field = skillVsCop;
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
             }
             if (!eqWeapUse)
                 skillVsRacer /= 2f;
-            foreach (string s in personalityList) {
+            foreach (string s in copPersonalityList) {
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
             }
 
             //Set speed matching inside PersonaLibraryPrefab objects based on class
             bool matchSpeed = index < (int)ClassEnum.Hard;
-            foreach (string s in personalityList)
+            foreach (string s in copPersonalityList)
                 PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
         }
 
@@ -302,26 +334,6 @@ namespace NFS14DifficultyTool {
                 return;
             int index = racerClass;
             bool eqWeapUse = equalWeaponUse;
-
-            string[] personalityList = new string[] {
-                "Tier1WeaponRacer",
-                "RecklessRacer",
-                "Tier2CautiousRacer",
-                "Tier1ViolentRacer",
-                "Tier1RecklessRacer",
-                "Tier1CautiousRacer",
-                "RacerTutorialRacer",
-                "CleanRacer",
-                "Tier2WeaponRacer",
-                "Tier1CleanRacer",
-                "Tier2ViolentRacer",
-                "Tier2RecklessRacer",
-                "Tier2CleanRacer",
-                "WeaponRacer",
-                "CopTutorialRacer",
-                "CautiousRacer",
-                "ViolentRacer"
-            };
 
             //Adjust some AiDirectorEntityData values based on class
             NFSObject AiDirectorEntityData;
@@ -355,7 +367,7 @@ namespace NFS14DifficultyTool {
             NFSObject PersonaLibraryPrefab;
             if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
                 return;
-            foreach (string s in personalityList)
+            foreach (string s in racerPersonalityList)
                 PersonaLibraryPrefab.FieldList[s + " - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
 
             //PacingScheduleEscape
@@ -364,7 +376,7 @@ namespace NFS14DifficultyTool {
             PacingLibraryEntityData.FieldList["PacingScheduleEscape_Hard"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
             PacingLibraryEntityData.FieldList["PacingScheduleEscape_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
 
-            foreach (string s in personalityList)
+            foreach (string s in racerPersonalityList)
                 PersonaLibraryPrefab.FieldList[s + " - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
 
             //PacingScheduleGroupCopHotPursuit
@@ -411,14 +423,14 @@ namespace NFS14DifficultyTool {
             NFSObject HealthProfilesListEntityData;
             if (!TryGetObject("HealthProfilesListEntityData", out HealthProfilesListEntityData))
                 return;
-            foreach (string s in personalityList)
+            foreach (string s in racerPersonalityList)
                 PersonaLibraryPrefab.FieldList[s + " - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
 
             //Adjust WeaponSkill values inside PersonaLibraryPrefab objects
             float skillVsCop = Math.Min(1f, (float)(0.01 + (1 + index) * 0.33));
             float skillVsRacer = Math.Min(1f, (float)((1 + index) * 0.25));
             float skill = skillVsCop;
-            foreach (string s in personalityList) {
+            foreach (string s in racerPersonalityList) {
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkill"].Field = skill;
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanCop"].Field = skillVsCop;
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
@@ -427,14 +439,14 @@ namespace NFS14DifficultyTool {
                 skillVsCop /= 2f;
                 skillVsRacer = 0f;
             }
-            foreach (string s in personalityList) {
+            foreach (string s in racerPersonalityList) {
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
             }
 
             //Set speed matching inside PersonaLibraryPrefab objects based on class
             bool matchSpeed = index < (int)ClassEnum.Hard;
-            foreach (string s in personalityList)
+            foreach (string s in racerPersonalityList)
                 PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
         }
 
@@ -449,31 +461,11 @@ namespace NFS14DifficultyTool {
                 return;
             float skill = copSkill;
 
-            string[] personalityList = new string[] {
-                "Tier1WeaponRacer",
-                "RecklessRacer",
-                "Tier2CautiousRacer",
-                "Tier1ViolentRacer",
-                "Tier1RecklessRacer",
-                "Tier1CautiousRacer",
-                "RacerTutorialRacer",
-                "CleanRacer",
-                "Tier2WeaponRacer",
-                "Tier1CleanRacer",
-                "Tier2ViolentRacer",
-                "Tier2RecklessRacer",
-                "Tier2CleanRacer",
-                "WeaponRacer",
-                "CopTutorialRacer",
-                "CautiousRacer",
-                "ViolentRacer"
-            };
-
             //Adjust PacingSkill values inside PersonaLibraryPrefab objects
             NFSObject PersonaLibraryPrefab;
             if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
                 return;
-            foreach (string s in personalityList)
+            foreach (string s in copPersonalityList)
                 PersonaLibraryPrefab.FieldList[s + " - PacingSkill"].Field = skill;
         }
 
@@ -487,26 +479,6 @@ namespace NFS14DifficultyTool {
                 return;
             float skill = racerSkill;
 
-            string[] personalityList = new string[] {
-                "Tier1WeaponRacer",
-                "RecklessRacer",
-                "Tier2CautiousRacer",
-                "Tier1ViolentRacer",
-                "Tier1RecklessRacer",
-                "Tier1CautiousRacer",
-                "RacerTutorialRacer",
-                "CleanRacer",
-                "Tier2WeaponRacer",
-                "Tier1CleanRacer",
-                "Tier2ViolentRacer",
-                "Tier2RecklessRacer",
-                "Tier2CleanRacer",
-                "WeaponRacer",
-                "CopTutorialRacer",
-                "CautiousRacer",
-                "ViolentRacer"
-            };
-
             //Adjust HeatTime based on skill
             NFSObject AiDirectorEntityData;
             if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
@@ -517,7 +489,7 @@ namespace NFS14DifficultyTool {
             NFSObject PersonaLibraryPrefab;
             if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
                 return;
-            foreach (string s in personalityList)
+            foreach (string s in racerPersonalityList)
                 PersonaLibraryPrefab.FieldList[s + " - PacingSkill"].Field = skill;
         }
 
@@ -604,14 +576,6 @@ namespace NFS14DifficultyTool {
             if (!memManager.ProcessOpen || CheckThread())
                 return;
             int index = copHeatIntensity;
-
-            string[] copTypeList = new string[] {
-                "Basic",
-                "Chaser",
-                "Brute",
-                "Aggressor",
-                "AdvancedAggressor"
-            };
 
             //Go crazy! Default everything to selectively override it later
             NFSObject AiDirectorEntityData;

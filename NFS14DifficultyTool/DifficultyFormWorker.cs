@@ -114,18 +114,19 @@ namespace NFS14DifficultyTool {
                         default:
                             return null;
                     }
-                    lock (statusList) {
-                        statusList.Remove(status);
-                        if (statusList.Count > 0)
-                            parent.SetStatus(statusList[0]);
-                        else
-                            parent.SetStatus();
-                    }
                 }
                 catch (Exception e) {
                     //Don't start printing errors until we've at least found something once, otherwise we probably aren't even in the game world yet
                     if (objectList.Count > 0)
                         parent.SetStatus(e.Message);
+                }
+
+                lock (statusList) {
+                    statusList.Remove(status);
+                    if (statusList.Count > 0)
+                        parent.SetStatus(statusList[0]);
+                    else
+                        parent.SetStatus();
                 }
             }
 

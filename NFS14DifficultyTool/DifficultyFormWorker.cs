@@ -156,6 +156,8 @@ namespace NFS14DifficultyTool {
                             type = objectList.GetOrAdd(name, new NFSObjectSpikestripWeapon(memManager)); break;
                         case "HeliSpikestripWeapon":
                             type = objectList.GetOrAdd(name, new NFSObjectHeliSpikestripWeapon(memManager)); break;
+                        case "MenuWhenInHideout":
+                            type = objectList.GetOrAdd(name, new NFSObjectMenuWhenInHideout(memManager)); break;
                         default:
                             return null;
                     }
@@ -229,10 +231,10 @@ namespace NFS14DifficultyTool {
             }
 
             if (objectList.Count == 0)
-                LaunchThread(CheckGameTime);
+                LaunchThread(CheckGameWorld);
             return objectList.Count > 0;
         }
-        protected void CheckGameTime() {
+        protected void CheckGameWorld() {
             //This should only run at start, while we're waiting for the game to be ready, on a loop
             //If it's been this long we probably want to start new search from beginning
             //So run AbortFindObject before even checking our old thread, because we don't care about its search
@@ -240,9 +242,8 @@ namespace NFS14DifficultyTool {
             if (CheckThread())
                 return;
 
-            //I'd use GameTime here, but that seems to sometimes be created before the game world is actually ready
-            //So in this case we'll use SpikestripWeapon, which definitely won't be ready until we've loaded in
-            GetObject("SpikestripWeapon");
+            //Look for MenuWhenInHideout, which definitely won't be ready until we've loaded in
+            GetObject("MenuWhenInHideout");
         }
 
         //Class events

@@ -211,8 +211,7 @@ namespace NFS14DifficultyTool {
         public byte[] Read(IntPtr addr, int size) {
             byte[] buff = new byte[size];
             IntPtr lpNumberOfBytesRead;
-            if (!ReadProcessMemory((IntPtr)addr, buff, out lpNumberOfBytesRead))
-                return null;
+            ReadProcessMemory((IntPtr)addr, buff, out lpNumberOfBytesRead);
             return buff;
         }
         public bool ReadBool(IntPtr addr) {

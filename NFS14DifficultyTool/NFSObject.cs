@@ -16,9 +16,18 @@ namespace NFS14DifficultyTool {
             Address = memManager.FindObject(MemoryManager.StringToByteArray(guid));
             if (Address == IntPtr.Zero)
                 throw new Exception("Could not locate guid in memory: " + guid);
+
+            //Add a GUID field for all NFSObjects - we check this later to make sure our object is still valid in memory
+            FieldList.Add("GUID", new NFSFieldByteArray(this, "0", 16));
+        }
+
+        public bool IsValid() {
+            return MemoryManager.ByteArrayToString((byte[])FieldList["GUID"].Field) == MemoryManager.ByteArrayToString((byte[])FieldList["GUID"].FieldDefault);
         }
 
         public void ResetFieldsToDefault() {
+            if (!IsValid())
+                return;
             foreach (NFSField val in FieldList.Values)
                 val.Field = val.FieldDefault;
         }

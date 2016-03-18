@@ -156,6 +156,11 @@ namespace NFS14DifficultyTool {
                 .ToArray();
         }
 
+        //From Tomalak at http://stackoverflow.com/a/311179 (http://stackoverflow.com/questions/311165/how-do-you-convert-byte-array-to-hexadecimal-string-and-vice-versa)
+        public static string ByteArrayToString(byte[] hex) {
+            return BitConverter.ToString(hex).Replace("-", "");
+        }
+
         public void AbortFindObject() {
             if (findObjectInfo.numRunning > 0)
                 findObjectInfo.aborting = true;

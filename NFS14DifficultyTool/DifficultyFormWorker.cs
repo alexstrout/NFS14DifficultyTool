@@ -115,11 +115,13 @@ namespace NFS14DifficultyTool {
             if (memManager != null)
                 memManager.CloseHandle();
 
-            parent.SetStatus();
-
             //If we're not closing, start looking for our process again (e.g. we've found out game has closed but we haven't)
-            if (!isClosing)
+            //Also clear our objectList, as the game may have launched a new session
+            if (!isClosing) {
+                parent.SetStatus();
+                objectList.Clear();
                 parent.FindProcessTimer.Start();
+            }
         }
 
         public bool TryGetObject(string name, out NFSObject obj) {
@@ -131,7 +133,7 @@ namespace NFS14DifficultyTool {
                 return null;
 
             NFSObject type = null;
-            if (!objectList.TryGetValue(name, out type)) {
+            if (!objectList.TryGetValue(name, out type) || !type.IsValid()) {
                 //If we haven't found any objects yet, we're still waiting for the game world to load
                 string status = (objectList.Count == 0) ? "Waiting for game world..." : "Finding " + name + "...";
                 lock (statusList)
@@ -686,10 +688,10 @@ namespace NFS14DifficultyTool {
         protected void UpdateEqualWeaponUse() {
             if (!memManager.ProcessOpen || CheckThread())
                 return;
-            bool weaponUse = equalWeaponUse;
+            bool eqWeapUse = equalWeaponUse;
 
-            UpdateCopClass(copClass, equalWeaponUse);
-            UpdateRacerClass(racerClass, equalWeaponUse);
+            UpdateCopClass(copClass, eqWeapUse);
+            UpdateRacerClass(racerClass, eqWeapUse);
         }
     }
 }

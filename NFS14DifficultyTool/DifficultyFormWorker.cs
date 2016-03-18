@@ -163,8 +163,8 @@ namespace NFS14DifficultyTool {
                             type = objectList.GetOrAdd(name, new NFSObjectSpikestripWeapon(memManager)); break;
                         case "HeliSpikestripWeapon":
                             type = objectList.GetOrAdd(name, new NFSObjectHeliSpikestripWeapon(memManager)); break;
-                        case "MenuWhenInHideout":
-                            type = objectList.GetOrAdd(name, new NFSObjectMenuWhenInHideout(memManager)); break;
+                        case "UIRootController":
+                            type = objectList.GetOrAdd(name, new NFSObjectUIRootController(memManager)); break;
                         case "ProfileOptions":
                             type = objectList.GetOrAdd(name, new NFSObjectProfileOptions(memManager)); break;
                         default:
@@ -245,8 +245,8 @@ namespace NFS14DifficultyTool {
             if (CheckThread())
                 return;
 
-            //Look for MenuWhenInHideout, which definitely won't be ready until we've loaded in
-            GetObject("MenuWhenInHideout");
+            //Look for UIRootController, which definitely won't be ready until we've loaded in
+            GetObject("UIRootController");
         }
 
         public MatchmakingModeEnum GetMatchmakingMode() {

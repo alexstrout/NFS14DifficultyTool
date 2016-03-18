@@ -74,7 +74,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NFSObjectMenuWhenInHideout.cs" />
     <Compile Include="DifficultyForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,6 +91,7 @@
     <Compile Include="NFSField.cs" />
     <Compile Include="NFSObjectAiDirectorEntityData.cs" />
     <Compile Include="MemoryManager.cs" />
+    <Compile Include="NFSObjectUIRootController.cs" />
     <Compile Include="TestForm.cs">
       <SubType>Form</SubType>
     </Compile>

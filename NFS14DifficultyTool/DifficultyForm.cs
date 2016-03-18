@@ -100,7 +100,7 @@ namespace NFS14DifficultyTool {
         }
 
         private void SessionChangeTimer_Tick(object sender, EventArgs e) {
-            if (worker.GetMatchmakingMode() == MatchmakingModeEnum.Friends) {
+            if (worker.GetMatchmakingMode() == MatchmakingModeEnum.Public) {
                 ValidateOnlineOption(cmbCopDifficulty);
                 ValidateOnlineOption(cmbRacerDifficulty);
                 ValidateOnlineOption(cmbCopDensity);

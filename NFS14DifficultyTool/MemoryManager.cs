@@ -162,15 +162,26 @@ namespace NFS14DifficultyTool {
         }
 
         public void AbortFindObject() {
-            if (findObjectInfo.numRunning > 0)
-                findObjectInfo.aborting = true;
+            lock (findObjectLock)
+                if (findObjectInfo.numRunning > 0)
+                    findObjectInfo.aborting = true;
         }
 
-        public IntPtr FindObject(byte[] searchBytes, int byteAlignment = 4) {
-            lock (findObjectLock) {
+        public IntPtr FindObject(byte[] searchBytes) {
+            lock (findObjectLock)
                 findObjectInfo.numRunning++;
+
+            IntPtr ret = Find(searchBytes);
+
+            lock (findObjectLock) {
+                findObjectInfo.numRunning--;
+                if (findObjectInfo.numRunning < 1)
+                    findObjectInfo.aborting = false;
             }
 
+            return ret;
+        }
+        protected IntPtr Find(byte[] searchBytes) {
             byte[] buff = new byte[sysInfo.AllocationGranularity];
             IntPtr bytesRead;
             //TODO maybe i should be long or uint with UIntPtrs
@@ -180,7 +191,7 @@ namespace NFS14DifficultyTool {
                 if (findObjectInfo.aborting || !ProcessOpen)
                     break;
                 if (ReadProcessMemory(PTR, buff, out bytesRead)) {
-                    for (i = 0; i < (int)bytesRead; i += byteAlignment) {
+                    for (i = 0; i < (int)bytesRead; i += IntPtr.Size) {
                         while (j < searchBytes.Length && i + j < (int)bytesRead) {
                             if (buff[i + j] != searchBytes[j]) {
                                 j = 0;
@@ -192,12 +203,6 @@ namespace NFS14DifficultyTool {
                             return PTR + i;
                     }
                 }
-            }
-
-            lock (findObjectLock) {
-                findObjectInfo.numRunning--;
-                if (findObjectInfo.numRunning < 1)
-                    findObjectInfo.aborting = false;
             }
 
             return IntPtr.Zero;

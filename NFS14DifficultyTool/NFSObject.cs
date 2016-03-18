@@ -18,7 +18,7 @@ namespace NFS14DifficultyTool {
                 throw new Exception("Could not locate guid in memory: " + guid);
 
             //Add a GUID field for all NFSObjects - we check this later to make sure our object is still valid in memory
-            FieldList.Add("GUID", new NFSFieldByteArray(this, "0", 16));
+            FieldList.Add("GUID", new NFSFieldByteArray(this, "0", 16, true));
         }
 
         public bool IsValid() {

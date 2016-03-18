@@ -128,8 +128,8 @@ namespace NFS14DifficultyTool {
             if (!isClosing) {
                 parent.SetStatus();
                 objectList.Clear();
-                parent.SessionChangeTimer.Stop();
-                parent.FindProcessTimer.Start();
+                parent.Timers.SessionChangeTimer.Stop();
+                parent.Timers.FindProcessTimer.Start();
             }
         }
 
@@ -230,7 +230,7 @@ namespace NFS14DifficultyTool {
 
                 //Found it, we can slow down our checks for hunting game objects
                 parent.SetStatus("Found it!");
-                parent.FindProcessTimer.Interval = 10000;
+                parent.Timers.FindProcessTimer.Interval = 10000;
             }
 
             if (objectList.Count == 0)
@@ -267,23 +267,18 @@ namespace NFS14DifficultyTool {
             if (!TryGetObject("ProfileOptions", out ProfileOptions))
                 return;
             MatchmakingModeEnum matchmakingMode = (MatchmakingModeEnum)ProfileOptions.FieldList["MatchmakingMode"].Field;
-            string status = "Detected game: ";
+            string status;
             switch (matchmakingMode) {
                 case MatchmakingModeEnum.Public:
-                    status += "Public";
-                    break;
+                    status = "Public Game"; break;
                 case MatchmakingModeEnum.Friends:
-                    status += "Friends";
-                    break;
+                    status = "Friends Game"; break;
                 case MatchmakingModeEnum.Private:
-                    status += "Private";
-                    break;
+                    status = "Private Game"; break;
                 case MatchmakingModeEnum.SinglePlayer:
-                    status += "Single Player";
-                    break;
+                    status = "Single Player"; break;
                 default: //Unknown
-                    status += "Unknown";
-                    break;
+                    status = "Unknown!?"; break;
             }
 
             //Temporarily show a MatckmakingMode change, will be cleared next pass or by something else
@@ -291,7 +286,7 @@ namespace NFS14DifficultyTool {
                 parent.PopStatus();
             else {
                 lastMatchmakingMode = matchmakingMode;
-                parent.SetStatus(status, true);
+                parent.SetStatus("Migrating to " + status + "...", true);
             }
         }
 

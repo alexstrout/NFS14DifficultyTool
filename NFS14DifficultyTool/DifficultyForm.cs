@@ -7,8 +7,7 @@ namespace NFS14DifficultyTool {
         protected DifficultyFormWorker worker;
         protected List<string> statusList;
 
-        public System.Timers.Timer FindProcessTimer { get; set; }
-        public System.Timers.Timer SessionChangeTimer { get; set; }
+        public DifficultyFormTimers Timers { get; protected set; }
 
         public DifficultyForm() {
             InitializeComponent();
@@ -18,14 +17,8 @@ namespace NFS14DifficultyTool {
             statusList = new List<string>();
 
             //Initialize our timers
-            FindProcessTimer = new System.Timers.Timer(1000);
-            FindProcessTimer.Elapsed += FindProcessTimer_Tick;
-            SessionChangeTimer = new System.Timers.Timer(6000);
-            SessionChangeTimer.Elapsed += SessionChangeTimer_Tick;
-
-            //Start looking for our game
+            Timers = new DifficultyFormTimers(this, worker);
             SetStatus();
-            FindProcessTimer.Start();
 
             //Set defaults -- TODO hook this up to save/load system
             cmbCopDifficulty.SelectedIndex = (int)DifficultyEnum.Adept;
@@ -76,59 +69,39 @@ namespace NFS14DifficultyTool {
                 SetStatus();
         }
 
-        //Form events
-        private void DifficultyForm_FormClosing(object sender, FormClosingEventArgs e) {
-            worker.ResetAll(true);
+        //Timer callbacks
+        public void ApplyAllSettings() {
+            cmbCopClass_SelectedIndexChanged(null, null);
+            cmbRacerClass_SelectedIndexChanged(null, null);
+            numCopSkill_ValueChanged(null, null);
+            numRacerSkill_ValueChanged(null, null);
+            cmbCopDensity_SelectedIndexChanged(null, null);
+            cmbRacerDensity_SelectedIndexChanged(null, null);
+            numCopMinHeat_ValueChanged(null, null);
+            cmbCopHeatIntensity_SelectedIndexChanged(null, null);
+            chkSpikeStripFix_CheckedChanged(null, null);
+            //chkEqualWeaponUse_CheckedChanged(null, null); //Not needed, only calls cmb[Cop/Racer]Class_SelectedIndexChanged()
         }
 
-        private void FindProcessTimer_Tick(object sender, EventArgs e) {
-            //Wait until we're ready to go
-            if (!worker.CheckIfReady())
-                return;
-
-            //All set! No use for timer now (until we have an error or something at least)
-            FindProcessTimer.Stop();
-            FindProcessTimer.Interval = 1000;
-
-            //Start checking our Matchmaking settings
-            SessionChangeTimer.Start();
-
-            //Fire off the rest of the settings events now that we're ready
-            Invoke((EventHandler)cmbCopClass_SelectedIndexChanged, new object[] { null, null });
-            Invoke((EventHandler)cmbRacerClass_SelectedIndexChanged, new object[] { null, null });
-            Invoke((EventHandler)numCopSkill_ValueChanged, new object[] { null, null });
-            Invoke((EventHandler)numRacerSkill_ValueChanged, new object[] { null, null });
-            Invoke((EventHandler)cmbCopDensity_SelectedIndexChanged, new object[] { null, null });
-            Invoke((EventHandler)cmbRacerDensity_SelectedIndexChanged, new object[] { null, null });
-            Invoke((EventHandler)numCopMinHeat_ValueChanged, new object[] { null, null });
-            Invoke((EventHandler)cmbCopHeatIntensity_SelectedIndexChanged, new object[] { null, null });
-            Invoke((EventHandler)chkSpikeStripFix_CheckedChanged, new object[] { null, null });
-            //Invoke((EventHandler)chkEqualWeaponUse_CheckedChanged, new object[] { null, null }); //Not needed, only calls cmb[Cop/Racer]Class_SelectedIndexChanged()
-        }
-
-        private void SessionChangeTimer_Tick(object sender, EventArgs e) {
+        public void ValidateOnlineOptions() {
             if (worker.GetMatchmakingMode() == MatchmakingModeEnum.Public) {
                 ComboBox[] cmbs = { cmbCopDifficulty, cmbRacerDifficulty, cmbCopDensity, cmbRacerDensity, cmbCopHeatIntensity };
                 foreach (ComboBox cmb in cmbs) {
-                    if (cmb.InvokeRequired)
-                        Invoke((EventHandler)ValidateOnlineOption, new object[] { cmb, null });
-                    else
-                        ValidateOnlineOption(cmb);
+                    int index = cmb.SelectedIndex,
+                        direction = -1;
+                    while (cmb.Items[index].ToString().Contains("*")) {
+                        if (index == 0)
+                            direction = 1;
+                        index += direction;
+                    }
+                    cmb.SelectedIndex = index;
                 }
             }
         }
-        protected void ValidateOnlineOption(object sender, EventArgs e) {
-            ValidateOnlineOption((ComboBox)sender);
-        }
-        protected void ValidateOnlineOption(ComboBox cmb) {
-            int index = cmb.SelectedIndex,
-                direction = -1;
-            while (cmb.Items[index].ToString().Contains("*")) {
-                if (index == 0)
-                    direction = 1;
-                index += direction;
-            }
-            cmb.SelectedIndex = index;
+
+        //Form events
+        private void DifficultyForm_FormClosing(object sender, FormClosingEventArgs e) {
+            worker.ResetAll(true);
         }
 
         //Save / load / link events

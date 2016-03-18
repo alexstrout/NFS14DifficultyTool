@@ -80,6 +80,7 @@
     <Compile Include="DifficultyForm.Designer.cs">
       <DependentUpon>DifficultyForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DifficultyFormTimers.cs" />
     <Compile Include="DifficultyFormWorker.cs" />
     <Compile Include="NFSObjectHeliSpikestripWeapon.cs" />
     <Compile Include="NFSObjectProfileOptions.cs" />

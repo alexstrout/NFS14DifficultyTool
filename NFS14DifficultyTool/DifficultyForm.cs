@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace NFS14DifficultyTool {
     public partial class DifficultyForm : Form {
         protected DifficultyFormWorker worker;
+        protected List<string> statusList;
 
         public DifficultyForm() {
             InitializeComponent();
 
             //Initialize our worker
             worker = new DifficultyFormWorker(this);
+            statusList = new List<string>();
 
             //Start looking for our game
             SetStatus();
@@ -27,12 +30,15 @@ namespace NFS14DifficultyTool {
         }
 
         //Status callbacks
-        delegate void SetStatusCallback(string text);
-        public void SetStatus(string text = "Ready...") {
+        delegate void SetStatusCallback(string text, bool preserveStatusList);
+        public void SetStatus(string text = "Ready...", bool preserveStatusList = false) {
+            if (!preserveStatusList)
+                lock (statusList)
+                    statusList.Clear();
             if (txtStatus.InvokeRequired) {
-                SetStatusCallback d = new SetStatusCallback(SetStatus);
+                SetStatusCallback callback = new SetStatusCallback(SetStatus);
                 try {
-                    Invoke(d, new object[] { text });
+                    Invoke(callback, new object[] { text, preserveStatusList });
                 }
                 catch (Exception) {
                     //May happen as threads are aborting, don't care
@@ -41,6 +47,26 @@ namespace NFS14DifficultyTool {
             else {
                 txtStatus.Text = text;
             }
+        }
+        public void PushStatus(string text) {
+            lock (statusList)
+                statusList.Add(text);
+            SetStatus(text, true);
+        }
+        public void PopStatus(string text) {
+            lock (statusList)
+                statusList.Remove(text);
+            PopStatus();
+        }
+        public void PopStatus() {
+            string status = null;
+            lock (statusList)
+                if (statusList.Count > 0)
+                    SetStatus(statusList[0], true);
+            if (status != null)
+                SetStatus(status, true);
+            else
+                SetStatus();
         }
 
         //Form events

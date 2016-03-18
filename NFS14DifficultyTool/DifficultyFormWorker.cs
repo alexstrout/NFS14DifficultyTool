@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -44,7 +43,6 @@ namespace NFS14DifficultyTool {
         protected MemoryManager memManager;
         protected ConcurrentDictionary<string, NFSObject> objectList;
         protected ConcurrentDictionary<string, Thread> threadList;
-        protected List<string> statusList;
         protected DifficultyForm parent;
 
         protected string[] copPersonalityList;
@@ -55,7 +53,6 @@ namespace NFS14DifficultyTool {
             memManager = new MemoryManager();
             objectList = new ConcurrentDictionary<string, NFSObject>();
             threadList = new ConcurrentDictionary<string, Thread>();
-            statusList = new List<string>();
             this.parent = parent;
 
             copPersonalityList = new string[] {
@@ -108,15 +105,15 @@ namespace NFS14DifficultyTool {
             memManager.AbortFindObject();
 
             parent.SetStatus("Reverting changes...");
-            foreach (NFSObject n in objectList.Values)
-                n.ResetFieldsToDefault();
+            foreach (NFSObject o in objectList.Values)
+                o.ResetFieldsToDefault();
 
             parent.SetStatus("Closing nfs14 handle...");
             if (memManager != null)
                 memManager.CloseHandle();
 
             //If we're not closing, start looking for our process again (e.g. we've found out game has closed but we haven't)
-            //Also clear our objectList, as the game may have launched a new session
+            //Also clear our objectList, as the game may have also just launched a new session without closing
             if (!isClosing) {
                 parent.SetStatus();
                 objectList.Clear();
@@ -136,9 +133,7 @@ namespace NFS14DifficultyTool {
             if (!objectList.TryGetValue(name, out type) || !type.IsValid()) {
                 //If we haven't found any objects yet, we're still waiting for the game world to load
                 string status = (objectList.Count == 0) ? "Waiting for game world..." : "Finding " + name + "...";
-                lock (statusList)
-                    statusList.Add(status);
-                parent.SetStatus(status);
+                parent.PushStatus(status);
 
                 try {
                     switch (name) {
@@ -168,13 +163,7 @@ namespace NFS14DifficultyTool {
                         parent.SetStatus(e.Message);
                 }
 
-                lock (statusList) {
-                    statusList.Remove(status);
-                    if (statusList.Count > 0)
-                        parent.SetStatus(statusList[0]);
-                    else
-                        parent.SetStatus();
-                }
+                parent.PopStatus(status);
             }
 
             return type;
@@ -225,7 +214,7 @@ namespace NFS14DifficultyTool {
                 if (!memManager.OpenProcess("nfs14")) // && !MemManager.OpenProcess("nfs14_x86")
                     return false;
 
-                //Found it, we can slow down our checks
+                //Found it, we can slow down our checks for hunting game objects
                 parent.SetStatus("Found it!");
                 parent.FindProcessTimer.Interval = 10000;
             }

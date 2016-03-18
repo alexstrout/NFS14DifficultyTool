@@ -37,6 +37,13 @@ namespace NFS14DifficultyTool {
         VeryHot = 3,
         Blazing = 4
     }
+    public enum MatchmakingModeEnum {
+        Unknown = -1,
+        Public = 0,
+        Friends = 1,
+        Private = 2,
+        SinglePlayer = 3
+    }
 
     public class DifficultyFormWorker {
         //TODO use ConcurrentDictionary instead of locking Dictionary, would be much faster for these uses
@@ -44,6 +51,8 @@ namespace NFS14DifficultyTool {
         protected ConcurrentDictionary<string, NFSObject> objectList;
         protected ConcurrentDictionary<string, Thread> threadList;
         protected DifficultyForm parent;
+
+        protected MatchmakingModeEnum lastMatchmakingMode;
 
         protected string[] copPersonalityList;
         protected string[] racerPersonalityList;
@@ -54,6 +63,8 @@ namespace NFS14DifficultyTool {
             objectList = new ConcurrentDictionary<string, NFSObject>();
             threadList = new ConcurrentDictionary<string, Thread>();
             this.parent = parent;
+
+            lastMatchmakingMode = MatchmakingModeEnum.Unknown;
 
             copPersonalityList = new string[] {
                 "AggressorCopPersonality",
@@ -117,6 +128,7 @@ namespace NFS14DifficultyTool {
             if (!isClosing) {
                 parent.SetStatus();
                 objectList.Clear();
+                parent.SessionChangeTimer.Stop();
                 parent.FindProcessTimer.Start();
             }
         }
@@ -153,6 +165,8 @@ namespace NFS14DifficultyTool {
                             type = objectList.GetOrAdd(name, new NFSObjectHeliSpikestripWeapon(memManager)); break;
                         case "MenuWhenInHideout":
                             type = objectList.GetOrAdd(name, new NFSObjectMenuWhenInHideout(memManager)); break;
+                        case "ProfileOptions":
+                            type = objectList.GetOrAdd(name, new NFSObjectProfileOptions(memManager)); break;
                         default:
                             return null;
                     }
@@ -233,6 +247,52 @@ namespace NFS14DifficultyTool {
 
             //Look for MenuWhenInHideout, which definitely won't be ready until we've loaded in
             GetObject("MenuWhenInHideout");
+        }
+
+        public MatchmakingModeEnum GetMatchmakingMode() {
+            LaunchThread(CheckSessionChange);
+            return lastMatchmakingMode;
+        }
+        protected void CheckSessionChange() {
+            //If any of our objects are no longer valid, we have probably changed sessions
+            //In this case we'll just blow everything away and start over
+            foreach (NFSObject o in objectList.Values) {
+                if (!o.IsValid()) {
+                    ResetAll();
+                    return;
+                }
+            }
+
+            NFSObject ProfileOptions;
+            if (!TryGetObject("ProfileOptions", out ProfileOptions))
+                return;
+            MatchmakingModeEnum matchmakingMode = (MatchmakingModeEnum)ProfileOptions.FieldList["MatchmakingMode"].Field;
+            string status = "Detected game: ";
+            switch (matchmakingMode) {
+                case MatchmakingModeEnum.Public:
+                    status += "Public";
+                    break;
+                case MatchmakingModeEnum.Friends:
+                    status += "Friends";
+                    break;
+                case MatchmakingModeEnum.Private:
+                    status += "Private";
+                    break;
+                case MatchmakingModeEnum.SinglePlayer:
+                    status += "Single Player";
+                    break;
+                default: //Unknown
+                    status += "Unknown";
+                    break;
+            }
+
+            //Temporarily show a MatckmakingMode change, will be cleared next pass or by something else
+            if (lastMatchmakingMode == matchmakingMode)
+                parent.PopStatus();
+            else {
+                lastMatchmakingMode = matchmakingMode;
+                parent.SetStatus(status, true);
+            }
         }
 
         //Class events

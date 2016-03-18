@@ -83,6 +83,7 @@
     </Compile>
     <Compile Include="DifficultyFormWorker.cs" />
     <Compile Include="NFSObjectHeliSpikestripWeapon.cs" />
+    <Compile Include="NFSObjectProfileOptions.cs" />
     <Compile Include="NFSObjectSpikestripWeapon.cs" />
     <Compile Include="NFSObjectGameTime.cs" />
     <Compile Include="NFSObjectPersonaLibraryPrefab.cs" />

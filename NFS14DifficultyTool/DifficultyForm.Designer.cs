@@ -60,6 +60,7 @@
             this.lnkBitbucket = new System.Windows.Forms.LinkLabel();
             this.FindProcessTimer = new System.Windows.Forms.Timer(this.components);
             this.txtStatus = new System.Windows.Forms.TextBox();
+            this.SessionChangeTimer = new System.Windows.Forms.Timer(this.components);
             this.grpMiscSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRacerSkill)).BeginInit();
             this.grpRacerSettings.SuspendLayout();
@@ -556,6 +557,11 @@
             this.txtStatus.Text = "Status...";
             this.txtStatus.WordWrap = false;
             // 
+            // SessionChangeTimer
+            // 
+            this.SessionChangeTimer.Interval = 5000;
+            this.SessionChangeTimer.Tick += new System.EventHandler(this.SessionChangeTimer_Tick);
+            // 
             // DifficultyForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -629,6 +635,7 @@
         public System.Windows.Forms.Timer FindProcessTimer;
         private System.Windows.Forms.Label lblCopMinHeat;
         private System.Windows.Forms.NumericUpDown numCopMinHeat;
+        public System.Windows.Forms.Timer SessionChangeTimer;
 
     }
 }

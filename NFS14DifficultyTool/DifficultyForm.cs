@@ -81,6 +81,10 @@ namespace NFS14DifficultyTool {
 
             //All set! No use for timer now (until we have an error or something at least)
             FindProcessTimer.Stop();
+            FindProcessTimer.Interval = 1000;
+
+            //Start checking our Matchmaking settings
+            SessionChangeTimer.Start();
 
             //Fire off the rest of the settings events now that we're ready
             cmbCopClass_SelectedIndexChanged(null, null);
@@ -93,6 +97,26 @@ namespace NFS14DifficultyTool {
             cmbCopHeatIntensity_SelectedIndexChanged(null, null);
             chkSpikeStripFix_CheckedChanged(null, null);
             //chkEqualWeaponUse_CheckedChanged(null, null); //Not needed, only calls cmb[Cop/Racer]Class_SelectedIndexChanged()
+        }
+
+        private void SessionChangeTimer_Tick(object sender, EventArgs e) {
+            if (worker.GetMatchmakingMode() == MatchmakingModeEnum.Friends) {
+                ValidateOnlineOption(cmbCopDifficulty);
+                ValidateOnlineOption(cmbRacerDifficulty);
+                ValidateOnlineOption(cmbCopDensity);
+                ValidateOnlineOption(cmbRacerDensity);
+                ValidateOnlineOption(cmbCopHeatIntensity);
+            }
+        }
+        protected void ValidateOnlineOption(ComboBox cmb) {
+            int index = cmb.SelectedIndex,
+                direction = -1;
+            while (cmb.Items[index].ToString().Contains("*")) {
+                if (index == 0)
+                    direction = 1;
+                index += direction;
+            }
+            cmb.SelectedIndex = index;
         }
 
         //Save / load / link events

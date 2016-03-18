@@ -23,7 +23,6 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
             this.lblRacerClass = new System.Windows.Forms.Label();
             this.lblRacerSkill = new System.Windows.Forms.Label();
             this.btnSaveSettings = new System.Windows.Forms.Button();
@@ -58,9 +57,7 @@
             this.cmbCopDifficulty = new System.Windows.Forms.ComboBox();
             this.lblInfoName = new System.Windows.Forms.Label();
             this.lnkBitbucket = new System.Windows.Forms.LinkLabel();
-            this.FindProcessTimer = new System.Windows.Forms.Timer(this.components);
             this.txtStatus = new System.Windows.Forms.TextBox();
-            this.SessionChangeTimer = new System.Windows.Forms.Timer(this.components);
             this.grpMiscSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRacerSkill)).BeginInit();
             this.grpRacerSettings.SuspendLayout();
@@ -539,11 +536,6 @@
             this.lnkBitbucket.Text = "https://bitbucket.org/alexstrout/nfs14difficultytool";
             this.lnkBitbucket.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkBitbucket_LinkClicked);
             // 
-            // FindProcessTimer
-            // 
-            this.FindProcessTimer.Interval = 1000;
-            this.FindProcessTimer.Tick += new System.EventHandler(this.FindProcessTimer_Tick);
-            // 
             // txtStatus
             // 
             this.txtStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -556,11 +548,6 @@
             this.txtStatus.TabIndex = 24;
             this.txtStatus.Text = "Status...";
             this.txtStatus.WordWrap = false;
-            // 
-            // SessionChangeTimer
-            // 
-            this.SessionChangeTimer.Interval = 5000;
-            this.SessionChangeTimer.Tick += new System.EventHandler(this.SessionChangeTimer_Tick);
             // 
             // DifficultyForm
             // 
@@ -632,10 +619,8 @@
         private System.Windows.Forms.Label lblInfoName;
         private System.Windows.Forms.LinkLabel lnkBitbucket;
         private System.Windows.Forms.TextBox txtStatus;
-        public System.Windows.Forms.Timer FindProcessTimer;
         private System.Windows.Forms.Label lblCopMinHeat;
         private System.Windows.Forms.NumericUpDown numCopMinHeat;
-        public System.Windows.Forms.Timer SessionChangeTimer;
 
     }
 }

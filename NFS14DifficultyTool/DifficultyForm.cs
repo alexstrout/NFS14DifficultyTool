@@ -7,12 +7,21 @@ namespace NFS14DifficultyTool {
         protected DifficultyFormWorker worker;
         protected List<string> statusList;
 
+        public System.Timers.Timer FindProcessTimer { get; set; }
+        public System.Timers.Timer SessionChangeTimer { get; set; }
+
         public DifficultyForm() {
             InitializeComponent();
 
             //Initialize our worker
             worker = new DifficultyFormWorker(this);
             statusList = new List<string>();
+
+            //Initialize our timers
+            FindProcessTimer = new System.Timers.Timer(1000);
+            FindProcessTimer.Elapsed += FindProcessTimer_Tick;
+            SessionChangeTimer = new System.Timers.Timer(6000);
+            SessionChangeTimer.Elapsed += SessionChangeTimer_Tick;
 
             //Start looking for our game
             SetStatus();
@@ -30,23 +39,21 @@ namespace NFS14DifficultyTool {
         }
 
         //Status callbacks
-        delegate void SetStatusCallback(string text, bool preserveStatusList);
+        protected delegate void SetStatusCallback(string text, bool preserveStatusList);
         public void SetStatus(string text = "Ready...", bool preserveStatusList = false) {
             if (!preserveStatusList)
                 lock (statusList)
                     statusList.Clear();
             if (txtStatus.InvokeRequired) {
-                SetStatusCallback callback = new SetStatusCallback(SetStatus);
                 try {
-                    Invoke(callback, new object[] { text, preserveStatusList });
+                    Invoke(new SetStatusCallback(SetStatus), new object[] { text, preserveStatusList });
                 }
-                catch (Exception) {
+                catch (ObjectDisposedException) {
                     //May happen as threads are aborting, don't care
                 }
             }
-            else {
+            else
                 txtStatus.Text = text;
-            }
         }
         public void PushStatus(string text) {
             lock (statusList)
@@ -62,7 +69,7 @@ namespace NFS14DifficultyTool {
             string status = null;
             lock (statusList)
                 if (statusList.Count > 0)
-                    SetStatus(statusList[0], true);
+                    status = statusList[0];
             if (status != null)
                 SetStatus(status, true);
             else
@@ -87,26 +94,31 @@ namespace NFS14DifficultyTool {
             SessionChangeTimer.Start();
 
             //Fire off the rest of the settings events now that we're ready
-            cmbCopClass_SelectedIndexChanged(null, null);
-            cmbRacerClass_SelectedIndexChanged(null, null);
-            numCopSkill_ValueChanged(null, null);
-            numRacerSkill_ValueChanged(null, null);
-            cmbCopDensity_SelectedIndexChanged(null, null);
-            cmbRacerDensity_SelectedIndexChanged(null, null);
-            numCopMinHeat_ValueChanged(null, null);
-            cmbCopHeatIntensity_SelectedIndexChanged(null, null);
-            chkSpikeStripFix_CheckedChanged(null, null);
-            //chkEqualWeaponUse_CheckedChanged(null, null); //Not needed, only calls cmb[Cop/Racer]Class_SelectedIndexChanged()
+            Invoke((EventHandler)cmbCopClass_SelectedIndexChanged, new object[] { null, null });
+            Invoke((EventHandler)cmbRacerClass_SelectedIndexChanged, new object[] { null, null });
+            Invoke((EventHandler)numCopSkill_ValueChanged, new object[] { null, null });
+            Invoke((EventHandler)numRacerSkill_ValueChanged, new object[] { null, null });
+            Invoke((EventHandler)cmbCopDensity_SelectedIndexChanged, new object[] { null, null });
+            Invoke((EventHandler)cmbRacerDensity_SelectedIndexChanged, new object[] { null, null });
+            Invoke((EventHandler)numCopMinHeat_ValueChanged, new object[] { null, null });
+            Invoke((EventHandler)cmbCopHeatIntensity_SelectedIndexChanged, new object[] { null, null });
+            Invoke((EventHandler)chkSpikeStripFix_CheckedChanged, new object[] { null, null });
+            //Invoke((EventHandler)chkEqualWeaponUse_CheckedChanged, new object[] { null, null }); //Not needed, only calls cmb[Cop/Racer]Class_SelectedIndexChanged()
         }
 
         private void SessionChangeTimer_Tick(object sender, EventArgs e) {
             if (worker.GetMatchmakingMode() == MatchmakingModeEnum.Public) {
-                ValidateOnlineOption(cmbCopDifficulty);
-                ValidateOnlineOption(cmbRacerDifficulty);
-                ValidateOnlineOption(cmbCopDensity);
-                ValidateOnlineOption(cmbRacerDensity);
-                ValidateOnlineOption(cmbCopHeatIntensity);
+                ComboBox[] cmbs = { cmbCopDifficulty, cmbRacerDifficulty, cmbCopDensity, cmbRacerDensity, cmbCopHeatIntensity };
+                foreach (ComboBox cmb in cmbs) {
+                    if (cmb.InvokeRequired)
+                        Invoke((EventHandler)ValidateOnlineOption, new object[] { cmb, null });
+                    else
+                        ValidateOnlineOption(cmb);
+                }
             }
+        }
+        protected void ValidateOnlineOption(object sender, EventArgs e) {
+            ValidateOnlineOption((ComboBox)sender);
         }
         protected void ValidateOnlineOption(ComboBox cmb) {
             int index = cmb.SelectedIndex,

@@ -26,7 +26,7 @@ namespace NFS14DifficultyTool {
             public ushort ProcessorLevel; // WORD
             public ushort ProcessorRevision; // WORD
         }
-        [DllImport("kernel32.dll", SetLastError = false)]
+        [DllImport("kernel32.dll", SetLastError = true)]
         protected static extern void GetSystemInfo(out SystemInfo Info);
 
         [Flags]
@@ -45,7 +45,7 @@ namespace NFS14DifficultyTool {
             QueryLimitedInformation = 0x00001000,
             Synchronize = 0x00100000
         }
-        [DllImport("kernel32.dll")]
+        [DllImport("kernel32.dll", SetLastError = true)]
         protected static extern IntPtr OpenProcess(
              ProcessAccessFlags processAccess,
              bool bInheritHandle,
@@ -54,7 +54,7 @@ namespace NFS14DifficultyTool {
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        protected static extern bool CloseHandle(IntPtr hObject);
+        protected static extern bool CloseHandle(IntPtr hProcess);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         protected static extern bool ReadProcessMemory(
@@ -98,7 +98,7 @@ namespace NFS14DifficultyTool {
             out IntPtr lpNumberOfBytesWritten
         );
 
-        public bool ProcessOpen { get; protected set; }
+        public bool CloseHandleOnFailedReadWrite { get; set; }
 
         protected IntPtr processHandle;
         protected SystemInfo sysInfo;
@@ -111,11 +111,15 @@ namespace NFS14DifficultyTool {
         protected Object findObjectLock;
 
         public MemoryManager() {
-            ProcessOpen = false;
+            CloseHandleOnFailedReadWrite = false;
             GetSystemInfo(out sysInfo);
             findObjectInfo.aborting = false;
             findObjectInfo.numRunning = 0;
             findObjectLock = new Object();
+        }
+
+        public bool IsProcessOpen() {
+            return processHandle != IntPtr.Zero;
         }
 
         public bool OpenProcess(string processName) {
@@ -124,24 +128,25 @@ namespace NFS14DifficultyTool {
                 return false;
 
             IntPtr p;
-            p = OpenProcess(ProcessAccessFlags.VirtualMemoryOperation | ProcessAccessFlags.VirtualMemoryRead | ProcessAccessFlags.VirtualMemoryWrite, true, procList[0].Id);
+            p = OpenProcess(
+                ProcessAccessFlags.VirtualMemoryOperation
+                    | ProcessAccessFlags.VirtualMemoryRead
+                    | ProcessAccessFlags.VirtualMemoryWrite,
+                true, procList[procList.Length - 1].Id);
             if (p == default(IntPtr))
                 return false;
             processHandle = p;
-            ProcessOpen = true;
             return true;
         }
 
         public bool CloseHandle() {
-            if (ProcessOpen && CloseHandle(processHandle)) {
-                ProcessOpen = false;
-                return true;
-            }
-            return false;
+            IntPtr p = processHandle;
+            processHandle = IntPtr.Zero;
+            return !IsProcessOpen() || CloseHandle(p);
         }
 
-        public bool ReadProcessMemory(IntPtr lpBaseAddress, byte[] lpBuffer, out IntPtr lpNumberOfBytesWritten) {
-            return ReadProcessMemory(processHandle, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesWritten);
+        public bool ReadProcessMemory(IntPtr lpBaseAddress, byte[] lpBuffer, out IntPtr lpNumberOfBytesRead) {
+            return ReadProcessMemory(processHandle, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesRead);
         }
 
         public bool WriteProcessMemory(IntPtr lpBaseAddress, byte[] lpBuffer, out IntPtr lpNumberOfBytesWritten) {
@@ -188,7 +193,7 @@ namespace NFS14DifficultyTool {
             int i = 0,
                 j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead - though in practice this should never happen
             for (IntPtr PTR = IntPtr.Zero; (long)PTR < (long)sysInfo.MaximumApplicationAddress; PTR += buff.Length) {
-                if (findObjectInfo.aborting || !ProcessOpen)
+                if (findObjectInfo.aborting || !IsProcessOpen())
                     break;
                 if (ReadProcessMemory(PTR, buff, out bytesRead)) {
                     for (i = 0; i < (int)bytesRead; i += IntPtr.Size) {
@@ -211,7 +216,8 @@ namespace NFS14DifficultyTool {
         public byte[] Read(IntPtr addr, int size) {
             byte[] buff = new byte[size];
             IntPtr lpNumberOfBytesRead;
-            ReadProcessMemory((IntPtr)addr, buff, out lpNumberOfBytesRead);
+            if (!ReadProcessMemory((IntPtr)addr, buff, out lpNumberOfBytesRead) && CloseHandleOnFailedReadWrite)
+                CloseHandle();
             return buff;
         }
         public bool ReadBool(IntPtr addr) {
@@ -229,7 +235,12 @@ namespace NFS14DifficultyTool {
 
         public bool Write(IntPtr addr, byte[] value) {
             IntPtr lpNumberOfBytesWritten;
-            return WriteProcessMemory((IntPtr)addr, value, out lpNumberOfBytesWritten);
+            if (!WriteProcessMemory((IntPtr)addr, value, out lpNumberOfBytesWritten)) {
+                if (CloseHandleOnFailedReadWrite)
+                    CloseHandle();
+                return false;
+            }
+            return true;
         }
         public bool WriteBool(IntPtr addr, bool value) {
             return Write(addr, BitConverter.GetBytes(value));

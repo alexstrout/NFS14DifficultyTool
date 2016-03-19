@@ -138,7 +138,11 @@ namespace NFS14DifficultyTool {
             return obj != null;
         }
         public NFSObject GetObject(string name) {
-            if (!memManager.ProcessOpen)
+            if (!memManager.IsProcessOpen())
+                return null;
+
+            //Also avoid hammering on the game while it's still loading
+            if (objectList.Count == 0 && name != "UIRootController")
                 return null;
 
             NFSObject type = null;
@@ -201,6 +205,10 @@ namespace NFS14DifficultyTool {
         }
 
         protected bool CheckThread() {
+            //If our process isn't open, don't even bother
+            if (!memManager.IsProcessOpen())
+                return true;
+
             //If we successfully add our thread (no thread for this name ever existed before), we're good to go
             Thread oldThread = threadList.GetOrAdd(Thread.CurrentThread.Name, Thread.CurrentThread);
             if (oldThread == Thread.CurrentThread)
@@ -223,7 +231,7 @@ namespace NFS14DifficultyTool {
         }
 
         public bool CheckIfReady() {
-            if (!memManager.ProcessOpen) {
+            if (!memManager.IsProcessOpen()) {
                 parent.SetStatus("Waiting for game...");
                 if (!memManager.OpenProcess("nfs14")) // && !MemManager.OpenProcess("nfs14_x86")
                     return false;
@@ -298,7 +306,7 @@ namespace NFS14DifficultyTool {
         }
         protected int copClass;
         protected void UpdateCopClass() {
-            if (!memManager.ProcessOpen || CheckThread())
+            if (CheckThread())
                 return;
             int index = copClass;
             bool eqWeapUse = equalWeaponUse;
@@ -377,7 +385,7 @@ namespace NFS14DifficultyTool {
         }
         protected int racerClass;
         protected void UpdateRacerClass() {
-            if (!memManager.ProcessOpen || CheckThread())
+            if (CheckThread())
                 return;
             int index = racerClass;
             bool eqWeapUse = equalWeaponUse;
@@ -504,7 +512,7 @@ namespace NFS14DifficultyTool {
         }
         protected float copSkill;
         protected void UpdateCopSkill() {
-            if (!memManager.ProcessOpen || CheckThread())
+            if (CheckThread())
                 return;
             float skill = copSkill;
 
@@ -522,7 +530,7 @@ namespace NFS14DifficultyTool {
         }
         protected float racerSkill;
         protected void UpdateRacerSkill() {
-            if (!memManager.ProcessOpen || CheckThread())
+            if (CheckThread())
                 return;
             float skill = racerSkill;
 
@@ -547,7 +555,7 @@ namespace NFS14DifficultyTool {
         }
         protected int copDensity;
         protected void UpdateCopDensity() {
-            if (!memManager.ProcessOpen || CheckThread())
+            if (CheckThread())
                 return;
             int density = copDensity;
 
@@ -570,7 +578,7 @@ namespace NFS14DifficultyTool {
         }
         protected int racerDensity;
         protected void UpdateRacerDensity() {
-            if (!memManager.ProcessOpen || CheckThread())
+            if (CheckThread())
                 return;
             int density = racerDensity;
 
@@ -592,7 +600,7 @@ namespace NFS14DifficultyTool {
         }
         protected int copMinHeat;
         protected void UpdateCopMinHeat() {
-            if (!memManager.ProcessOpen || CheckThread())
+            if (CheckThread())
                 return;
             int heat = copMinHeat;
 
@@ -620,7 +628,7 @@ namespace NFS14DifficultyTool {
         }
         protected int copHeatIntensity;
         protected void UpdateCopHeatIntensity() {
-            if (!memManager.ProcessOpen || CheckThread())
+            if (CheckThread())
                 return;
             int index = copHeatIntensity;
 
@@ -709,7 +717,7 @@ namespace NFS14DifficultyTool {
         }
         protected bool useSpikeStripFix;
         protected void UpdateSpikeStripFix() {
-            if (!memManager.ProcessOpen || CheckThread())
+            if (CheckThread())
                 return;
             bool useFix = useSpikeStripFix;
 
@@ -731,7 +739,7 @@ namespace NFS14DifficultyTool {
         }
         protected bool equalWeaponUse;
         protected void UpdateEqualWeaponUse() {
-            if (!memManager.ProcessOpen || CheckThread())
+            if (CheckThread())
                 return;
             bool eqWeapUse = equalWeaponUse;
 

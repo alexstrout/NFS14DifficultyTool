@@ -23,8 +23,10 @@ namespace NFS14DifficultyTool {
             FindProcessTimer.Start();
         }
 
-        public delegate void TimerCallback();
+        //Timer callbacks
+        protected delegate void TimerCallback();
 
+        //Timer events
         private void FindProcessTimer_Tick(object sender, EventArgs e) {
             //Wait until we're ready to go
             if (!worker.CheckIfReady())
@@ -32,18 +34,17 @@ namespace NFS14DifficultyTool {
 
             //All set! No use for timer now (until we have an error or something at least)
             FindProcessTimer.Stop();
-            FindProcessTimer.Interval = 1000;
 
             //Start checking our Matchmaking settings
             SessionChangeTimer.Start();
 
             //Fire off the rest of the settings events now that we're ready
-            parent.Invoke(new TimerCallback(parent.ApplyAllSettings), new object[] { });
+            parent.Invoke(new TimerCallback(parent.ApplyAllSettings));
         }
 
         private void SessionChangeTimer_Tick(object sender, EventArgs e) {
             if (worker.GetMatchmakingMode() == MatchmakingModeEnum.Public)
-                parent.Invoke(new TimerCallback(parent.ValidateOnlineOptions), new object[] { });
+                parent.Invoke(new TimerCallback(parent.ValidateOnlineOptions));
         }
     }
 }

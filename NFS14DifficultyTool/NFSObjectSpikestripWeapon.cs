@@ -11,6 +11,8 @@
             FieldList.Add("Classification", new NFSFieldInt(this, "100"));
             FieldList.Add("ConeLength-Low", new NFSFieldFloat(this, "1C0"));
             FieldList.Add("ConeLength-High", new NFSFieldFloat(this, "1C4"));
+            FieldList.Add("ConeWidth-Low", new NFSFieldFloat(this, "1C8"));
+            FieldList.Add("ConeWidth-High", new NFSFieldFloat(this, "1CC"));
             FieldList.Add("MinimumTriggerDistance-Low", new NFSFieldFloat(this, "1D0"));
             FieldList.Add("MinimumTriggerDistance-High", new NFSFieldFloat(this, "1D4"));
             FieldList.Add("Projectile-EX0", new NFSFieldPointer(this, "7A0"));

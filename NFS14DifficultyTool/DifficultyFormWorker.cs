@@ -371,11 +371,6 @@ namespace NFS14DifficultyTool {
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
             }
-
-            //Set speed matching inside PersonaLibraryPrefab objects based on class
-            bool matchSpeed = index < (int)ClassEnum.Hard;
-            foreach (string s in copPersonalityList)
-                PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
         }
 
         public void UpdateRacerClass(int index, bool eqWeapUse) {
@@ -498,11 +493,6 @@ namespace NFS14DifficultyTool {
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
             }
-
-            //Set speed matching inside PersonaLibraryPrefab objects based on class
-            bool matchSpeed = index < (int)ClassEnum.Hard;
-            foreach (string s in racerPersonalityList)
-                PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
         }
 
         //Skill events
@@ -726,6 +716,10 @@ namespace NFS14DifficultyTool {
                 return;
             if (useFix) {
                 SpikestripWeapon.FieldList["Classification"].Field = NFSObjectSpikestripWeapon.VehicleWeaponClassification.VehicleWeaponClassification_BackwardFiring;
+                SpikestripWeapon.FieldList["ConeLength-Low"].Field = 70f;
+                SpikestripWeapon.FieldList["ConeLength-High"].Field = 80f;
+                SpikestripWeapon.FieldList["ConeWidth-Low"].Field = 45f;
+                SpikestripWeapon.FieldList["ConeWidth-High"].Field = 30f;
                 SpikestripWeapon.FieldList["MinimumTriggerDistance-Low"].Field = 2f;
                 SpikestripWeapon.FieldList["MinimumTriggerDistance-High"].Field = 1f;
             }

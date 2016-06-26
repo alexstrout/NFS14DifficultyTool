@@ -82,6 +82,7 @@
     </Compile>
     <Compile Include="DifficultyFormTimers.cs" />
     <Compile Include="DifficultyFormWorker.cs" />
+    <Compile Include="INIParser.cs" />
     <Compile Include="NFSObjectHeliSpikestripWeapon.cs" />
     <Compile Include="NFSObjectProfileOptions.cs" />
     <Compile Include="NFSObjectSpikestripWeapon.cs" />

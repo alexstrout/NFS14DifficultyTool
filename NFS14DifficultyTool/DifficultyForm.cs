@@ -20,15 +20,20 @@ namespace NFS14DifficultyTool {
             Timers = new DifficultyFormTimers(this, worker);
             SetStatus();
 
-            //Set defaults -- TODO hook this up to save/load system
-            cmbCopDifficulty.SelectedIndex = (int)DifficultyEnum.Adept;
-            cmbRacerDifficulty.SelectedIndex = (int)DifficultyEnum.Skilled;
-            cmbCopDensity.SelectedIndex = (int)DensityEnum.Normal;
-            cmbRacerDensity.SelectedIndex = (int)DensityEnum.Normal;
-            numCopMinHeat.Value = 1;
-            cmbCopHeatIntensity.SelectedIndex = (int)HeatEnum.Normal;
-            chkSpikeStripFix.Checked = true;
-            chkEqualWeaponUse.Checked = true;
+            //Load previous settings, or set defaults if none present
+            //TODO Add "Defaults" button to reset defaults at any time, will need to shuffle UI around
+            if (System.IO.File.Exists("Settings.ini"))
+                LoadSettings("Settings.ini");
+            else {
+                cmbCopDifficulty.SelectedIndex = (int)DifficultyEnum.Adept;
+                cmbRacerDifficulty.SelectedIndex = (int)DifficultyEnum.Skilled;
+                cmbCopDensity.SelectedIndex = (int)DensityEnum.Normal;
+                cmbRacerDensity.SelectedIndex = (int)DensityEnum.Normal;
+                numCopMinHeat.Value = 1;
+                cmbCopHeatIntensity.SelectedIndex = (int)HeatEnum.Normal;
+                chkSpikeStripFix.Checked = true;
+                chkEqualWeaponUse.Checked = true;
+            }
         }
 
         //Status callbacks
@@ -99,20 +104,107 @@ namespace NFS14DifficultyTool {
 
         //Form events
         private void DifficultyForm_FormClosing(object sender, FormClosingEventArgs e) {
+            SaveSettings("Settings.ini");
             worker.ResetAll(true);
         }
 
         //Save / load / link events
         private void btnSaveSettings_Click(object sender, EventArgs e) {
-            //TODO...
+            if (dlgSaveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                SaveSettings(dlgSaveFile.FileName);
+        }
+        private void SaveSettings(string filePath) {
+            INIParser ini = new INIParser();
+            ini.SetValue("Settings", "CopDifficulty", cmbCopDifficulty.SelectedIndex);
+            if (cmbCopDifficulty.SelectedIndex == (int)DifficultyEnum.Custom) {
+                ini.SetValue("Settings", "CopClass", cmbCopClass.SelectedIndex);
+                ini.SetValue("Settings", "CopSkill", numCopSkill.Value);
+            }
+
+            ini.SetValue("Settings", "RacerDifficulty", cmbRacerDifficulty.SelectedIndex);
+            if (cmbRacerDifficulty.SelectedIndex == (int)DifficultyEnum.Custom) {
+                ini.SetValue("Settings", "RacerClass", cmbRacerClass.SelectedIndex);
+                ini.SetValue("Settings", "RacerSkill", numRacerSkill.Value);
+            }
+
+            ini.SetValue("Settings", "CopDensity", cmbCopDensity.SelectedIndex);
+            ini.SetValue("Settings", "RacerDensity", cmbRacerDensity.SelectedIndex);
+
+            ini.SetValue("Settings", "CopMinHeat", numCopMinHeat.Value);
+            ini.SetValue("Settings", "CopHeatIntensity", cmbCopHeatIntensity.SelectedIndex);
+
+            ini.SetValue("Settings", "SpikeStripFix", chkSpikeStripFix.Checked);
+            ini.SetValue("Settings", "EqualWeaponUse", chkEqualWeaponUse.Checked);
+
+            try {
+                ini.WriteFile(filePath);
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message, "Save Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void btnLoadSettings_Click(object sender, EventArgs e) {
-            //TODO...
+            if (dlgOpenFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                LoadSettings(dlgOpenFile.FileName);
+        }
+        private bool LoadSettings(string filePath) {
+            INIParser ini = new INIParser();
+            try {
+                ini.ReadFile(filePath);
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message, "Load Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            int iField;
+            if (int.TryParse(ini.GetValue("Settings", "CopDifficulty"), out iField))
+                cmbCopDifficulty.SelectedIndex = iField;
+            if (cmbCopDifficulty.SelectedIndex == (int)DifficultyEnum.Custom) {
+                if (int.TryParse(ini.GetValue("Settings", "CopClass"), out iField))
+                    cmbCopClass.SelectedIndex = iField;
+                if (int.TryParse(ini.GetValue("Settings", "CopSkill"), out iField))
+                    numCopSkill.Value = iField;
+            }
+
+            if (int.TryParse(ini.GetValue("Settings", "RacerDifficulty"), out iField))
+                cmbRacerDifficulty.SelectedIndex = iField;
+            if (cmbRacerDifficulty.SelectedIndex == (int)DifficultyEnum.Custom) {
+                if (int.TryParse(ini.GetValue("Settings", "RacerClass"), out iField))
+                    cmbRacerClass.SelectedIndex = iField;
+                if (int.TryParse(ini.GetValue("Settings", "RacerSkill"), out iField))
+                    numRacerSkill.Value = iField;
+            }
+
+            if (int.TryParse(ini.GetValue("Settings", "CopDensity"), out iField))
+                cmbCopDensity.SelectedIndex = iField;
+            if (int.TryParse(ini.GetValue("Settings", "RacerDensity"), out iField))
+                cmbRacerDensity.SelectedIndex = iField;
+
+            if (int.TryParse(ini.GetValue("Settings", "CopMinHeat"), out iField))
+                numCopMinHeat.Value = iField;
+            if (int.TryParse(ini.GetValue("Settings", "CopHeatIntensity"), out iField))
+                cmbCopHeatIntensity.SelectedIndex = iField;
+
+            bool bField;
+            if (bool.TryParse(ini.GetValue("Settings", "SpikeStripFix"), out bField))
+                chkSpikeStripFix.Checked = bField;
+            if (bool.TryParse(ini.GetValue("Settings", "EqualWeaponUse"), out bField))
+                chkEqualWeaponUse.Checked = bField;
+
+            return true;
         }
 
         private void lnkBitbucket_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-            //TODO...
+            Cursor.Current = Cursors.AppStarting;
+            try {
+                System.Diagnostics.Process.Start(lnkBitbucket.Text);
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message, "URL Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            Cursor.Current = Cursors.Default;
         }
 
         //Difficulty events

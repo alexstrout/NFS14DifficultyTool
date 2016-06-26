@@ -58,6 +58,8 @@
             this.lblInfoName = new System.Windows.Forms.Label();
             this.lnkBitbucket = new System.Windows.Forms.LinkLabel();
             this.txtStatus = new System.Windows.Forms.TextBox();
+            this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
+            this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
             this.grpMiscSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRacerSkill)).BeginInit();
             this.grpRacerSettings.SuspendLayout();
@@ -89,7 +91,6 @@
             // btnSaveSettings
             // 
             this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSaveSettings.Enabled = false;
             this.btnSaveSettings.Location = new System.Drawing.Point(192, 383);
             this.btnSaveSettings.Name = "btnSaveSettings";
             this.btnSaveSettings.Size = new System.Drawing.Size(64, 23);
@@ -111,7 +112,6 @@
             // btnLoadSettings
             // 
             this.btnLoadSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLoadSettings.Enabled = false;
             this.btnLoadSettings.Location = new System.Drawing.Point(262, 383);
             this.btnLoadSettings.Name = "btnLoadSettings";
             this.btnLoadSettings.Size = new System.Drawing.Size(64, 23);
@@ -549,6 +549,18 @@
             this.txtStatus.Text = "Status...";
             this.txtStatus.WordWrap = false;
             // 
+            // dlgOpenFile
+            // 
+            this.dlgOpenFile.DefaultExt = "ini";
+            this.dlgOpenFile.FileName = "Settings.ini";
+            this.dlgOpenFile.Filter = "Configuration Files (*.ini)|*.ini|All Files (*.*)|*.*";
+            // 
+            // dlgSaveFile
+            // 
+            this.dlgSaveFile.DefaultExt = "ini";
+            this.dlgSaveFile.FileName = "Settings.ini";
+            this.dlgSaveFile.Filter = "Configuration Files (*.ini)|*.ini|All Files (*.*)|*.*";
+            // 
             // DifficultyForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -621,6 +633,8 @@
         private System.Windows.Forms.TextBox txtStatus;
         private System.Windows.Forms.Label lblCopMinHeat;
         private System.Windows.Forms.NumericUpDown numCopMinHeat;
+        private System.Windows.Forms.OpenFileDialog dlgOpenFile;
+        private System.Windows.Forms.SaveFileDialog dlgSaveFile;
 
     }
 }

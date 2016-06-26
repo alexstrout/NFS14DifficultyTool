@@ -159,13 +159,14 @@ namespace NFS14DifficultyTool {
             }
 
             int iField;
+            decimal dField;
             if (int.TryParse(ini.GetValue("Settings", "CopDifficulty"), out iField))
                 cmbCopDifficulty.SelectedIndex = iField;
             if (cmbCopDifficulty.SelectedIndex == (int)DifficultyEnum.Custom) {
                 if (int.TryParse(ini.GetValue("Settings", "CopClass"), out iField))
                     cmbCopClass.SelectedIndex = iField;
-                if (int.TryParse(ini.GetValue("Settings", "CopSkill"), out iField))
-                    numCopSkill.Value = iField;
+                if (decimal.TryParse(ini.GetValue("Settings", "CopSkill"), out dField))
+                    numCopSkill.Value = dField;
             }
 
             if (int.TryParse(ini.GetValue("Settings", "RacerDifficulty"), out iField))
@@ -173,8 +174,8 @@ namespace NFS14DifficultyTool {
             if (cmbRacerDifficulty.SelectedIndex == (int)DifficultyEnum.Custom) {
                 if (int.TryParse(ini.GetValue("Settings", "RacerClass"), out iField))
                     cmbRacerClass.SelectedIndex = iField;
-                if (int.TryParse(ini.GetValue("Settings", "RacerSkill"), out iField))
-                    numRacerSkill.Value = iField;
+                if (decimal.TryParse(ini.GetValue("Settings", "RacerSkill"), out dField))
+                    numRacerSkill.Value = dField;
             }
 
             if (int.TryParse(ini.GetValue("Settings", "CopDensity"), out iField))

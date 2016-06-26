@@ -83,19 +83,17 @@ namespace NFS14DifficultyTool {
             //chkEqualWeaponUse_CheckedChanged(null, null); //Not needed, only calls cmb[Cop/Racer]Class_SelectedIndexChanged()
         }
 
-        public void ValidateOnlineOptions() {
-            if (worker.GetMatchmakingMode() == MatchmakingModeEnum.Public) {
-                ComboBox[] cmbs = { cmbCopDifficulty, cmbRacerDifficulty, cmbCopDensity, cmbRacerDensity, cmbCopHeatIntensity };
-                foreach (ComboBox cmb in cmbs) {
-                    int index = cmb.SelectedIndex,
-                        direction = -1;
-                    while (cmb.Items[index].ToString().Contains("*")) {
-                        if (index == 0)
-                            direction = 1;
-                        index += direction;
-                    }
-                    cmb.SelectedIndex = index;
+        public void ValidatePublicGameOptions() {
+            ComboBox[] cmbs = { cmbCopDifficulty, cmbRacerDifficulty, cmbCopDensity, cmbRacerDensity, cmbCopHeatIntensity };
+            foreach (ComboBox cmb in cmbs) {
+                int index = cmb.SelectedIndex;
+                int direction = -1;
+                while (cmb.Items[index].ToString().Contains("*")) {
+                    if (index == 0)
+                        direction = 1;
+                    index += direction;
                 }
+                cmb.SelectedIndex = index;
             }
         }
 

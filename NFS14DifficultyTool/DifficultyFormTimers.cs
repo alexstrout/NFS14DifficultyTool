@@ -6,8 +6,8 @@ namespace NFS14DifficultyTool {
         protected DifficultyForm parent;
         protected DifficultyFormWorker worker;
 
-        public Timer FindProcessTimer { get; set; }
-        public Timer SessionChangeTimer { get; set; }
+        public Timer FindProcessTimer { get; protected set; }
+        public Timer SessionChangeTimer { get; protected set; }
 
         public DifficultyFormTimers(DifficultyForm parent, DifficultyFormWorker worker) {
             this.parent = parent;
@@ -44,7 +44,7 @@ namespace NFS14DifficultyTool {
 
         private void SessionChangeTimer_Tick(object sender, EventArgs e) {
             if (worker.GetMatchmakingMode() == MatchmakingModeEnum.Public)
-                parent.Invoke(new TimerCallback(parent.ValidateOnlineOptions));
+                parent.Invoke(new TimerCallback(parent.ValidatePublicGameOptions));
         }
     }
 }

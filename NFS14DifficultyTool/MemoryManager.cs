@@ -190,8 +190,8 @@ namespace NFS14DifficultyTool {
             byte[] buff = new byte[sysInfo.AllocationGranularity];
             IntPtr bytesRead;
             //TODO maybe i should be long or uint with UIntPtrs
-            int i = 0,
-                j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead - though in practice this should never happen
+            int i = 0;
+            int j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead - though in practice this should never happen
             for (IntPtr PTR = IntPtr.Zero; (long)PTR < (long)sysInfo.MaximumApplicationAddress; PTR += buff.Length) {
                 if (findObjectInfo.aborting || !IsProcessOpen())
                     break;

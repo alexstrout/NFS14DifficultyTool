@@ -520,8 +520,8 @@ namespace NFS14DifficultyTool {
 
                 SetStatus("Done! Close this window to revert all changes.");
             }
-            catch (System.Exception e) {
-                SetStatus(e.Message);
+            catch (System.Exception ex) {
+                SetStatus(ex.Message);
             }
         }
 

@@ -175,10 +175,10 @@ namespace NFS14DifficultyTool {
                             return null;
                     }
                 }
-                catch (Exception e) {
+                catch (Exception ex) {
                     //Don't start printing errors until we've at least found something once, otherwise we probably aren't even in the game world yet
                     if (objectList.Count > 0)
-                        parent.SetStatus(e.Message);
+                        parent.SetStatus(ex.Message);
                 }
 
                 parent.PopStatus(status);

@@ -231,18 +231,28 @@ namespace NFS14DifficultyTool {
         }
 
         public bool CheckIfReady() {
-            if (!memManager.IsProcessOpen()) {
-                parent.SetStatus("Waiting for game...");
-                if (!memManager.OpenProcess("nfs14")) // && !MemManager.OpenProcess("nfs14_x86")
-                    return false;
+            //If we have no loaded objects, game must be closed or loading
+            if (objectList.Count == 0) {
+                //If we're waiting on game, say so
+                if (!memManager.IsProcessOpen())
+                    parent.SetStatus("Waiting for game...");
 
-                //Found it, we can slow down our checks for hunting game objects
-                parent.SetStatus("Found it!");
-                parent.Timers.FindProcessTimer.Interval = 10000;
+                //Open the process - also make sure it hasn't closed on us
+                //This can happen if game has started, but quit while hunting game objects
+                if (!memManager.OpenProcess("nfs14")) { // && !MemManager.OpenProcess("nfs14_x86")
+                    memManager.CloseHandle();
+                    return false;
+                }
+                else {
+                    //Found it, we can slow down our checks for hunting game objects
+                    parent.SetStatus("Found it!");
+                    parent.Timers.FindProcessTimer.Interval = 10000;
+                }
+
+                LaunchThread(CheckGameWorld);
             }
 
-            if (objectList.Count == 0)
-                LaunchThread(CheckGameWorld);
+            //We'll know we're ready when we've loaded game objects
             return objectList.Count > 0;
         }
         protected void CheckGameWorld() {
@@ -274,7 +284,9 @@ namespace NFS14DifficultyTool {
             NFSObject ProfileOptions;
             if (!TryGetObject("ProfileOptions", out ProfileOptions))
                 return;
-            MatchmakingModeEnum matchmakingMode = (MatchmakingModeEnum)ProfileOptions.FieldList["MatchmakingMode"].Field;
+            //TODO MatchmakingMode field is not accurate yet
+            //MatchmakingModeEnum matchmakingMode = (MatchmakingModeEnum)ProfileOptions.FieldList["MatchmakingMode"].Field;
+            MatchmakingModeEnum matchmakingMode = MatchmakingModeEnum.Unknown;
             string status;
             switch (matchmakingMode) {
                 case MatchmakingModeEnum.Public:

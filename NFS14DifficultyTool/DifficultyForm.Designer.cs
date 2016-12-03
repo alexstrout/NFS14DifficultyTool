@@ -56,7 +56,7 @@
             this.lblCopDifficulty = new System.Windows.Forms.Label();
             this.cmbCopDifficulty = new System.Windows.Forms.ComboBox();
             this.lblInfoName = new System.Windows.Forms.Label();
-            this.lnkBitbucket = new System.Windows.Forms.LinkLabel();
+            this.lnkProjectPage = new System.Windows.Forms.LinkLabel();
             this.txtStatus = new System.Windows.Forms.TextBox();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
@@ -308,7 +308,7 @@
             // lblCopMinHeat
             // 
             this.lblCopMinHeat.AutoSize = true;
-            this.lblCopMinHeat.Location = new System.Drawing.Point(6, 95);
+            this.lblCopMinHeat.Location = new System.Drawing.Point(6, 122);
             this.lblCopMinHeat.Name = "lblCopMinHeat";
             this.lblCopMinHeat.Size = new System.Drawing.Size(53, 13);
             this.lblCopMinHeat.TabIndex = 11;
@@ -316,7 +316,7 @@
             // 
             // numCopMinHeat
             // 
-            this.numCopMinHeat.Location = new System.Drawing.Point(9, 111);
+            this.numCopMinHeat.Location = new System.Drawing.Point(65, 120);
             this.numCopMinHeat.Maximum = new decimal(new int[] {
             10,
             0,
@@ -328,7 +328,7 @@
             0,
             0});
             this.numCopMinHeat.Name = "numCopMinHeat";
-            this.numCopMinHeat.Size = new System.Drawing.Size(60, 20);
+            this.numCopMinHeat.Size = new System.Drawing.Size(40, 20);
             this.numCopMinHeat.TabIndex = 10;
             this.numCopMinHeat.Value = new decimal(new int[] {
             1,
@@ -524,17 +524,17 @@
             this.lblInfoName.TabIndex = 22;
             this.lblInfoName.Text = "Need for Speed Rivals Difficulty Selector Tool - By fox";
             // 
-            // lnkBitbucket
+            // lnkProjectPage
             // 
-            this.lnkBitbucket.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lnkBitbucket.AutoSize = true;
-            this.lnkBitbucket.Location = new System.Drawing.Point(91, 430);
-            this.lnkBitbucket.Name = "lnkBitbucket";
-            this.lnkBitbucket.Size = new System.Drawing.Size(241, 13);
-            this.lnkBitbucket.TabIndex = 23;
-            this.lnkBitbucket.TabStop = true;
-            this.lnkBitbucket.Text = "https://bitbucket.org/alexstrout/nfs14difficultytool";
-            this.lnkBitbucket.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkBitbucket_LinkClicked);
+            this.lnkProjectPage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lnkProjectPage.AutoSize = true;
+            this.lnkProjectPage.Location = new System.Drawing.Point(155, 430);
+            this.lnkProjectPage.Name = "lnkProjectPage";
+            this.lnkProjectPage.Size = new System.Drawing.Size(177, 13);
+            this.lnkProjectPage.TabIndex = 23;
+            this.lnkProjectPage.TabStop = true;
+            this.lnkProjectPage.Text = "http://taraxis.com/nfs14difficultytool";
+            this.lnkProjectPage.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkProjectPage_LinkClicked);
             // 
             // txtStatus
             // 
@@ -567,14 +567,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(344, 452);
             this.Controls.Add(this.txtStatus);
-            this.Controls.Add(this.lnkBitbucket);
+            this.Controls.Add(this.lnkProjectPage);
             this.Controls.Add(this.btnSaveSettings);
             this.Controls.Add(this.btnLoadSettings);
             this.Controls.Add(this.grpMiscSettings);
             this.Controls.Add(this.grpRacerSettings);
             this.Controls.Add(this.grpCopSettings);
             this.Controls.Add(this.lblInfoName);
-            this.MinimumSize = new System.Drawing.Size(315, 482);
+            this.MinimumSize = new System.Drawing.Size(354, 484);
             this.Name = "DifficultyForm";
             this.Text = "NFS Rivals Difficulty Tool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DifficultyForm_FormClosing);
@@ -629,7 +629,7 @@
         private System.Windows.Forms.Label lblCopDifficulty;
         private System.Windows.Forms.ComboBox cmbCopDifficulty;
         private System.Windows.Forms.Label lblInfoName;
-        private System.Windows.Forms.LinkLabel lnkBitbucket;
+        private System.Windows.Forms.LinkLabel lnkProjectPage;
         private System.Windows.Forms.TextBox txtStatus;
         private System.Windows.Forms.Label lblCopMinHeat;
         private System.Windows.Forms.NumericUpDown numCopMinHeat;

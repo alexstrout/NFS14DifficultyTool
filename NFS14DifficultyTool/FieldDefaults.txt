@@ -209,6 +209,13 @@
 "ChaserCopPersonality - UsedPursuitAndEscapePacingSchedule" null
 "RacerTutorialCop - UsedPursuitAndEscapePacingSchedule" null
 "CopTutorialCop - UsedPursuitAndEscapePacingSchedule" null
+"AggressorCopPersonality - RoutingType" 2
+"BruteCopPersonality - RoutingType" 2
+"BasicCopPersonality - RoutingType" 2
+"AdvAggressorCopPersonality - RoutingType" 2
+"ChaserCopPersonality - RoutingType" 2
+"RacerTutorialCop - RoutingType" 2
+"CopTutorialCop - RoutingType" 2
 "AggressorCopPersonality - PacingSkill" 0.7f
 "BruteCopPersonality - PacingSkill" 0.7f
 "BasicCopPersonality - PacingSkill" 0.5f
@@ -309,6 +316,23 @@
 "CopTutorialRacer - UsedPursuitAndEscapePacingSchedule" null
 "CautiousRacer - UsedPursuitAndEscapePacingSchedule" null
 "ViolentRacer - UsedPursuitAndEscapePacingSchedule" null
+"Tier1WeaponRacer - RoutingType" 0
+"RecklessRacer - RoutingType" 0
+"Tier0CautiousRacer - RoutingType" 0
+"Tier1ViolentRacer - RoutingType" 0
+"Tier1RecklessRacer - RoutingType" 0
+"Tier1CautiousRacer - RoutingType" 0
+"RacerTutorialRacer - RoutingType" 0
+"CleanRacer - RoutingType" 0
+"Tier0WeaponRacer - RoutingType" 0
+"Tier1CleanRacer - RoutingType" 0
+"Tier0ViolentRacer - RoutingType" 0
+"Tier0RecklessRacer - RoutingType" 0
+"Tier0CleanRacer - RoutingType" 0
+"WeaponRacer - RoutingType" 0
+"CopTutorialRacer - RoutingType" 0
+"CautiousRacer - RoutingType" 0
+"ViolentRacer - RoutingType" 0
 "Tier1WeaponRacer - PacingSkill" 0.5f
 "RecklessRacer - PacingSkill" 0.5f
 "Tier2CautiousRacer - PacingSkill" 0.5f
@@ -434,6 +458,8 @@
 "Classification" 0
 "ConeLength-Low" 50f
 "ConeLength-High" 50f
+"ConeWidth-Low" 15f
+"ConeWidth-High" 10f
 "MinimumTriggerDistance-Low" 25f
 "MinimumTriggerDistance-High" 20f
 "Projectile-EX0" null

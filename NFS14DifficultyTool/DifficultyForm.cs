@@ -197,10 +197,10 @@ namespace NFS14DifficultyTool {
             return true;
         }
 
-        private void lnkBitbucket_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+        private void lnkProjectPage_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Cursor.Current = Cursors.AppStarting;
             try {
-                System.Diagnostics.Process.Start(lnkBitbucket.Text);
+                System.Diagnostics.Process.Start(lnkProjectPage.Text);
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message, "URL Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -223,7 +223,7 @@ namespace NFS14DifficultyTool {
                     numCopSkill.Value = 0.4m;
                     break;
                 case DifficultyEnum.Experienced:
-                    txtCopDifficultyDescription.Text = "Don't get airy.";
+                    txtCopDifficultyDescription.Text = "Don't get cocky.";
                     cmbCopClass.SelectedIndex = (int)ClassEnum.Normal;
                     numCopSkill.Value = 0.4m;
                     break;
@@ -272,7 +272,7 @@ namespace NFS14DifficultyTool {
                     numRacerSkill.Value = 0.4m;
                     break;
                 case DifficultyEnum.Experienced:
-                    txtRacerDifficultyDescription.Text = "Don't get airy.";
+                    txtRacerDifficultyDescription.Text = "Don't get cocky.";
                     cmbRacerClass.SelectedIndex = (int)ClassEnum.Normal;
                     numRacerSkill.Value = 0.4m;
                     break;

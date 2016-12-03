@@ -383,6 +383,14 @@ namespace NFS14DifficultyTool {
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
                 PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
             }
+
+            //Finally change RoutingType to more efficient HeavyOffRoad (like Racers use)
+            if ((ClassEnum)index >= ClassEnum.Hard)
+                foreach (string s in copPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - RoutingType"].Field = NFSObjectPersonaLibraryPrefab.RoutingType.RoutingType_HeavyOffRoad;
+            else
+                foreach (string s in copPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - RoutingType"].Field = PersonaLibraryPrefab.FieldList[s + " - RoutingType"].FieldDefault;
         }
 
         public void UpdateRacerClass(int index, bool eqWeapUse) {

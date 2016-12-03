@@ -1,5 +1,10 @@
 ﻿namespace NFS14DifficultyTool {
     public class NFSObjectPersonaLibraryPrefab : NFSObject {
+        public enum RoutingType {
+            RoutingType_OnRoad = 0,
+            RoutingType_HeavyOffRoad = 2
+        }
+
         public NFSObjectPersonaLibraryPrefab(MemoryManager memManager)
             : base(memManager, "097d331254a092347db8c7f677cb620d") {
             //foxPerLibPrefab
@@ -24,6 +29,13 @@
             FieldList.Add("ChaserCopPersonality - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+87A0"));
             FieldList.Add("RacerTutorialCop - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+8DE0"));
             FieldList.Add("CopTutorialCop - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+8EA8"));
+            FieldList.Add("AggressorCopPersonality - RoutingType", new NFSFieldInt(this, "64+7FD0"));
+            FieldList.Add("BruteCopPersonality - RoutingType", new NFSFieldInt(this, "64+8160"));
+            FieldList.Add("BasicCopPersonality - RoutingType", new NFSFieldInt(this, "64+83B8"));
+            FieldList.Add("AdvAggressorCopPersonality - RoutingType", new NFSFieldInt(this, "64+8610"));
+            FieldList.Add("ChaserCopPersonality - RoutingType", new NFSFieldInt(this, "64+87A0"));
+            FieldList.Add("RacerTutorialCop - RoutingType", new NFSFieldInt(this, "64+8DE0"));
+            FieldList.Add("CopTutorialCop - RoutingType", new NFSFieldInt(this, "64+8EA8"));
             FieldList.Add("AggressorCopPersonality - PacingSkill", new NFSFieldFloat(this, "74+7FD0"));
             FieldList.Add("BruteCopPersonality - PacingSkill", new NFSFieldFloat(this, "74+8160"));
             FieldList.Add("BasicCopPersonality - PacingSkill", new NFSFieldFloat(this, "74+83B8"));
@@ -124,7 +136,24 @@
             FieldList.Add("CopTutorialRacer - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+9038"));
             FieldList.Add("CautiousRacer - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+9100"));
             FieldList.Add("ViolentRacer - UsedPursuitAndEscapePacingSchedule", new NFSFieldPointer(this, "80+91C8"));
-            FieldList.Add("Tier1WeaponRacer - PacingSkill", new NFSFieldFloat(this, "74+91C8"));
+            FieldList.Add("Tier1WeaponRacer - RoutingType", new NFSFieldInt(this, "64+8098"));
+            FieldList.Add("RecklessRacer - RoutingType", new NFSFieldInt(this, "64+8228"));
+            FieldList.Add("Tier2CautiousRacer - RoutingType", new NFSFieldInt(this, "64+82F0"));
+            FieldList.Add("Tier1ViolentRacer - RoutingType", new NFSFieldInt(this, "64+8480"));
+            FieldList.Add("Tier1RecklessRacer - RoutingType", new NFSFieldInt(this, "64+8548"));
+            FieldList.Add("Tier1CautiousRacer - RoutingType", new NFSFieldInt(this, "64+86D8"));
+            FieldList.Add("RacerTutorialRacer - RoutingType", new NFSFieldInt(this, "64+8868"));
+            FieldList.Add("CleanRacer - RoutingType", new NFSFieldInt(this, "64+8930"));
+            FieldList.Add("Tier2WeaponRacer - RoutingType", new NFSFieldInt(this, "64+89F8"));
+            FieldList.Add("Tier1CleanRacer - RoutingType", new NFSFieldInt(this, "64+8AC0"));
+            FieldList.Add("Tier2ViolentRacer - RoutingType", new NFSFieldInt(this, "64+8B88"));
+            FieldList.Add("Tier2RecklessRacer - RoutingType", new NFSFieldInt(this, "64+8C50"));
+            FieldList.Add("Tier2CleanRacer - RoutingType", new NFSFieldInt(this, "64+8D18"));
+            FieldList.Add("WeaponRacer - RoutingType", new NFSFieldInt(this, "64+8F70"));
+            FieldList.Add("CopTutorialRacer - RoutingType", new NFSFieldInt(this, "64+9038"));
+            FieldList.Add("CautiousRacer - RoutingType", new NFSFieldInt(this, "64+9100"));
+            FieldList.Add("ViolentRacer - RoutingType", new NFSFieldInt(this, "64+91C8"));
+            FieldList.Add("Tier1WeaponRacer - PacingSkill", new NFSFieldFloat(this, "74+8098"));
             FieldList.Add("RecklessRacer - PacingSkill", new NFSFieldFloat(this, "74+8228"));
             FieldList.Add("Tier2CautiousRacer - PacingSkill", new NFSFieldFloat(this, "74+82F0"));
             FieldList.Add("Tier1ViolentRacer - PacingSkill", new NFSFieldFloat(this, "74+8480"));
@@ -141,7 +170,7 @@
             FieldList.Add("CopTutorialRacer - PacingSkill", new NFSFieldFloat(this, "74+9038"));
             FieldList.Add("CautiousRacer - PacingSkill", new NFSFieldFloat(this, "74+9100"));
             FieldList.Add("ViolentRacer - PacingSkill", new NFSFieldFloat(this, "74+91C8"));
-            FieldList.Add("Tier1WeaponRacer - WeaponSkill", new NFSFieldFloat(this, "A0+91C8"));
+            FieldList.Add("Tier1WeaponRacer - WeaponSkill", new NFSFieldFloat(this, "A0+8098"));
             FieldList.Add("RecklessRacer - WeaponSkill", new NFSFieldFloat(this, "A0+8228"));
             FieldList.Add("Tier2CautiousRacer - WeaponSkill", new NFSFieldFloat(this, "A0+82F0"));
             FieldList.Add("Tier1ViolentRacer - WeaponSkill", new NFSFieldFloat(this, "A0+8480"));
@@ -158,7 +187,7 @@
             FieldList.Add("CopTutorialRacer - WeaponSkill", new NFSFieldFloat(this, "A0+9038"));
             FieldList.Add("CautiousRacer - WeaponSkill", new NFSFieldFloat(this, "A0+9100"));
             FieldList.Add("ViolentRacer - WeaponSkill", new NFSFieldFloat(this, "A0+91C8"));
-            FieldList.Add("Tier1WeaponRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+91C8"));
+            FieldList.Add("Tier1WeaponRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+8098"));
             FieldList.Add("RecklessRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+8228"));
             FieldList.Add("Tier2CautiousRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+82F0"));
             FieldList.Add("Tier1ViolentRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+8480"));
@@ -175,7 +204,7 @@
             FieldList.Add("CopTutorialRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+9038"));
             FieldList.Add("CautiousRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+9100"));
             FieldList.Add("ViolentRacer - WeaponSkillVsHumanCop", new NFSFieldFloat(this, "A4+91C8"));
-            FieldList.Add("Tier1WeaponRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+91C8"));
+            FieldList.Add("Tier1WeaponRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+8098"));
             FieldList.Add("RecklessRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+8228"));
             FieldList.Add("Tier2CautiousRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+82F0"));
             FieldList.Add("Tier1ViolentRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+8480"));
@@ -192,7 +221,7 @@
             FieldList.Add("CopTutorialRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+9038"));
             FieldList.Add("CautiousRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+9100"));
             FieldList.Add("ViolentRacer - WeaponSkillVsHumanRacer", new NFSFieldFloat(this, "A8+91C8"));
-            FieldList.Add("Tier1WeaponRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+91C8"));
+            FieldList.Add("Tier1WeaponRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+8098"));
             FieldList.Add("RecklessRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+8228"));
             FieldList.Add("Tier2CautiousRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+82F0"));
             FieldList.Add("Tier1ViolentRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+8480"));
@@ -209,7 +238,7 @@
             FieldList.Add("CopTutorialRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+9038"));
             FieldList.Add("CautiousRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+9100"));
             FieldList.Add("ViolentRacer - WeaponSkillVsAICop", new NFSFieldFloat(this, "AC+91C8"));
-            FieldList.Add("Tier1WeaponRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+91C8"));
+            FieldList.Add("Tier1WeaponRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+8098"));
             FieldList.Add("RecklessRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+8228"));
             FieldList.Add("Tier2CautiousRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+82F0"));
             FieldList.Add("Tier1ViolentRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+8480"));
@@ -226,7 +255,7 @@
             FieldList.Add("CopTutorialRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+9038"));
             FieldList.Add("CautiousRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+9100"));
             FieldList.Add("ViolentRacer - WeaponSkillVsAIRacer", new NFSFieldFloat(this, "B0+91C8"));
-            FieldList.Add("Tier1WeaponRacer - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+91C8"));
+            FieldList.Add("Tier1WeaponRacer - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+8098"));
             FieldList.Add("RecklessRacer - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+8228"));
             FieldList.Add("Tier2CautiousRacer - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+82F0"));
             FieldList.Add("Tier1ViolentRacer - AvoidanceSpeedMatchWhenBlocked", new NFSFieldBool(this, "B4+8480"));

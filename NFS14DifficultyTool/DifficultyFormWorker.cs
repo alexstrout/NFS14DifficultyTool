@@ -284,9 +284,7 @@ namespace NFS14DifficultyTool {
             NFSObject ProfileOptions;
             if (!TryGetObject("ProfileOptions", out ProfileOptions))
                 return;
-            //TODO MatchmakingMode field is not accurate yet
-            //MatchmakingModeEnum matchmakingMode = (MatchmakingModeEnum)ProfileOptions.FieldList["MatchmakingMode"].Field;
-            MatchmakingModeEnum matchmakingMode = MatchmakingModeEnum.Unknown;
+            MatchmakingModeEnum matchmakingMode = (MatchmakingModeEnum)ProfileOptions.FieldList["MatchmakingMode"].Field;
             string status;
             switch (matchmakingMode) {
                 case MatchmakingModeEnum.Public:

@@ -13,7 +13,7 @@ namespace NFS14DifficultyTool {
             MemManager = memManager;
             FieldList = new Dictionary<String, NFSField>();
             GUID = guid;
-            Address = memManager.FindObject(MemoryManager.StringToByteArray(guid));
+            Address = memManager.FindObject(MemoryManager.StringToByteArray(guid), IntPtr.Size);
             if (Address == IntPtr.Zero)
                 throw new Exception("Could not locate guid in memory: " + guid);
 

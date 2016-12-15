@@ -172,11 +172,11 @@ namespace NFS14DifficultyTool {
                     findObjectInfo.aborting = true;
         }
 
-        public IntPtr FindObject(byte[] searchBytes) {
+        public IntPtr FindObject(byte[] searchBytes, int searchAlignment = 4) {
             lock (findObjectLock)
                 findObjectInfo.numRunning++;
 
-            IntPtr ret = Find(searchBytes);
+            IntPtr ret = Find(searchBytes, searchAlignment);
 
             lock (findObjectLock) {
                 findObjectInfo.numRunning--;
@@ -186,17 +186,19 @@ namespace NFS14DifficultyTool {
 
             return ret;
         }
-        protected IntPtr Find(byte[] searchBytes) {
-            byte[] buff = new byte[sysInfo.AllocationGranularity];
+        protected IntPtr Find(byte[] searchBytes, int searchAlignment) {
+            //TODO why am I using AllocationGranularity here?
+            //TODO should probably be LongLength, this whole thing is a long mess
+            byte[] buff = new byte[Math.Max(sysInfo.AllocationGranularity, searchBytes.Length)];
             IntPtr bytesRead;
             //TODO maybe i should be long or uint with UIntPtrs
             int i = 0;
             int j = 0; //j may be kept in-between i increments if we begin finding results at the end of our bytesRead - though in practice this should never happen
-            for (IntPtr PTR = IntPtr.Zero; (long)PTR < (long)sysInfo.MaximumApplicationAddress; PTR += buff.Length) {
+            for (IntPtr PTR = sysInfo.MinimumApplicationAddress; (long)PTR < (long)sysInfo.MaximumApplicationAddress; PTR += i) {
                 if (findObjectInfo.aborting || !IsProcessOpen())
                     break;
                 if (ReadProcessMemory(PTR, buff, out bytesRead)) {
-                    for (i = 0; i < (int)bytesRead; i += IntPtr.Size) {
+                    for (i = 0; i + j < (int)bytesRead; i += searchAlignment) {
                         while (j < searchBytes.Length && i + j < (int)bytesRead) {
                             if (buff[i + j] != searchBytes[j]) {
                                 j = 0;
@@ -221,16 +223,16 @@ namespace NFS14DifficultyTool {
             return buff;
         }
         public bool ReadBool(IntPtr addr) {
-            return BitConverter.ToBoolean(Read(addr, 1), 0);
+            return BitConverter.ToBoolean(Read(addr, sizeof(bool)), 0);
         }
         public int ReadInt(IntPtr addr) {
-            return BitConverter.ToInt32(Read(addr, 4), 0);
+            return BitConverter.ToInt32(Read(addr, sizeof(int)), 0);
         }
         public float ReadFloat(IntPtr addr) {
-            return BitConverter.ToSingle(Read(addr, 4), 0);
+            return BitConverter.ToSingle(Read(addr, sizeof(float)), 0);
         }
         public double ReadDouble(IntPtr addr) {
-            return BitConverter.ToDouble(Read(addr, 8), 0);
+            return BitConverter.ToDouble(Read(addr, sizeof(double)), 0);
         }
 
         public bool Write(IntPtr addr, byte[] value) {

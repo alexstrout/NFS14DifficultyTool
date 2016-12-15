@@ -56,19 +56,8 @@ namespace NFS14DifficultyTool {
     }
 
     public class NFSFieldPointer : NFSFieldByteArray {
-        public override object Field {
-            get {
-                return parent.MemManager.Read(parent.Address + Offset, IntPtr.Size);
-            }
-            set {
-                if (ReadOnly)
-                    return;
-                parent.MemManager.Write(parent.Address + Offset, (byte[])value);
-            }
-        }
-
-        public NFSFieldPointer(NFSObject parent, int offset, bool readOnly = false) : base(parent, offset, IntPtr.Size) { }
-        public NFSFieldPointer(NFSObject parent, string offset, bool readOnly = false) : base(parent, offset, IntPtr.Size) { }
+        public NFSFieldPointer(NFSObject parent, int offset, bool readOnly = false) : base(parent, offset, IntPtr.Size, readOnly) { }
+        public NFSFieldPointer(NFSObject parent, string offset, bool readOnly = false) : base(parent, offset, IntPtr.Size, readOnly) { }
     }
 
     public class NFSFieldBool : NFSField {

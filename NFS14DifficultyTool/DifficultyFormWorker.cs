@@ -46,7 +46,6 @@ namespace NFS14DifficultyTool {
     }
 
     public class DifficultyFormWorker {
-        //TODO use ConcurrentDictionary instead of locking Dictionary, would be much faster for these uses
         protected MemoryManager memManager;
         protected ConcurrentDictionary<string, NFSObject> objectList;
         protected ConcurrentDictionary<string, Thread> threadList;
@@ -243,520 +242,464 @@ namespace NFS14DifficultyTool {
                     memManager.CloseHandle();
                     return false;
                 }
-                else {
-                    //Found it, we can slow down our checks for hunting game objects
-                    parent.SetStatus("Found it!");
-                    parent.Timers.FindProcessTimer.Interval = 10000;
-                }
 
-                LaunchThread(CheckGameWorld);
+                //Found it, we can slow down our checks for hunting game objects
+                parent.SetStatus("Found it!");
+                parent.Timers.FindProcessTimer.Interval = 10000;
+
+                //Get ready to start hunting for game objects
+                LaunchThread(() => {
+                    //This should only run at start, while we're waiting for the game to be ready, on a loop
+                    //If it's been this long we probably want to start new search from beginning
+                    //So run AbortFindObject before even checking our old thread, because we don't care about its search
+                    memManager.AbortFindObject();
+                    if (CheckThread())
+                        return;
+
+                    //Look for UIRootController, which definitely won't be ready until we've loaded in
+                    GetObject("UIRootController");
+                });
             }
 
             //We'll know we're ready when we've loaded game objects
             return objectList.Count > 0;
         }
-        protected void CheckGameWorld() {
-            //This should only run at start, while we're waiting for the game to be ready, on a loop
-            //If it's been this long we probably want to start new search from beginning
-            //So run AbortFindObject before even checking our old thread, because we don't care about its search
-            memManager.AbortFindObject();
-            if (CheckThread())
-                return;
-
-            //Look for UIRootController, which definitely won't be ready until we've loaded in
-            GetObject("UIRootController");
-        }
 
         public MatchmakingModeEnum GetMatchmakingMode() {
-            LaunchThread(CheckSessionChange);
-            return lastMatchmakingMode;
-        }
-        protected void CheckSessionChange() {
-            //If any of our objects are no longer valid, we have probably changed sessions
-            //In this case we'll just blow everything away and start over
-            foreach (NFSObject o in objectList.Values) {
-                if (!o.IsValid()) {
-                    ResetAll();
-                    return;
+            LaunchThread(() => {
+                //If any of our objects are no longer valid, we have probably changed sessions
+                //In this case we'll just blow everything away and start over
+                foreach (NFSObject o in objectList.Values) {
+                    if (!o.IsValid()) {
+                        ResetAll();
+                        return;
+                    }
                 }
-            }
 
-            NFSObject ProfileOptions;
-            if (!TryGetObject("ProfileOptions", out ProfileOptions))
-                return;
-            MatchmakingModeEnum matchmakingMode = (MatchmakingModeEnum)ProfileOptions.FieldList["MatchmakingMode"].Field;
-            string status;
-            switch (matchmakingMode) {
-                case MatchmakingModeEnum.Public:
-                    status = "Public Game"; break;
-                case MatchmakingModeEnum.Friends:
-                    status = "Friends Game"; break;
-                case MatchmakingModeEnum.Private:
-                    status = "Private Game"; break;
-                case MatchmakingModeEnum.SinglePlayer:
-                    status = "Single Player"; break;
-                default: //Unknown
-                    status = "Unknown!?"; break;
-            }
+                NFSObject ProfileOptions;
+                if (!TryGetObject("ProfileOptions", out ProfileOptions))
+                    return;
+                MatchmakingModeEnum matchmakingMode = (MatchmakingModeEnum)ProfileOptions.FieldList["MatchmakingMode"].Field;
+                string status;
+                switch (matchmakingMode) {
+                    case MatchmakingModeEnum.Public:
+                        status = "Public Game"; break;
+                    case MatchmakingModeEnum.Friends:
+                        status = "Friends Game"; break;
+                    case MatchmakingModeEnum.Private:
+                        status = "Private Game"; break;
+                    case MatchmakingModeEnum.SinglePlayer:
+                        status = "Single Player"; break;
+                    default: //Unknown
+                        status = "Unknown!?"; break;
+                }
 
-            //Temporarily show a MatckmakingMode change, will be cleared next pass or by something else
-            if (lastMatchmakingMode == matchmakingMode)
-                parent.PopStatus();
-            else {
-                lastMatchmakingMode = matchmakingMode;
-                parent.SetStatus("Migrating to " + status + "...", true);
-            }
+                //Temporarily show a MatckmakingMode change, will be cleared next pass or by something else
+                if (lastMatchmakingMode == matchmakingMode)
+                    parent.PopStatus();
+                else {
+                    lastMatchmakingMode = matchmakingMode;
+                    parent.SetStatus("Migrating to " + status + "...", true);
+                }
+            });
+            return lastMatchmakingMode;
         }
 
         //Class events
         public void UpdateCopClass(int index, bool eqWeapUse) {
-            copClass = index;
-            equalWeaponUse = eqWeapUse;
-            LaunchThread(UpdateCopClass);
-        }
-        protected int copClass;
-        protected void UpdateCopClass() {
-            if (CheckThread())
-                return;
-            int index = copClass;
-            bool eqWeapUse = equalWeaponUse;
-
-            //Swap PacingLibraryEntityData pointers, both directly and inside PersonaLibraryPrefab objects
-            //PacingScheduleGroupSpontaneousRace (note we don't swap these directly - only set the (probably unused) PersonaLibraryPrefab values)
-            string difficulty;
-            switch ((ClassEnum)index) {
-                case ClassEnum.Easy:
-                    difficulty = "Easy"; break;
-                case ClassEnum.Normal:
-                    difficulty = "Default"; break;
-                case ClassEnum.Hard:
-                case ClassEnum.AroundTheWorld:
-                    difficulty = "Hard"; break;
-                default:
+            LaunchThread(() => {
+                if (CheckThread())
                     return;
-            }
-            NFSObject PacingLibraryEntityData, PersonaLibraryPrefab;
-            if (!TryGetObject("PacingLibraryEntityData", out PacingLibraryEntityData) || !TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
-                return;
-            foreach (string s in copPersonalityList)
-                PersonaLibraryPrefab.FieldList[s + " - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
 
-            //PacingSchedulePursuit
-            PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Default"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Easy"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Hard"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
-
-            foreach (string s in copPersonalityList)
-                PersonaLibraryPrefab.FieldList[s + " - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
-
-            //Swap HealthProfilesListEntityData pointers inside PersonaLibraryPrefab objects (but not directly, for now, as that causes weird HUD issues)
-            switch ((ClassEnum)index) {
-                case ClassEnum.Easy:
-                case ClassEnum.Normal:
-                case ClassEnum.Hard:
-                case ClassEnum.AroundTheWorld:
-                    difficulty = "AI_Default"; break;
-                default:
+                //Swap PacingLibraryEntityData pointers, both directly and inside PersonaLibraryPrefab objects
+                //PacingScheduleGroupSpontaneousRace (note we don't swap these directly - only set the (probably unused) PersonaLibraryPrefab values)
+                string difficulty;
+                switch ((ClassEnum)index) {
+                    case ClassEnum.Easy:
+                        difficulty = "Easy"; break;
+                    case ClassEnum.Normal:
+                        difficulty = "Default"; break;
+                    case ClassEnum.Hard:
+                    case ClassEnum.AroundTheWorld:
+                        difficulty = "Hard"; break;
+                    default:
+                        return;
+                }
+                NFSObject PacingLibraryEntityData, PersonaLibraryPrefab;
+                if (!TryGetObject("PacingLibraryEntityData", out PacingLibraryEntityData) || !TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
                     return;
-            }
-            NFSObject HealthProfilesListEntityData;
-            if (!TryGetObject("HealthProfilesListEntityData", out HealthProfilesListEntityData))
-                return;
-            foreach (string s in copPersonalityList)
-                PersonaLibraryPrefab.FieldList[s + " - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
-
-            //Adjust WeaponSkill values inside PersonaLibraryPrefab objects
-            float skillVsCop = 0f;
-            float skillVsRacer = (float)(0.01 + (1 + index) * 0.33);
-            float skill = skillVsRacer;
-            foreach (string s in copPersonalityList) {
-                PersonaLibraryPrefab.FieldList[s + " - WeaponSkill"].Field = skill;
-                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanCop"].Field = skillVsCop;
-                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            }
-            if (!eqWeapUse)
-                skillVsRacer /= 2f;
-            foreach (string s in copPersonalityList) {
-                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
-                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            }
-
-            //Finally change RoutingType to more efficient HeavyOffRoad (like Racers use)
-            if ((ClassEnum)index >= ClassEnum.Hard)
                 foreach (string s in copPersonalityList)
-                    PersonaLibraryPrefab.FieldList[s + " - RoutingType"].Field = NFSObjectPersonaLibraryPrefab.RoutingType.RoutingType_HeavyOffRoad;
-            else
+                    PersonaLibraryPrefab.FieldList[s + " - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
+
+                //PacingSchedulePursuit
+                PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Default"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Easy"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Hard"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingSchedulePursuit_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
+
                 foreach (string s in copPersonalityList)
-                    PersonaLibraryPrefab.FieldList[s + " - RoutingType"].Field = PersonaLibraryPrefab.FieldList[s + " - RoutingType"].FieldDefault;
+                    PersonaLibraryPrefab.FieldList[s + " - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingSchedulePursuit_" + difficulty].FieldDefault;
+
+                //Swap HealthProfilesListEntityData pointers inside PersonaLibraryPrefab objects (but not directly, for now, as that causes weird HUD issues)
+                switch ((ClassEnum)index) {
+                    case ClassEnum.Easy:
+                    case ClassEnum.Normal:
+                    case ClassEnum.Hard:
+                    case ClassEnum.AroundTheWorld:
+                        difficulty = "AI_Default"; break;
+                    default:
+                        return;
+                }
+                NFSObject HealthProfilesListEntityData;
+                if (!TryGetObject("HealthProfilesListEntityData", out HealthProfilesListEntityData))
+                    return;
+                foreach (string s in copPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["CopHealthProfile_" + difficulty].FieldDefault;
+
+                //Adjust WeaponSkill values inside PersonaLibraryPrefab objects
+                float skillVsCop = 0f;
+                float skillVsRacer = (float)(0.01 + (1 + index) * 0.33);
+                float skill = skillVsRacer;
+                foreach (string s in copPersonalityList) {
+                    PersonaLibraryPrefab.FieldList[s + " - WeaponSkill"].Field = skill;
+                    PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanCop"].Field = skillVsCop;
+                    PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
+                }
+                if (!eqWeapUse)
+                    skillVsRacer /= 2f;
+                foreach (string s in copPersonalityList) {
+                    PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
+                    PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
+                }
+
+                //Finally change RoutingType to more efficient HeavyOffRoad (like Racers use)
+                if ((ClassEnum)index >= ClassEnum.Hard)
+                    foreach (string s in copPersonalityList)
+                        PersonaLibraryPrefab.FieldList[s + " - RoutingType"].Field = NFSObjectPersonaLibraryPrefab.RoutingType.RoutingType_HeavyOffRoad;
+                else
+                    foreach (string s in copPersonalityList)
+                        PersonaLibraryPrefab.FieldList[s + " - RoutingType"].Field = PersonaLibraryPrefab.FieldList[s + " - RoutingType"].FieldDefault;
+            });
         }
 
         public void UpdateRacerClass(int index, bool eqWeapUse) {
-            racerClass = index;
-            equalWeaponUse = eqWeapUse;
-            LaunchThread(UpdateRacerClass);
-        }
-        protected int racerClass;
-        protected void UpdateRacerClass() {
-            if (CheckThread())
-                return;
-            int index = racerClass;
-            bool eqWeapUse = equalWeaponUse;
-
-            //Adjust some AiDirectorEntityData values based on class
-            NFSObject AiDirectorEntityData;
-            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
-                return;
-            AiDirectorEntityData.FieldList["BonusStartingHeat"].Field = (int)AiDirectorEntityData.FieldList["BonusStartingHeat"].FieldDefault + Math.Max(0, 2 * (index - 1));
-
-            //Swap PacingLibraryEntityData pointers, both directly and inside PersonaLibraryPrefab objects
-            //PacingScheduleGroupSpontaneousRace
-            string difficulty;
-            switch ((ClassEnum)index) {
-                case ClassEnum.Easy:
-                    difficulty = "Easy"; break;
-                case ClassEnum.Normal:
-                    difficulty = "Default"; break;
-                case ClassEnum.Hard:
-                case ClassEnum.AroundTheWorld:
-                    difficulty = "Hard"; break;
-                default:
+            LaunchThread(() => {
+                if (CheckThread())
                     return;
-            }
-            NFSObject PacingLibraryEntityData;
-            if (!TryGetObject("PacingLibraryEntityData", out PacingLibraryEntityData))
-                return;
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Default"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Easy"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Medium"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Hard"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
 
-            NFSObject PersonaLibraryPrefab;
-            if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
-                return;
-            foreach (string s in racerPersonalityList)
-                PersonaLibraryPrefab.FieldList[s + " - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
-
-            //PacingScheduleEscape
-            PacingLibraryEntityData.FieldList["PacingScheduleEscape_Default"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleEscape_Easy"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleEscape_Hard"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleEscape_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-
-            foreach (string s in racerPersonalityList)
-                PersonaLibraryPrefab.FieldList[s + " - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
-
-            //PacingScheduleGroupCopHotPursuit
-            switch ((ClassEnum)index) {
-                case ClassEnum.Easy:
-                    difficulty = "_Easy"; break;
-                case ClassEnum.Normal:
-                    difficulty = ""; break;
-                case ClassEnum.Hard:
-                case ClassEnum.AroundTheWorld:
-                    difficulty = "_Hard"; break;
-                default:
+                //Adjust some AiDirectorEntityData values based on class
+                NFSObject AiDirectorEntityData;
+                if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
                     return;
-            }
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit_Easy"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit_Hard"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit" + difficulty].FieldDefault;
+                AiDirectorEntityData.FieldList["BonusStartingHeat"].Field = (int)AiDirectorEntityData.FieldList["BonusStartingHeat"].FieldDefault + Math.Max(0, 2 * (index - 1));
 
-            //PacingScheduleGroupDirectedRace
-            switch ((ClassEnum)index) {
-                //In addition to above, we also have "_AroundTheWorld" available for these
-                case ClassEnum.AroundTheWorld:
-                    difficulty = "_AroundTheWorld"; break;
-            }
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace_Easy"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace_Hard"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace_AroundTheWorld"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace" + difficulty].FieldDefault;
-            PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace" + difficulty].FieldDefault;
-
-            //Swap HealthProfilesListEntityData pointers inside PersonaLibraryPrefab objects (but not directly, for now, as that causes weird HUD issues)
-            switch ((ClassEnum)index) {
-                case ClassEnum.Easy:
-                    difficulty = "CopInterceptor_Easy"; break;
-                case ClassEnum.Normal:
-                    difficulty = "CopInterceptor_Medium"; break;
-                case ClassEnum.Hard:
-                    difficulty = "CopInterceptor_Hard"; break;
-                case ClassEnum.AroundTheWorld:
-                    difficulty = "AI_AroundTheWorld"; break;
-                default:
+                //Swap PacingLibraryEntityData pointers, both directly and inside PersonaLibraryPrefab objects
+                //PacingScheduleGroupSpontaneousRace
+                string difficulty;
+                switch ((ClassEnum)index) {
+                    case ClassEnum.Easy:
+                        difficulty = "Easy"; break;
+                    case ClassEnum.Normal:
+                        difficulty = "Default"; break;
+                    case ClassEnum.Hard:
+                    case ClassEnum.AroundTheWorld:
+                        difficulty = "Hard"; break;
+                    default:
+                        return;
+                }
+                NFSObject PacingLibraryEntityData;
+                if (!TryGetObject("PacingLibraryEntityData", out PacingLibraryEntityData))
                     return;
-            }
-            NFSObject HealthProfilesListEntityData;
-            if (!TryGetObject("HealthProfilesListEntityData", out HealthProfilesListEntityData))
-                return;
-            foreach (string s in racerPersonalityList)
-                PersonaLibraryPrefab.FieldList[s + " - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Default"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Easy"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Medium"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_Hard"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
 
-            //Adjust WeaponSkill values inside PersonaLibraryPrefab objects
-            float skillVsCop = Math.Min(1f, (float)(0.01 + (1 + index) * 0.33));
-            float skillVsRacer = Math.Min(1f, (float)((1 + index) * 0.25));
-            float skill = skillVsCop;
-            foreach (string s in racerPersonalityList) {
-                PersonaLibraryPrefab.FieldList[s + " - WeaponSkill"].Field = skill;
-                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanCop"].Field = skillVsCop;
-                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
-            }
-            if (!eqWeapUse) {
-                skillVsCop /= 2f;
-                skillVsRacer = 0f;
-            }
-            foreach (string s in racerPersonalityList) {
-                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
-                PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
-            }
+                NFSObject PersonaLibraryPrefab;
+                if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
+                    return;
+                foreach (string s in racerPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - UsedSpontaneousRacePacingScheduleGroup"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupSpontaneousRace_" + difficulty].FieldDefault;
+
+                //PacingScheduleEscape
+                PacingLibraryEntityData.FieldList["PacingScheduleEscape_Default"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleEscape_Easy"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleEscape_Hard"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleEscape_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
+
+                foreach (string s in racerPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - UsedPursuitAndEscapePacingSchedule"].Field = PacingLibraryEntityData.FieldList["PacingScheduleEscape_" + difficulty].FieldDefault;
+
+                //PacingScheduleGroupCopHotPursuit
+                switch ((ClassEnum)index) {
+                    case ClassEnum.Easy:
+                        difficulty = "_Easy"; break;
+                    case ClassEnum.Normal:
+                        difficulty = ""; break;
+                    case ClassEnum.Hard:
+                    case ClassEnum.AroundTheWorld:
+                        difficulty = "_Hard"; break;
+                    default:
+                        return;
+                }
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit_Easy"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit_Hard"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupCopHotPursuit" + difficulty].FieldDefault;
+
+                //PacingScheduleGroupDirectedRace
+                switch ((ClassEnum)index) {
+                    //In addition to above, we also have "_AroundTheWorld" available for these
+                    case ClassEnum.AroundTheWorld:
+                        difficulty = "_AroundTheWorld"; break;
+                }
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace_Easy"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace_Hard"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace_AroundTheWorld"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace" + difficulty].FieldDefault;
+                PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace_Tutorial"].Field = PacingLibraryEntityData.FieldList["PacingScheduleGroupDirectedRace" + difficulty].FieldDefault;
+
+                //Swap HealthProfilesListEntityData pointers inside PersonaLibraryPrefab objects (but not directly, for now, as that causes weird HUD issues)
+                switch ((ClassEnum)index) {
+                    case ClassEnum.Easy:
+                        difficulty = "CopInterceptor_Easy"; break;
+                    case ClassEnum.Normal:
+                        difficulty = "CopInterceptor_Medium"; break;
+                    case ClassEnum.Hard:
+                        difficulty = "CopInterceptor_Hard"; break;
+                    case ClassEnum.AroundTheWorld:
+                        difficulty = "AI_AroundTheWorld"; break;
+                    default:
+                        return;
+                }
+                NFSObject HealthProfilesListEntityData;
+                if (!TryGetObject("HealthProfilesListEntityData", out HealthProfilesListEntityData))
+                    return;
+                foreach (string s in racerPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
+
+                //Adjust WeaponSkill values inside PersonaLibraryPrefab objects
+                float skillVsCop = Math.Min(1f, (float)(0.01 + (1 + index) * 0.33));
+                float skillVsRacer = Math.Min(1f, (float)((1 + index) * 0.25));
+                float skill = skillVsCop;
+                foreach (string s in racerPersonalityList) {
+                    PersonaLibraryPrefab.FieldList[s + " - WeaponSkill"].Field = skill;
+                    PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanCop"].Field = skillVsCop;
+                    PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsHumanRacer"].Field = skillVsRacer;
+                }
+                if (!eqWeapUse) {
+                    skillVsCop /= 2f;
+                    skillVsRacer = 0f;
+                }
+                foreach (string s in racerPersonalityList) {
+                    PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
+                    PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
+                }
+            });
         }
 
         //Skill events
         public void UpdateCopSkill(float skill) {
-            copSkill = skill;
-            LaunchThread(UpdateCopSkill);
-        }
-        protected float copSkill;
-        protected void UpdateCopSkill() {
-            if (CheckThread())
-                return;
-            float skill = copSkill;
+            LaunchThread(() => {
+                if (CheckThread())
+                    return;
 
-            //Adjust PacingSkill values inside PersonaLibraryPrefab objects
-            NFSObject PersonaLibraryPrefab;
-            if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
-                return;
-            foreach (string s in copPersonalityList)
-                PersonaLibraryPrefab.FieldList[s + " - PacingSkill"].Field = skill;
+                //Adjust PacingSkill values inside PersonaLibraryPrefab objects
+                NFSObject PersonaLibraryPrefab;
+                if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
+                    return;
+                foreach (string s in copPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - PacingSkill"].Field = skill;
+            });
         }
 
         public void UpdateRacerSkill(float skill) {
-            racerSkill = skill;
-            LaunchThread(UpdateRacerSkill);
-        }
-        protected float racerSkill;
-        protected void UpdateRacerSkill() {
-            if (CheckThread())
-                return;
-            float skill = racerSkill;
+            LaunchThread(() => {
+                if (CheckThread())
+                    return;
 
-            //Adjust HeatTime based on skill
-            NFSObject AiDirectorEntityData;
-            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
-                return;
-            AiDirectorEntityData.FieldList["HeatTime"].Field = Convert.ToInt32((int)AiDirectorEntityData.FieldList["HeatTime"].FieldDefault / Math.Pow(Math.Max(0.34d, skill) * 3d, 2));
+                //Adjust HeatTime based on skill
+                NFSObject AiDirectorEntityData;
+                if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
+                    return;
+                AiDirectorEntityData.FieldList["HeatTime"].Field = Convert.ToInt32((int)AiDirectorEntityData.FieldList["HeatTime"].FieldDefault / Math.Pow(Math.Max(0.34d, skill) * 3d, 2));
 
-            //Adjust PacingSkill values inside PersonaLibraryPrefab objects
-            NFSObject PersonaLibraryPrefab;
-            if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
-                return;
-            foreach (string s in racerPersonalityList)
-                PersonaLibraryPrefab.FieldList[s + " - PacingSkill"].Field = skill;
+                //Adjust PacingSkill values inside PersonaLibraryPrefab objects
+                NFSObject PersonaLibraryPrefab;
+                if (!TryGetObject("PersonaLibraryPrefab", out PersonaLibraryPrefab))
+                    return;
+                foreach (string s in racerPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - PacingSkill"].Field = skill;
+            });
         }
 
         //Density events
         public void UpdateCopDensity(int density) {
-            copDensity = density;
-            LaunchThread(UpdateCopDensity);
-        }
-        protected int copDensity;
-        protected void UpdateCopDensity() {
-            if (CheckThread())
-                return;
-            int density = copDensity;
+            LaunchThread(() => {
+                if (CheckThread())
+                    return;
 
-            //Adjust spawn caps and times based on density
-            NFSObject AiDirectorEntityData;
-            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
-                return;
-            //AiDirectorEntityData.FieldList["NumberOfPawnCopsWanted"].Field = (int)((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * (density / 2f));
-            AiDirectorEntityData.FieldList["GlobalNumberOfCops"].Field = (density == 0) ? 0 : Math.Max(1, density - 1); //0, 1 (with low spawn rates), 1 (normal), 2 (high), 3 (v. high), 4 (most wanted)
-            AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].Field = Math.Min(90, (int)AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].FieldDefault * density);
-            AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].FieldDefault / (density / 2f + 0.01f);
-            AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].FieldDefault / (density / 2f + 0.01f);
-            AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].FieldDefault / (density / 2f + 0.01f);
-            AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringHPRacer"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringHPRacer"].FieldDefault / (density / 2f + 0.01f);
+                //Adjust spawn caps and times based on density
+                NFSObject AiDirectorEntityData;
+                if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
+                    return;
+                //AiDirectorEntityData.FieldList["NumberOfPawnCopsWanted"].Field = (int)((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * (density / 2f));
+                AiDirectorEntityData.FieldList["GlobalNumberOfCops"].Field = (density == 0) ? 0 : Math.Max(1, density - 1); //0, 1 (with low spawn rates), 1 (normal), 2 (high), 3 (v. high), 4 (most wanted)
+                AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].Field = Math.Min(90, (int)AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].FieldDefault * density);
+                AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].FieldDefault / (density / 2f + 0.01f);
+                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].FieldDefault / (density / 2f + 0.01f);
+                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].FieldDefault / (density / 2f + 0.01f);
+                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringHPRacer"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringHPRacer"].FieldDefault / (density / 2f + 0.01f);
+            });
         }
 
         public void UpdateRacerDensity(int density) {
-            racerDensity = density;
-            LaunchThread(UpdateRacerDensity);
-        }
-        protected int racerDensity;
-        protected void UpdateRacerDensity() {
-            if (CheckThread())
-                return;
-            int density = racerDensity;
+            LaunchThread(() => {
+                if (CheckThread())
+                    return;
 
-            //Adjust spawn caps and times based on density
-            NFSObject AiDirectorEntityData;
-            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
-                return;
-            AiDirectorEntityData.FieldList["MaxNumberOfAiOnlySpontaneousRaces"].Field = density;
-            AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].Field = (int)((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * (density / 2f));
-            AiDirectorEntityData.FieldList["NumberOfRacers"].Field = (density == 0) ? 0 : Math.Max(1, density - 1); //0, 1 (with low spawn rates), 1 (normal), 2 (high), 3 (v. high)
-            AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].FieldDefault / (density / 2f + 0.01f);
-            AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].FieldDefault / (density / 2f + 0.01f);
+                //Adjust spawn caps and times based on density
+                NFSObject AiDirectorEntityData;
+                if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
+                    return;
+                AiDirectorEntityData.FieldList["MaxNumberOfAiOnlySpontaneousRaces"].Field = density;
+                AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].Field = (int)((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * (density / 2f));
+                AiDirectorEntityData.FieldList["NumberOfRacers"].Field = (density == 0) ? 0 : Math.Max(1, density - 1); //0, 1 (with low spawn rates), 1 (normal), 2 (high), 3 (v. high)
+                AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].FieldDefault / (density / 2f + 0.01f);
+                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].FieldDefault / (density / 2f + 0.01f);
+            });
         }
 
         //Other events
         public void UpdateCopMinHeat(int heat) {
-            copMinHeat = heat;
-            LaunchThread(UpdateCopMinHeat);
-        }
-        protected int copMinHeat;
-        protected void UpdateCopMinHeat() {
-            if (CheckThread())
-                return;
-            int heat = copMinHeat;
+            LaunchThread(() => {
+                if (CheckThread())
+                    return;
 
-            //Set Min/MaxHeat of each heat appropriately...
-            NFSObject AiDirectorEntityData;
-            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
-                return;
-            for (int i = 1; i < heat; i++) {
-                AiDirectorEntityData.FieldList["Heat" + i + " - MinHeat"].Field = 0;
-                AiDirectorEntityData.FieldList["Heat" + i + " - MaxHeat"].Field = 0;
-            }
-            AiDirectorEntityData.FieldList["Heat" + heat + " - MinHeat"].Field = 1;
-            AiDirectorEntityData.FieldList["Heat" + heat + " - MaxHeat"].Field = AiDirectorEntityData.FieldList["Heat" + heat + " - MaxHeat"].FieldDefault;
+                //Set Min/MaxHeat of each heat appropriately...
+                NFSObject AiDirectorEntityData;
+                if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
+                    return;
+                for (int i = 1; i < heat; i++) {
+                    AiDirectorEntityData.FieldList["Heat" + i + " - MinHeat"].Field = 0;
+                    AiDirectorEntityData.FieldList["Heat" + i + " - MaxHeat"].Field = 0;
+                }
+                AiDirectorEntityData.FieldList["Heat" + heat + " - MinHeat"].Field = 1;
+                AiDirectorEntityData.FieldList["Heat" + heat + " - MaxHeat"].Field = AiDirectorEntityData.FieldList["Heat" + heat + " - MaxHeat"].FieldDefault;
 
-            //... and default the rest
-            for (int i = heat + 1; i <= 10; i++) {
-                AiDirectorEntityData.FieldList["Heat" + i + " - MinHeat"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinHeat"].FieldDefault;
-                AiDirectorEntityData.FieldList["Heat" + i + " - MaxHeat"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MaxHeat"].FieldDefault;
-            }
+                //... and default the rest
+                for (int i = heat + 1; i <= 10; i++) {
+                    AiDirectorEntityData.FieldList["Heat" + i + " - MinHeat"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinHeat"].FieldDefault;
+                    AiDirectorEntityData.FieldList["Heat" + i + " - MaxHeat"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MaxHeat"].FieldDefault;
+                }
+            });
         }
 
         public void UpdateCopHeatIntensity(int index) {
-            copHeatIntensity = index;
-            LaunchThread(UpdateCopHeatIntensity);
-        }
-        protected int copHeatIntensity;
-        protected void UpdateCopHeatIntensity() {
-            if (CheckThread())
-                return;
-            int index = copHeatIntensity;
+            LaunchThread(() => {
+                if (CheckThread())
+                    return;
 
-            //Go crazy! Default everything to selectively override it later
-            NFSObject AiDirectorEntityData;
-            if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
-                return;
-            AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].FieldDefault;
-            AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = AiDirectorEntityData.FieldList["BlockHeatThreshold"].FieldDefault;
-            for (int i = 1; i <= 10; i++) {
-                //Adjust CopCount based on option (up one for every option above Normal, down one for Cool)
-                AiDirectorEntityData.FieldList["Heat" + i + " - CopCountHeatBased"].Field = Math.Max(1,
-                    (int)AiDirectorEntityData.FieldList["Heat" + i + " - CopCountHeatBased"].FieldDefault + index - (int)HeatEnum.Normal);
+                //Go crazy! Default everything to selectively override it later
+                NFSObject AiDirectorEntityData;
+                if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
+                    return;
+                AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].FieldDefault;
+                AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = AiDirectorEntityData.FieldList["BlockHeatThreshold"].FieldDefault;
+                for (int i = 1; i <= 10; i++) {
+                    //Adjust CopCount based on option (up one for every option above Normal, down one for Cool)
+                    AiDirectorEntityData.FieldList["Heat" + i + " - CopCountHeatBased"].Field = Math.Max(1,
+                        (int)AiDirectorEntityData.FieldList["Heat" + i + " - CopCountHeatBased"].FieldDefault + index - (int)HeatEnum.Normal);
 
-                //Everything else just gets reset
-                foreach (string s in copTypeList)
-                    AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field = AiDirectorEntityData.FieldList["Heat" + i + " - " + s].FieldDefault;
-                AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].FieldDefault;
-                AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault;
-                AiDirectorEntityData.FieldList["Heat" + i + " - MaxHelicoptersPerBubble"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MaxHelicoptersPerBubble"].FieldDefault;
-                AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault;
-                AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].FieldDefault;
-            }
+                    //Everything else just gets reset
+                    foreach (string s in copTypeList)
+                        AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field = AiDirectorEntityData.FieldList["Heat" + i + " - " + s].FieldDefault;
+                    AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].FieldDefault;
+                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault;
+                    AiDirectorEntityData.FieldList["Heat" + i + " - MaxHelicoptersPerBubble"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MaxHelicoptersPerBubble"].FieldDefault;
+                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault;
+                    AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].FieldDefault;
+                }
 
-            //Now do specific overrides by heat intensity
-            int count, lastCount;
-            switch ((HeatEnum)index) {
-                case HeatEnum.Cool:
-                    for (int i = 1; i <= 10; i++) {
-                        foreach (string s in copTypeList.Reverse()) {
-                            count = (int)AiDirectorEntityData.FieldList["Heat" + i + " - " + s].FieldDefault;
-                            if (count > 1) {
-                                AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field = count - 1;
-                                break;
-                            }
-                        }
-                        if (i > 1) {
-                            AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - ChanceOfSpawningRoamingCopHeatBased"].FieldDefault;
-                            AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - MinimumHelicopterSpawnInterval"].FieldDefault;
-                            AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - MinimumRoadblockSpawnInterval"].FieldDefault;
-                        }
-                    }
-                    break;
-                case HeatEnum.Normal:
-                    //Do nothing, already reset above
-                    break;
-                default: //Hot, Very Hot, Blazing
-                    for (int i = 10; i >= 1; i--) {
-                        for (int j = (int)HeatEnum.Hot; j <= index; j++) {
-                            lastCount = 0;
-                            foreach (string s in copTypeList) {
-                                //We want these to compound, so use Field instead of FieldDefault - safe as we already reset above
-                                count = (int)AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field;
-                                if (s == "AdvancedAggressor" || (count == 0 && lastCount > 0)) {
-                                    AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field = count + 1;
+                //Now do specific overrides by heat intensity
+                int count, lastCount;
+                switch ((HeatEnum)index) {
+                    case HeatEnum.Cool:
+                        for (int i = 1; i <= 10; i++) {
+                            foreach (string s in copTypeList.Reverse()) {
+                                count = (int)AiDirectorEntityData.FieldList["Heat" + i + " - " + s].FieldDefault;
+                                if (count > 1) {
+                                    AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field = count - 1;
                                     break;
                                 }
-                                lastCount = count;
                             }
+                            if (i > 1) {
+                                AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - ChanceOfSpawningRoamingCopHeatBased"].FieldDefault;
+                                AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - MinimumHelicopterSpawnInterval"].FieldDefault;
+                                AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - MinimumRoadblockSpawnInterval"].FieldDefault;
+                            }
+                        }
+                        break;
+                    case HeatEnum.Normal:
+                        //Do nothing, already reset above
+                        break;
+                    default: //Hot, Very Hot, Blazing
+                        for (int i = 10; i >= 1; i--) {
+                            for (int j = (int)HeatEnum.Hot; j <= index; j++) {
+                                lastCount = 0;
+                                foreach (string s in copTypeList) {
+                                    //We want these to compound, so use Field instead of FieldDefault - safe as we already reset above
+                                    count = (int)AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field;
+                                    if (s == "AdvancedAggressor" || (count == 0 && lastCount > 0)) {
+                                        AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field = count + 1;
+                                        break;
+                                    }
+                                    lastCount = count;
+                                }
+                            }
+                            if (index >= (int)HeatEnum.Hot) {
+                                if (i < 10) {
+                                    //We want these to trickle down heat levels, so use Field instead of FieldDefault - safe as we already reset above
+                                    if ((float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault == -1f)
+                                        AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumHelicopterSpawnInterval"].Field;
+                                    if ((float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault == -1f)
+                                        AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumRoadblockSpawnInterval"].Field;
+                                }
+                                AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 30f - (i - 1) * 3;
+                            }
+                            AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = Math.Min(90, i * 9 * (index - (int)HeatEnum.Normal));
                         }
                         if (index >= (int)HeatEnum.Hot) {
-                            if (i < 10) {
-                                //We want these to trickle down heat levels, so use Field instead of FieldDefault - safe as we already reset above
-                                if ((float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault == -1f)
-                                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumHelicopterSpawnInterval"].Field;
-                                if ((float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault == -1f)
-                                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumRoadblockSpawnInterval"].Field;
-                            }
-                            AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 30f - (i - 1) * 3;
+                            AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = 1;
+                            AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = 1;
                         }
-                        AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = Math.Min(90, i * 9 * (index - (int)HeatEnum.Normal));
-                    }
-                    if (index >= (int)HeatEnum.Hot) {
-                        AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = 1;
-                        AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = 1;
-                    }
-                    if (index >= (int)HeatEnum.Blazing)
-                        AiDirectorEntityData.FieldList["Heat10 - MaxHelicoptersPerBubble"].Field = 2;
-                    break;
-            }
+                        if (index >= (int)HeatEnum.Blazing)
+                            AiDirectorEntityData.FieldList["Heat10 - MaxHelicoptersPerBubble"].Field = 2;
+                        break;
+                }
+            });
         }
 
         public void UpdateSpikeStripFix(bool useFix) {
-            useSpikeStripFix = useFix;
-            LaunchThread(UpdateSpikeStripFix);
-        }
-        protected bool useSpikeStripFix;
-        protected void UpdateSpikeStripFix() {
-            if (CheckThread())
-                return;
-            bool useFix = useSpikeStripFix;
+            LaunchThread(() => {
+                if (CheckThread())
+                    return;
 
-            NFSObject SpikestripWeapon;
-            if (!TryGetObject("SpikestripWeapon", out SpikestripWeapon))
-                return;
-            if (useFix) {
-                SpikestripWeapon.FieldList["Classification"].Field = NFSObjectSpikestripWeapon.VehicleWeaponClassification.VehicleWeaponClassification_BackwardFiring;
-                SpikestripWeapon.FieldList["ConeLength-Low"].Field = 70f;
-                SpikestripWeapon.FieldList["ConeLength-High"].Field = 80f;
-                SpikestripWeapon.FieldList["ConeWidth-Low"].Field = 45f;
-                SpikestripWeapon.FieldList["ConeWidth-High"].Field = 30f;
-                SpikestripWeapon.FieldList["MinimumTriggerDistance-Low"].Field = 2f;
-                SpikestripWeapon.FieldList["MinimumTriggerDistance-High"].Field = 1f;
-            }
-            else
-                SpikestripWeapon.ResetFieldsToDefault(); //Safe as these are the only things we change
-        }
-
-        public void UpdateEqualWeaponUse(bool eqWeapUse) {
-            equalWeaponUse = eqWeapUse;
-            LaunchThread(UpdateEqualWeaponUse);
-        }
-        protected bool equalWeaponUse;
-        protected void UpdateEqualWeaponUse() {
-            if (CheckThread())
-                return;
-            bool eqWeapUse = equalWeaponUse;
-
-            UpdateCopClass(copClass, eqWeapUse);
-            UpdateRacerClass(racerClass, eqWeapUse);
+                NFSObject SpikestripWeapon;
+                if (!TryGetObject("SpikestripWeapon", out SpikestripWeapon))
+                    return;
+                if (useFix) {
+                    SpikestripWeapon.FieldList["Classification"].Field = NFSObjectSpikestripWeapon.VehicleWeaponClassification.VehicleWeaponClassification_BackwardFiring;
+                    SpikestripWeapon.FieldList["ConeLength-Low"].Field = 70f;
+                    SpikestripWeapon.FieldList["ConeLength-High"].Field = 80f;
+                    SpikestripWeapon.FieldList["ConeWidth-Low"].Field = 45f;
+                    SpikestripWeapon.FieldList["ConeWidth-High"].Field = 30f;
+                    SpikestripWeapon.FieldList["MinimumTriggerDistance-Low"].Field = 2f;
+                    SpikestripWeapon.FieldList["MinimumTriggerDistance-High"].Field = 1f;
+                }
+                else
+                    SpikestripWeapon.ResetFieldsToDefault(); //Safe as these are the only things we change
+            });
         }
     }
 }

@@ -361,7 +361,9 @@ namespace NFS14DifficultyTool {
         }
 
         private void chkEqualWeaponUse_CheckedChanged(object sender, EventArgs e) {
-            worker.UpdateEqualWeaponUse(chkEqualWeaponUse.Checked);
+            //This is only used by [Cop/Racer]Class, so just update those
+            worker.UpdateCopClass(cmbCopClass.SelectedIndex, chkEqualWeaponUse.Checked);
+            worker.UpdateRacerClass(cmbRacerClass.SelectedIndex, chkEqualWeaponUse.Checked);
         }
     }
 }

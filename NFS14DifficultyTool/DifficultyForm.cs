@@ -110,7 +110,7 @@ namespace NFS14DifficultyTool {
 
         //Save / load / link events
         private void btnSaveSettings_Click(object sender, EventArgs e) {
-            if (dlgSaveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (dlgSaveFile.ShowDialog() == DialogResult.OK)
                 SaveSettings(dlgSaveFile.FileName);
         }
         private void SaveSettings(string filePath) {
@@ -145,7 +145,7 @@ namespace NFS14DifficultyTool {
         }
 
         private void btnLoadSettings_Click(object sender, EventArgs e) {
-            if (dlgOpenFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (dlgOpenFile.ShowDialog() == DialogResult.OK)
                 LoadSettings(dlgOpenFile.FileName);
         }
         private bool LoadSettings(string filePath) {
@@ -342,15 +342,15 @@ namespace NFS14DifficultyTool {
         private void cmbCopHeatIntensity_SelectedIndexChanged(object sender, EventArgs e) {
             switch ((HeatEnum)cmbCopHeatIntensity.SelectedIndex) {
                 case HeatEnum.Cool:
-                    txtCopHeatIntensityDescription.Text = "A slightly less agressive experience. One less cop per heat and higher requirements for roadblocks and helicopters."; break;
+                    txtCopHeatIntensityDescription.Text = "A slightly less agressive experience. One fewer cop per heat and lighter unit composition."; break;
                 case HeatEnum.Normal:
-                    txtCopHeatIntensityDescription.Text = "The vanilla police chase experience. Recommended when combined with higher AI difficulty levels."; break;
+                    txtCopHeatIntensityDescription.Text = "The vanilla police chase experience."; break;
                 case HeatEnum.Hot:
-                    txtCopHeatIntensityDescription.Text = "Hot! A single additional cop per heat, with each cop tier introduced one heat early."; break;
+                    txtCopHeatIntensityDescription.Text = "Hot! A single additional cop per heat and tougher unit composition."; break;
                 case HeatEnum.VeryHot:
-                    txtCopHeatIntensityDescription.Text = "Very hot! Two additional cops per heat, with each cop tier introduced two heats early."; break;
+                    txtCopHeatIntensityDescription.Text = "Very hot! Two additional cops per heat and much tougher unit composition."; break;
                 case HeatEnum.Blazing:
-                    txtCopHeatIntensityDescription.Text = "Blazing! Three additional cops per heat, with each cop tier introduced three heats early. Two helicopters on Heat 10."; break;
+                    txtCopHeatIntensityDescription.Text = "Blazing! Three additional cops per heat and fairly ridiculous unit composition. Two helicopters on Heat 10."; break;
             }
 
             worker.UpdateCopHeatIntensity(cmbCopHeatIntensity.SelectedIndex);

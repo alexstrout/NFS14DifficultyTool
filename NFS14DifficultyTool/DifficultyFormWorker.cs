@@ -373,12 +373,20 @@ namespace NFS14DifficultyTool {
                 }
 
                 //Finally change RoutingType to more efficient HeavyOffRoad (like Racers use)
-                if ((ClassEnum)index >= ClassEnum.Hard)
-                    foreach (string s in copPersonalityList)
+                if ((ClassEnum)index >= ClassEnum.Hard) {
+                    foreach (string s in copPersonalityList) {
                         PersonaLibraryPrefab.FieldList[s + " - RoutingType"].Field = NFSObjectPersonaLibraryPrefab.RoutingType.RoutingType_HeavyOffRoad;
-                else
-                    foreach (string s in copPersonalityList)
+                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMin"].Field = 1f;
+                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMax"].Field = 1f;
+                    }
+                }
+                else {
+                    foreach (string s in copPersonalityList) {
                         PersonaLibraryPrefab.FieldList[s + " - RoutingType"].Field = PersonaLibraryPrefab.FieldList[s + " - RoutingType"].FieldDefault;
+                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMin"].Field = PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMin"].FieldDefault;
+                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMax"].Field = PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMax"].FieldDefault;
+                    }
+                }
             });
         }
 
@@ -543,13 +551,17 @@ namespace NFS14DifficultyTool {
                 NFSObject AiDirectorEntityData;
                 if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
                     return;
-                //AiDirectorEntityData.FieldList["NumberOfPawnCopsWanted"].Field = (int)((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * (density / 2f));
+                //AiDirectorEntityData.FieldList["NumberOfPawnCopsWanted"].Field = ((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * density) / 2;
                 AiDirectorEntityData.FieldList["GlobalNumberOfCops"].Field = (density == 0) ? 0 : Math.Max(1, density - 1); //0, 1 (with low spawn rates), 1 (normal), 2 (high), 3 (v. high), 4 (most wanted)
-                AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].Field = Math.Min(90, (int)AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].FieldDefault * density);
-                AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].FieldDefault / (density / 2f + 0.01f);
-                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].FieldDefault / (density / 2f + 0.01f);
-                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].FieldDefault / (density / 2f + 0.01f);
-                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringHPRacer"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringHPRacer"].FieldDefault / (density / 2f + 0.01f);
+                AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].FieldDefault / Math.Max(0.01f, density / 2f);
+                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].FieldDefault / Math.Max(0.01f, density / 2f);
+                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].FieldDefault / Math.Max(0.01f, density / 2f);
+                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringHPRacer"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringHPRacer"].FieldDefault / Math.Max(0.01f, density / 2f);
+
+                AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].Field = ((int)AiDirectorEntityData.FieldList["GlobalChanceOfSpawningRoamingCop"].FieldDefault * density) / 2;
+                for (int i = 10; i >= 1; i--) {
+                    AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = ((int)AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].FieldDefault * density) / 2;
+                }
             });
         }
 
@@ -562,11 +574,12 @@ namespace NFS14DifficultyTool {
                 NFSObject AiDirectorEntityData;
                 if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
                     return;
-                AiDirectorEntityData.FieldList["MaxNumberOfAiOnlySpontaneousRaces"].Field = density;
-                AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].Field = (int)((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * (density / 2f));
+                AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].Field = ((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * density) / 2;
                 AiDirectorEntityData.FieldList["NumberOfRacers"].Field = (density == 0) ? 0 : Math.Max(1, density - 1); //0, 1 (with low spawn rates), 1 (normal), 2 (high), 3 (v. high)
-                AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].FieldDefault / (density / 2f + 0.01f);
-                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].FieldDefault / (density / 2f + 0.01f);
+                AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].FieldDefault / Math.Max(0.01f, density / 2f);
+                AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].FieldDefault / Math.Max(0.01f, density / 2f);
+
+                AiDirectorEntityData.FieldList["MaxNumberOfAiOnlySpontaneousRaces"].Field = density;
             });
         }
 
@@ -614,7 +627,6 @@ namespace NFS14DifficultyTool {
                     //Everything else just gets reset
                     foreach (string s in copTypeList)
                         AiDirectorEntityData.FieldList["Heat" + i + " - " + s].Field = AiDirectorEntityData.FieldList["Heat" + i + " - " + s].FieldDefault;
-                    AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].FieldDefault;
                     AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault;
                     AiDirectorEntityData.FieldList["Heat" + i + " - MaxHelicoptersPerBubble"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MaxHelicoptersPerBubble"].FieldDefault;
                     AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault;
@@ -626,6 +638,7 @@ namespace NFS14DifficultyTool {
                 switch ((HeatEnum)index) {
                     case HeatEnum.Cool:
                         for (int i = 1; i <= 10; i++) {
+                            //We want to remove one of the strongest cops from each heat
                             foreach (string s in copTypeList.Reverse()) {
                                 count = (int)AiDirectorEntityData.FieldList["Heat" + i + " - " + s].FieldDefault;
                                 if (count > 1) {
@@ -633,8 +646,9 @@ namespace NFS14DifficultyTool {
                                     break;
                                 }
                             }
+
+                            //Also shift various heat values up one heat to relax things a little
                             if (i > 1) {
-                                AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - ChanceOfSpawningRoamingCopHeatBased"].FieldDefault;
                                 AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - MinimumHelicopterSpawnInterval"].FieldDefault;
                                 AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i - 1) + " - MinimumRoadblockSpawnInterval"].FieldDefault;
                             }
@@ -644,7 +658,10 @@ namespace NFS14DifficultyTool {
                         //Do nothing, already reset above
                         break;
                     default: //Hot, Very Hot, Blazing
+                        AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = 1;
+                        AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = 1;
                         for (int i = 10; i >= 1; i--) {
+                            //For each intensity Hot and above, add the strongest cop to each heat
                             for (int j = (int)HeatEnum.Hot; j <= index; j++) {
                                 lastCount = 0;
                                 foreach (string s in copTypeList) {
@@ -657,22 +674,23 @@ namespace NFS14DifficultyTool {
                                     lastCount = count;
                                 }
                             }
-                            if (index >= (int)HeatEnum.Hot) {
-                                if (i < 10) {
-                                    //We want these to trickle down heat levels, so use Field instead of FieldDefault - safe as we already reset above
-                                    if ((float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault == -1f)
-                                        AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumHelicopterSpawnInterval"].Field;
-                                    if ((float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault == -1f)
-                                        AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumRoadblockSpawnInterval"].Field;
-                                }
-                                AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 30f - (i - 1) * 3;
+
+                            //We also want to get rid of minimum heat requirements for roadblocks
+                            if (i < 10) {
+                                //We want these to trickle down heat levels, so use Field instead of FieldDefault - safe as we already reset above
+                                if ((float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].FieldDefault == -1f)
+                                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumHelicopterSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumHelicopterSpawnInterval"].Field;
+                                if ((float)AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault == -1f)
+                                    AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + (i + 1) + " - MinimumRoadblockSpawnInterval"].Field;
+
+
                             }
-                            AiDirectorEntityData.FieldList["Heat" + i + " - ChanceOfSpawningRoamingCopHeatBased"].Field = Math.Min(90, i * 9 * (index - (int)HeatEnum.Normal));
+
+                            //Also tweak spawn times after escape
+                            AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = 30f - (i - 1) * 3;
                         }
-                        if (index >= (int)HeatEnum.Hot) {
-                            AiDirectorEntityData.FieldList["PullAheadHeatThreshold"].Field = 1;
-                            AiDirectorEntityData.FieldList["BlockHeatThreshold"].Field = 1;
-                        }
+
+                        //For Blazing, rain down choppers for Heat 10 and let things get weird
                         if (index >= (int)HeatEnum.Blazing)
                             AiDirectorEntityData.FieldList["Heat10 - MaxHelicoptersPerBubble"].Field = 2;
                         break;

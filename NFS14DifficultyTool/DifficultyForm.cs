@@ -249,7 +249,7 @@ namespace NFS14DifficultyTool {
                     break;
                 case DifficultyEnum.Godlike:
                     txtCopDifficultyDescription.Text = "I am the Law and the Omega.";
-                    cmbCopClass.SelectedIndex = (int)ClassEnum.Hard;
+                    cmbCopClass.SelectedIndex = (int)ClassEnum.AroundTheWorld;
                     numCopSkill.Value = 1.0m;
                     break;
                 default: //Custom

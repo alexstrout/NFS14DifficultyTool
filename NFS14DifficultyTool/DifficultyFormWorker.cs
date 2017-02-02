@@ -119,8 +119,7 @@ namespace NFS14DifficultyTool {
                 o.ResetFieldsToDefault();
 
             parent.SetStatus("Closing nfs14 handle...");
-            if (memManager != null)
-                memManager.CloseHandle();
+            memManager.CloseHandle();
 
             //If we're not closing, start looking for our process again (e.g. we've found out game has closed but we haven't)
             //Also clear our objectList, as the game may have also just launched a new session without closing
@@ -170,6 +169,8 @@ namespace NFS14DifficultyTool {
                             type = objectList.GetOrAdd(name, new NFSObjectUIRootController(memManager)); break;
                         case "ProfileOptions":
                             type = objectList.GetOrAdd(name, new NFSObjectProfileOptions(memManager)); break;
+                        case "PacingPursuitScheduleHard":
+                            type = objectList.GetOrAdd(name, new NFSObjectPacingPursuitScheduleHard(memManager)); break;
                         default:
                             return null;
                     }
@@ -239,7 +240,7 @@ namespace NFS14DifficultyTool {
                 //Open the process - also make sure it hasn't closed on us
                 //This can happen if game has started, but quit while hunting game objects
                 if (!memManager.OpenProcess("nfs14")) { // && !MemManager.OpenProcess("nfs14_x86")
-                    memManager.CloseHandle();
+                    memManager.CloseHandle(); //Safe, this will only do anything if open
                     return false;
                 }
 
@@ -358,7 +359,7 @@ namespace NFS14DifficultyTool {
 
                 //Adjust WeaponSkill values inside PersonaLibraryPrefab objects
                 float skillVsCop = 0f;
-                float skillVsRacer = (float)(0.01 + (1 + index) * 0.33);
+                float skillVsRacer = (float)((1 + index) * 0.25);
                 float skill = skillVsRacer;
                 foreach (string s in copPersonalityList) {
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkill"].Field = skill;
@@ -371,6 +372,17 @@ namespace NFS14DifficultyTool {
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
                 }
+
+                //Also adjust PacingPursuitScheduleHard to tougher values to make a Very Hard class
+                NFSObject PacingPursuitScheduleHard;
+                if (!TryGetObject("PacingPursuitScheduleHard", out PacingPursuitScheduleHard))
+                    return;
+                if ((ClassEnum)index == ClassEnum.AroundTheWorld) {
+                    PacingPursuitScheduleHard.FieldList["DistanceCurve-1-X"].Field = 500f;
+                    PacingPursuitScheduleHard.FieldList["SkillScalarOverTimeCurve-1-X"].Field = 480f;
+                }
+                else
+                    PacingPursuitScheduleHard.ResetFieldsToDefault(); //Safe as these are the only things we change
 
                 //Finally change RoutingType to more efficient HeavyOffRoad (like Racers use)
                 if ((ClassEnum)index >= ClassEnum.Hard) {
@@ -487,8 +499,8 @@ namespace NFS14DifficultyTool {
                     PersonaLibraryPrefab.FieldList[s + " - HealthProfile"].Field = HealthProfilesListEntityData.FieldList["RacerHealthProfile_" + difficulty].FieldDefault;
 
                 //Adjust WeaponSkill values inside PersonaLibraryPrefab objects
-                float skillVsCop = Math.Min(1f, (float)(0.01 + (1 + index) * 0.33));
-                float skillVsRacer = Math.Min(1f, (float)((1 + index) * 0.25));
+                float skillVsCop = (float)(0.01 + (1 + Math.Min(3, index)) * 0.33);
+                float skillVsRacer = (float)((1 + index) * 0.25);
                 float skill = skillVsCop;
                 foreach (string s in racerPersonalityList) {
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkill"].Field = skill;

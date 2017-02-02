@@ -519,3 +519,8 @@
 "Projectile-EX1" null
 "Projectile-EX2" null
 "Projectile-EX2" null
+
+"DistanceCurve-1-X" 400f
+"DistanceCurve-1-Z" 5f
+"SkillScalarOverTimeCurve-1-X" 240f
+"SkillScalarOverTimeCurve-1-Z" 4f

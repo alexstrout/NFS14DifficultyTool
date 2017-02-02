@@ -60,6 +60,7 @@
             this.txtStatus = new System.Windows.Forms.TextBox();
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
+            this.lblPublicOptionInfo = new System.Windows.Forms.Label();
             this.grpMiscSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numRacerSkill)).BeginInit();
             this.grpRacerSettings.SuspendLayout();
@@ -444,7 +445,8 @@
             this.cmbCopClass.Items.AddRange(new object[] {
             "Easy",
             "Normal",
-            "Hard"});
+            "Hard",
+            "V. Hard"});
             this.cmbCopClass.Location = new System.Drawing.Point(57, 3);
             this.cmbCopClass.Name = "cmbCopClass";
             this.cmbCopClass.Size = new System.Drawing.Size(61, 21);
@@ -561,11 +563,22 @@
             this.dlgSaveFile.FileName = "Settings.ini";
             this.dlgSaveFile.Filter = "Configuration Files (*.ini)|*.ini|All Files (*.*)|*.*";
             // 
+            // lblPublicOptionInfo
+            // 
+            this.lblPublicOptionInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblPublicOptionInfo.AutoSize = true;
+            this.lblPublicOptionInfo.Location = new System.Drawing.Point(12, 430);
+            this.lblPublicOptionInfo.Name = "lblPublicOptionInfo";
+            this.lblPublicOptionInfo.Size = new System.Drawing.Size(135, 13);
+            this.lblPublicOptionInfo.TabIndex = 25;
+            this.lblPublicOptionInfo.Text = "* = Non-Public Games Only";
+            // 
             // DifficultyForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(344, 452);
+            this.Controls.Add(this.lblPublicOptionInfo);
             this.Controls.Add(this.txtStatus);
             this.Controls.Add(this.lnkProjectPage);
             this.Controls.Add(this.btnSaveSettings);
@@ -635,6 +648,6 @@
         private System.Windows.Forms.NumericUpDown numCopMinHeat;
         private System.Windows.Forms.OpenFileDialog dlgOpenFile;
         private System.Windows.Forms.SaveFileDialog dlgSaveFile;
-
+        private System.Windows.Forms.Label lblPublicOptionInfo;
     }
 }

@@ -119,7 +119,7 @@ namespace NFS14DifficultyTool {
         }
 
         public bool IsProcessOpen() {
-            return processHandle != IntPtr.Zero;
+            return processHandle != default(IntPtr);
         }
 
         public bool OpenProcess(string processName) {
@@ -127,30 +127,30 @@ namespace NFS14DifficultyTool {
             if (procList.Length < 1)
                 return false;
 
-            IntPtr p;
-            p = OpenProcess(
+            processHandle = OpenProcess(
                 ProcessAccessFlags.VirtualMemoryOperation
                     | ProcessAccessFlags.VirtualMemoryRead
                     | ProcessAccessFlags.VirtualMemoryWrite,
                 true, procList[procList.Length - 1].Id);
-            if (p == default(IntPtr))
-                return false;
-            processHandle = p;
-            return true;
+            return IsProcessOpen();
         }
 
         public bool CloseHandle() {
-            IntPtr p = processHandle;
-            processHandle = IntPtr.Zero;
-            return !IsProcessOpen() || CloseHandle(p);
+            if (IsProcessOpen() && CloseHandle(processHandle)) {
+                processHandle = default(IntPtr);
+                return true;
+            }
+            return false;
         }
 
         public bool ReadProcessMemory(IntPtr lpBaseAddress, byte[] lpBuffer, out IntPtr lpNumberOfBytesRead) {
-            return ReadProcessMemory(processHandle, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesRead);
+            lpNumberOfBytesRead = IntPtr.Zero;
+            return IsProcessOpen() && ReadProcessMemory(processHandle, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesRead);
         }
 
         public bool WriteProcessMemory(IntPtr lpBaseAddress, byte[] lpBuffer, out IntPtr lpNumberOfBytesWritten) {
-            return WriteProcessMemory(processHandle, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesWritten);
+            lpNumberOfBytesWritten = IntPtr.Zero;
+            return IsProcessOpen() && WriteProcessMemory(processHandle, lpBaseAddress, lpBuffer, lpBuffer.Length, out lpNumberOfBytesWritten);
         }
 
         //From JaredPar at http://stackoverflow.com/a/321404 (http://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array)

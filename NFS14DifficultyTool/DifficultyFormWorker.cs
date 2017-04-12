@@ -373,6 +373,11 @@ namespace NFS14DifficultyTool {
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
                 }
 
+                //Set speed matching inside PersonaLibraryPrefab objects based on class
+                bool matchSpeed = index < (int)ClassEnum.AroundTheWorld;
+                foreach (string s in copPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
+
                 //Also adjust PacingPursuitScheduleHard to tougher values to make a Very Hard class
                 NFSObject PacingPursuitScheduleHard;
                 if (!TryGetObject("PacingPursuitScheduleHard", out PacingPursuitScheduleHard))
@@ -515,6 +520,11 @@ namespace NFS14DifficultyTool {
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
                 }
+
+                //Set speed matching inside PersonaLibraryPrefab objects based on class
+                bool matchSpeed = index < (int)ClassEnum.AroundTheWorld;
+                foreach (string s in racerPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
             });
         }
 

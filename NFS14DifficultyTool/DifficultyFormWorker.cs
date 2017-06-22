@@ -383,8 +383,8 @@ namespace NFS14DifficultyTool {
                 if (!TryGetObject("PacingPursuitScheduleHard", out PacingPursuitScheduleHard))
                     return;
                 if ((ClassEnum)index == ClassEnum.AroundTheWorld) {
-                    PacingPursuitScheduleHard.FieldList["DistanceCurve-1-X"].Field = 500f;
-                    PacingPursuitScheduleHard.FieldList["SkillScalarOverTimeCurve-1-X"].Field = 480f;
+                    PacingPursuitScheduleHard.FieldList["DistanceCurve-1-X"].Field = 5000f;
+                    PacingPursuitScheduleHard.FieldList["SkillScalarOverTimeCurve-1-X"].Field = 4800f;
                 }
                 else
                     PacingPursuitScheduleHard.ResetFieldsToDefault(); //Safe as these are the only things we change
@@ -654,6 +654,9 @@ namespace NFS14DifficultyTool {
                     AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault;
                     AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].FieldDefault;
                 }
+
+                //This is just always this to at least match ClientViewCullRadius - not really sure where this should go
+                AiDirectorEntityData.FieldList["MaxAiVisibilityDistance"].Field = 500f;
 
                 //Now do specific overrides by heat intensity
                 int count, lastCount;

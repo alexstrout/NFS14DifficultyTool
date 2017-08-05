@@ -589,6 +589,7 @@
             this.Controls.Add(this.lblInfoName);
             this.MinimumSize = new System.Drawing.Size(354, 484);
             this.Name = "DifficultyForm";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "NFS Rivals Difficulty Tool";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DifficultyForm_FormClosing);
             this.grpMiscSettings.ResumeLayout(false);

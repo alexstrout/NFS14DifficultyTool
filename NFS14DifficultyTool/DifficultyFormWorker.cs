@@ -163,8 +163,8 @@ namespace NFS14DifficultyTool {
                             type = objectList.GetOrAdd(name, new NFSObjectGameTime(memManager)); break;
                         case "SpikestripWeapon":
                             type = objectList.GetOrAdd(name, new NFSObjectSpikestripWeapon(memManager)); break;
-                        case "HeliSpikestripWeapon":
-                            type = objectList.GetOrAdd(name, new NFSObjectHeliSpikestripWeapon(memManager)); break;
+                        case "AttackHeliEntityData":
+                            type = objectList.GetOrAdd(name, new NFSObjectAttackHeliEntityData(memManager)); break;
                         case "UIRootController":
                             type = objectList.GetOrAdd(name, new NFSObjectUIRootController(memManager)); break;
                         case "ProfileOptions":
@@ -373,12 +373,7 @@ namespace NFS14DifficultyTool {
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
                 }
 
-                //Set speed matching inside PersonaLibraryPrefab objects based on class
-                bool matchSpeed = index < (int)ClassEnum.AroundTheWorld;
-                foreach (string s in copPersonalityList)
-                    PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
-
-                //Also adjust PacingPursuitScheduleHard to tougher values to make a Very Hard class
+                //Adjust PacingPursuitScheduleHard to tougher values to make a Very Hard class
                 NFSObject PacingPursuitScheduleHard;
                 if (!TryGetObject("PacingPursuitScheduleHard", out PacingPursuitScheduleHard))
                     return;
@@ -520,11 +515,6 @@ namespace NFS14DifficultyTool {
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
                 }
-
-                //Set speed matching inside PersonaLibraryPrefab objects based on class
-                bool matchSpeed = index < (int)ClassEnum.AroundTheWorld;
-                foreach (string s in racerPersonalityList)
-                    PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = matchSpeed;
             });
         }
 
@@ -574,7 +564,7 @@ namespace NFS14DifficultyTool {
                 if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
                     return;
                 //AiDirectorEntityData.FieldList["NumberOfPawnCopsWanted"].Field = ((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * density) / 2;
-                AiDirectorEntityData.FieldList["GlobalNumberOfCops"].Field = (density == 0) ? 0 : Math.Max(1, density - 1); //0, 1 (with low spawn rates), 1 (normal), 2 (high), 3 (v. high), 4 (most wanted)
+                AiDirectorEntityData.FieldList["GlobalNumberOfCops"].Field = (density == 0) ? 0 : Math.Max(1, density - 2); //0, 1 (with low spawn rates), 1 (normal), 1 (high), 2 (v. high), 3 (most wanted)
                 AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnCop"].FieldDefault / Math.Max(0.01f, density / 2f);
                 AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCop"].FieldDefault / Math.Max(0.01f, density / 2f);
                 AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnCopDuringPursuit"].FieldDefault / Math.Max(0.01f, density / 2f);
@@ -597,11 +587,11 @@ namespace NFS14DifficultyTool {
                 if (!TryGetObject("AiDirectorEntityData", out AiDirectorEntityData))
                     return;
                 AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].Field = ((int)AiDirectorEntityData.FieldList["NumberOfPawnRacersWanted"].FieldDefault * density) / 2;
-                AiDirectorEntityData.FieldList["NumberOfRacers"].Field = (density == 0) ? 0 : Math.Max(1, density - 1); //0, 1 (with low spawn rates), 1 (normal), 2 (high), 3 (v. high)
+                AiDirectorEntityData.FieldList["NumberOfRacers"].Field = (density == 0) ? 0 : Math.Max(1, density - 2); //0, 1 (with low spawn rates), 1 (normal), 1 (high), 2 (v. high)
                 AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["InitialTimeIntervalForTryingToSpawnRacer"].FieldDefault / Math.Max(0.01f, density / 2f);
                 AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].Field = (float)AiDirectorEntityData.FieldList["TimeIntervalForTryingToSpawnRacer"].FieldDefault / Math.Max(0.01f, density / 2f);
 
-                AiDirectorEntityData.FieldList["MaxNumberOfAiOnlySpontaneousRaces"].Field = density;
+                AiDirectorEntityData.FieldList["MaxNumberOfAiOnlySpontaneousRaces"].Field = Math.Max(1, density - 2);
             });
         }
 

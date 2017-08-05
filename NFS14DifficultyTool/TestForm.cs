@@ -10,7 +10,7 @@ namespace NFS14DifficultyTool {
         public NFSObject PersonaLibraryPrefab { get; set; }
         public NFSObject GameTime { get; set; }
         public NFSObject SpikestripWeapon { get; set; }
-        public NFSObject HeliSpikestripWeapon { get; set; }
+        public NFSObject AttackHeliEntityData { get; set; }
 
         public TestForm() {
             InitializeComponent();
@@ -510,13 +510,13 @@ namespace NFS14DifficultyTool {
                 //SpikestripWeapon.FieldList["Projectile-EX2"].Field = null;
                 //SpikestripWeapon.FieldList["Projectile-EX3"].Field = null;
 
-                //HeliSpikestripWeapon
-                SetStatus("Finding HeliSpikestripWeapon...");
-                HeliSpikestripWeapon = new NFSObjectHeliSpikestripWeapon(MemManager);
-                //HeliSpikestripWeapon.FieldList["Projectile-EX0"].Field = SpikestripWeapon.FieldList["Projectile-EX0"].FieldDefault;
-                //HeliSpikestripWeapon.FieldList["Projectile-EX1"].Field = SpikestripWeapon.FieldList["Projectile-EX1"].FieldDefault;
-                //HeliSpikestripWeapon.FieldList["Projectile-EX2"].Field = SpikestripWeapon.FieldList["Projectile-EX2"].FieldDefault;
-                //HeliSpikestripWeapon.FieldList["Projectile-EX3"].Field = SpikestripWeapon.FieldList["Projectile-EX3"].FieldDefault;
+                //AttackHeliEntityData
+                SetStatus("Finding AttackHeliEntityData...");
+                AttackHeliEntityData = new NFSObjectAttackHeliEntityData(MemManager);
+                //AttackHeliEntityData.FieldList["Projectile-EX0"].Field = SpikestripWeapon.FieldList["Projectile-EX0"].FieldDefault;
+                //AttackHeliEntityData.FieldList["Projectile-EX1"].Field = SpikestripWeapon.FieldList["Projectile-EX1"].FieldDefault;
+                //AttackHeliEntityData.FieldList["Projectile-EX2"].Field = SpikestripWeapon.FieldList["Projectile-EX2"].FieldDefault;
+                //AttackHeliEntityData.FieldList["Projectile-EX3"].Field = SpikestripWeapon.FieldList["Projectile-EX3"].FieldDefault;
 
                 SetStatus("Done! Close this window to revert all changes.");
             }
@@ -539,8 +539,8 @@ namespace NFS14DifficultyTool {
                 GameTime.ResetFieldsToDefault();
             if (SpikestripWeapon != null)
                 SpikestripWeapon.ResetFieldsToDefault();
-            if (HeliSpikestripWeapon != null)
-                HeliSpikestripWeapon.ResetFieldsToDefault();
+            if (AttackHeliEntityData != null)
+                AttackHeliEntityData.ResetFieldsToDefault();
         }
     }
 }

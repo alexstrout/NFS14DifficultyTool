@@ -83,7 +83,7 @@
     <Compile Include="DifficultyFormTimers.cs" />
     <Compile Include="DifficultyFormWorker.cs" />
     <Compile Include="INIParser.cs" />
-    <Compile Include="NFSObjectHeliSpikestripWeapon.cs" />
+    <Compile Include="NFSObjectAttackHeliEntityData.cs" />
     <Compile Include="NFSObjectProfileOptions.cs" />
     <Compile Include="NFSObjectPacingPursuitScheduleHard.cs" />
     <Compile Include="NFSObjectSpikestripWeapon.cs" />

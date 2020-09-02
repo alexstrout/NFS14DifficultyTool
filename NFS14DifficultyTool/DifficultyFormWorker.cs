@@ -280,7 +280,7 @@ namespace NFS14DifficultyTool {
                 NFSObject ProfileOptions;
                 if (!TryGetObject("ProfileOptions", out ProfileOptions))
                     return;
-                MatchmakingModeEnum matchmakingMode = (MatchmakingModeEnum)ProfileOptions.FieldList["MatchmakingMode"].Field;
+                MatchmakingModeEnum matchmakingMode = MatchmakingModeEnum.Unknown; //(MatchmakingModeEnum)ProfileOptions.FieldList["MatchmakingMode"].Field;
                 string status;
                 switch (matchmakingMode) {
                     case MatchmakingModeEnum.Public:
@@ -373,32 +373,20 @@ namespace NFS14DifficultyTool {
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
                 }
 
+                //Don't use SideSlam, it's kinda buggy
+                //foreach (string s in copPersonalityList)
+                //    PersonaLibraryPrefab.FieldList[s + " - SideSlam-Chance"].Field = 0f;
+
                 //Adjust PacingPursuitScheduleHard to tougher values to make a Very Hard class
                 NFSObject PacingPursuitScheduleHard;
                 if (!TryGetObject("PacingPursuitScheduleHard", out PacingPursuitScheduleHard))
                     return;
                 if ((ClassEnum)index == ClassEnum.AroundTheWorld) {
-                    PacingPursuitScheduleHard.FieldList["DistanceCurve-1-X"].Field = 5000f;
-                    PacingPursuitScheduleHard.FieldList["SkillScalarOverTimeCurve-1-X"].Field = 4800f;
+                    PacingPursuitScheduleHard.FieldList["DistanceCurve-1-X"].Field = 999999f;
+                    PacingPursuitScheduleHard.FieldList["SkillScalarOverTimeCurve-1-X"].Field = 999999f;
                 }
                 else
                     PacingPursuitScheduleHard.ResetFieldsToDefault(); //Safe as these are the only things we change
-
-                //Finally change RoutingType to more efficient HeavyOffRoad (like Racers use)
-                if ((ClassEnum)index >= ClassEnum.Hard) {
-                    foreach (string s in copPersonalityList) {
-                        PersonaLibraryPrefab.FieldList[s + " - RoutingType"].Field = NFSObjectPersonaLibraryPrefab.RoutingType.RoutingType_HeavyOffRoad;
-                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMin"].Field = 1f;
-                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMax"].Field = 1f;
-                    }
-                }
-                else {
-                    foreach (string s in copPersonalityList) {
-                        PersonaLibraryPrefab.FieldList[s + " - RoutingType"].Field = PersonaLibraryPrefab.FieldList[s + " - RoutingType"].FieldDefault;
-                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMin"].Field = PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMin"].FieldDefault;
-                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMax"].Field = PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMax"].FieldDefault;
-                    }
-                }
             });
         }
 
@@ -515,6 +503,10 @@ namespace NFS14DifficultyTool {
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAICop"].Field = skillVsCop;
                     PersonaLibraryPrefab.FieldList[s + " - WeaponSkillVsAIRacer"].Field = skillVsRacer;
                 }
+
+                //Don't use SideSlam, it's kinda buggy
+                //foreach (string s in racerPersonalityList)
+                //    PersonaLibraryPrefab.FieldList[s + " - SideSlam-Chance"].Field = 0f;
             });
         }
 
@@ -644,9 +636,6 @@ namespace NFS14DifficultyTool {
                     AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - MinimumRoadblockSpawnInterval"].FieldDefault;
                     AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].Field = AiDirectorEntityData.FieldList["Heat" + i + " - TimeIntervalAfterSuccessfulEscapeBeforeTryingToSpawnCop"].FieldDefault;
                 }
-
-                //This is just always this to at least match ClientViewCullRadius - not really sure where this should go
-                AiDirectorEntityData.FieldList["MaxAiVisibilityDistance"].Field = 500f;
 
                 //Now do specific overrides by heat intensity
                 int count, lastCount;

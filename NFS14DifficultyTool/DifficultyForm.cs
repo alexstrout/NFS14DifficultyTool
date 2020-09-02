@@ -46,7 +46,7 @@ namespace NFS14DifficultyTool {
                 try {
                     Invoke(new SetStatusCallback(SetStatus), new object[] { text, preserveStatusList });
                 }
-                catch (ObjectDisposedException) {
+                catch (Exception) {
                     //May happen as threads are aborting, don't care
                 }
             }

@@ -30,6 +30,7 @@
             this.btnLoadSettings = new System.Windows.Forms.Button();
             this.cmbRacerClass = new System.Windows.Forms.ComboBox();
             this.grpMiscSettings = new System.Windows.Forms.GroupBox();
+            this.chkNoSideSlam = new System.Windows.Forms.CheckBox();
             this.chkSpikeStripFix = new System.Windows.Forms.CheckBox();
             this.chkEqualWeaponUse = new System.Windows.Forms.CheckBox();
             this.numRacerSkill = new System.Windows.Forms.NumericUpDown();
@@ -77,7 +78,7 @@
             this.lblRacerClass.Location = new System.Drawing.Point(3, 6);
             this.lblRacerClass.Name = "lblRacerClass";
             this.lblRacerClass.Size = new System.Drawing.Size(48, 13);
-            this.lblRacerClass.TabIndex = 4;
+            this.lblRacerClass.TabIndex = 0;
             this.lblRacerClass.Text = "AI Class:";
             // 
             // lblRacerSkill
@@ -86,7 +87,7 @@
             this.lblRacerSkill.Location = new System.Drawing.Point(134, 6);
             this.lblRacerSkill.Name = "lblRacerSkill";
             this.lblRacerSkill.Size = new System.Drawing.Size(42, 13);
-            this.lblRacerSkill.TabIndex = 5;
+            this.lblRacerSkill.TabIndex = 0;
             this.lblRacerSkill.Text = "AI Skill:";
             // 
             // btnSaveSettings
@@ -95,7 +96,7 @@
             this.btnSaveSettings.Location = new System.Drawing.Point(192, 383);
             this.btnSaveSettings.Name = "btnSaveSettings";
             this.btnSaveSettings.Size = new System.Drawing.Size(64, 23);
-            this.btnSaveSettings.TabIndex = 20;
+            this.btnSaveSettings.TabIndex = 4;
             this.btnSaveSettings.Text = "Save As...";
             this.btnSaveSettings.UseVisualStyleBackColor = true;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
@@ -107,7 +108,7 @@
             this.lblRacerDensity.Location = new System.Drawing.Point(110, 95);
             this.lblRacerDensity.Name = "lblRacerDensity";
             this.lblRacerDensity.Size = new System.Drawing.Size(77, 13);
-            this.lblRacerDensity.TabIndex = 6;
+            this.lblRacerDensity.TabIndex = 0;
             this.lblRacerDensity.Text = "Racer Density:";
             // 
             // btnLoadSettings
@@ -116,7 +117,7 @@
             this.btnLoadSettings.Location = new System.Drawing.Point(262, 383);
             this.btnLoadSettings.Name = "btnLoadSettings";
             this.btnLoadSettings.Size = new System.Drawing.Size(64, 23);
-            this.btnLoadSettings.TabIndex = 19;
+            this.btnLoadSettings.TabIndex = 5;
             this.btnLoadSettings.Text = "Load...";
             this.btnLoadSettings.UseVisualStyleBackColor = true;
             this.btnLoadSettings.Click += new System.EventHandler(this.btnLoadSettings_Click);
@@ -133,21 +134,34 @@
             this.cmbRacerClass.Location = new System.Drawing.Point(57, 3);
             this.cmbRacerClass.Name = "cmbRacerClass";
             this.cmbRacerClass.Size = new System.Drawing.Size(61, 21);
-            this.cmbRacerClass.TabIndex = 3;
+            this.cmbRacerClass.TabIndex = 1;
             this.cmbRacerClass.SelectedIndexChanged += new System.EventHandler(this.cmbRacerClass_SelectedIndexChanged);
             // 
             // grpMiscSettings
             // 
             this.grpMiscSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.grpMiscSettings.Controls.Add(this.chkNoSideSlam);
             this.grpMiscSettings.Controls.Add(this.chkSpikeStripFix);
             this.grpMiscSettings.Controls.Add(this.chkEqualWeaponUse);
             this.grpMiscSettings.Location = new System.Drawing.Point(12, 335);
             this.grpMiscSettings.Name = "grpMiscSettings";
             this.grpMiscSettings.Size = new System.Drawing.Size(320, 42);
-            this.grpMiscSettings.TabIndex = 18;
+            this.grpMiscSettings.TabIndex = 2;
             this.grpMiscSettings.TabStop = false;
             this.grpMiscSettings.Text = "Misc AI Settings";
+            // 
+            // chkNoSideSlam
+            // 
+            this.chkNoSideSlam.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkNoSideSlam.AutoSize = true;
+            this.chkNoSideSlam.Location = new System.Drawing.Point(12, 19);
+            this.chkNoSideSlam.Name = "chkNoSideSlam";
+            this.chkNoSideSlam.Size = new System.Drawing.Size(87, 17);
+            this.chkNoSideSlam.TabIndex = 1;
+            this.chkNoSideSlam.Text = "No SideSlam";
+            this.chkNoSideSlam.UseVisualStyleBackColor = true;
+            this.chkNoSideSlam.CheckedChanged += new System.EventHandler(this.chkNoSideSlam_CheckedChanged);
             // 
             // chkSpikeStripFix
             // 
@@ -156,7 +170,7 @@
             this.chkSpikeStripFix.Location = new System.Drawing.Point(105, 19);
             this.chkSpikeStripFix.Name = "chkSpikeStripFix";
             this.chkSpikeStripFix.Size = new System.Drawing.Size(104, 17);
-            this.chkSpikeStripFix.TabIndex = 1;
+            this.chkSpikeStripFix.TabIndex = 2;
             this.chkSpikeStripFix.Text = "Use Spike Strips";
             this.chkSpikeStripFix.UseVisualStyleBackColor = true;
             this.chkSpikeStripFix.CheckedChanged += new System.EventHandler(this.chkSpikeStripFix_CheckedChanged);
@@ -168,7 +182,7 @@
             this.chkEqualWeaponUse.Location = new System.Drawing.Point(215, 19);
             this.chkEqualWeaponUse.Name = "chkEqualWeaponUse";
             this.chkEqualWeaponUse.Size = new System.Drawing.Size(99, 17);
-            this.chkEqualWeaponUse.TabIndex = 0;
+            this.chkEqualWeaponUse.TabIndex = 3;
             this.chkEqualWeaponUse.Text = "Target Other AI";
             this.chkEqualWeaponUse.UseVisualStyleBackColor = true;
             this.chkEqualWeaponUse.CheckedChanged += new System.EventHandler(this.chkEqualWeaponUse_CheckedChanged);
@@ -205,7 +219,7 @@
             this.grpRacerSettings.Location = new System.Drawing.Point(12, 210);
             this.grpRacerSettings.Name = "grpRacerSettings";
             this.grpRacerSettings.Size = new System.Drawing.Size(320, 119);
-            this.grpRacerSettings.TabIndex = 17;
+            this.grpRacerSettings.TabIndex = 1;
             this.grpRacerSettings.TabStop = false;
             this.grpRacerSettings.Text = "Racer AI Settings";
             // 
@@ -223,7 +237,7 @@
             this.cmbRacerDensity.Location = new System.Drawing.Point(193, 92);
             this.cmbRacerDensity.Name = "cmbRacerDensity";
             this.cmbRacerDensity.Size = new System.Drawing.Size(121, 21);
-            this.cmbRacerDensity.TabIndex = 5;
+            this.cmbRacerDensity.TabIndex = 4;
             this.cmbRacerDensity.SelectedIndexChanged += new System.EventHandler(this.cmbRacerDensity_SelectedIndexChanged);
             // 
             // pnlRacerCustom
@@ -237,7 +251,7 @@
             this.pnlRacerCustom.Location = new System.Drawing.Point(38, 52);
             this.pnlRacerCustom.Name = "pnlRacerCustom";
             this.pnlRacerCustom.Size = new System.Drawing.Size(245, 27);
-            this.pnlRacerCustom.TabIndex = 4;
+            this.pnlRacerCustom.TabIndex = 3;
             // 
             // txtRacerDifficultyDescription
             // 
@@ -249,7 +263,7 @@
             this.txtRacerDifficultyDescription.Name = "txtRacerDifficultyDescription";
             this.txtRacerDifficultyDescription.ReadOnly = true;
             this.txtRacerDifficultyDescription.Size = new System.Drawing.Size(308, 40);
-            this.txtRacerDifficultyDescription.TabIndex = 3;
+            this.txtRacerDifficultyDescription.TabIndex = 2;
             this.txtRacerDifficultyDescription.Text = "Sample Difficulty: Prepare to be difficulty\'d!";
             // 
             // lblRacerDifficulty
@@ -259,7 +273,7 @@
             this.lblRacerDifficulty.Location = new System.Drawing.Point(105, 22);
             this.lblRacerDifficulty.Name = "lblRacerDifficulty";
             this.lblRacerDifficulty.Size = new System.Drawing.Size(82, 13);
-            this.lblRacerDifficulty.TabIndex = 1;
+            this.lblRacerDifficulty.TabIndex = 0;
             this.lblRacerDifficulty.Text = "Racer Difficulty:";
             // 
             // cmbRacerDifficulty
@@ -280,7 +294,7 @@
             this.cmbRacerDifficulty.Location = new System.Drawing.Point(193, 19);
             this.cmbRacerDifficulty.Name = "cmbRacerDifficulty";
             this.cmbRacerDifficulty.Size = new System.Drawing.Size(121, 21);
-            this.cmbRacerDifficulty.TabIndex = 0;
+            this.cmbRacerDifficulty.TabIndex = 1;
             this.cmbRacerDifficulty.SelectedIndexChanged += new System.EventHandler(this.cmbRacerDifficulty_SelectedIndexChanged);
             // 
             // grpCopSettings
@@ -302,7 +316,7 @@
             this.grpCopSettings.Location = new System.Drawing.Point(12, 12);
             this.grpCopSettings.Name = "grpCopSettings";
             this.grpCopSettings.Size = new System.Drawing.Size(320, 192);
-            this.grpCopSettings.TabIndex = 16;
+            this.grpCopSettings.TabIndex = 0;
             this.grpCopSettings.TabStop = false;
             this.grpCopSettings.Text = "Cop AI Settings";
             // 
@@ -312,7 +326,7 @@
             this.lblCopMinHeat.Location = new System.Drawing.Point(6, 122);
             this.lblCopMinHeat.Name = "lblCopMinHeat";
             this.lblCopMinHeat.Size = new System.Drawing.Size(53, 13);
-            this.lblCopMinHeat.TabIndex = 11;
+            this.lblCopMinHeat.TabIndex = 0;
             this.lblCopMinHeat.Text = "Min Heat:";
             // 
             // numCopMinHeat
@@ -330,7 +344,7 @@
             0});
             this.numCopMinHeat.Name = "numCopMinHeat";
             this.numCopMinHeat.Size = new System.Drawing.Size(40, 20);
-            this.numCopMinHeat.TabIndex = 10;
+            this.numCopMinHeat.TabIndex = 5;
             this.numCopMinHeat.Value = new decimal(new int[] {
             1,
             0,
@@ -349,7 +363,7 @@
             this.txtCopHeatIntensityDescription.Name = "txtCopHeatIntensityDescription";
             this.txtCopHeatIntensityDescription.ReadOnly = true;
             this.txtCopHeatIntensityDescription.Size = new System.Drawing.Size(308, 40);
-            this.txtCopHeatIntensityDescription.TabIndex = 9;
+            this.txtCopHeatIntensityDescription.TabIndex = 7;
             this.txtCopHeatIntensityDescription.Text = "Sample Heat: Prepate to be mildly warm!";
             // 
             // lblCopHeatIntensity
@@ -359,7 +373,7 @@
             this.lblCopHeatIntensity.Location = new System.Drawing.Point(112, 122);
             this.lblCopHeatIntensity.Name = "lblCopHeatIntensity";
             this.lblCopHeatIntensity.Size = new System.Drawing.Size(75, 13);
-            this.lblCopHeatIntensity.TabIndex = 8;
+            this.lblCopHeatIntensity.TabIndex = 0;
             this.lblCopHeatIntensity.Text = "Heat Intensity:";
             // 
             // cmbCopHeatIntensity
@@ -376,7 +390,7 @@
             this.cmbCopHeatIntensity.Location = new System.Drawing.Point(193, 119);
             this.cmbCopHeatIntensity.Name = "cmbCopHeatIntensity";
             this.cmbCopHeatIntensity.Size = new System.Drawing.Size(121, 21);
-            this.cmbCopHeatIntensity.TabIndex = 7;
+            this.cmbCopHeatIntensity.TabIndex = 6;
             this.cmbCopHeatIntensity.SelectedIndexChanged += new System.EventHandler(this.cmbCopHeatIntensity_SelectedIndexChanged);
             // 
             // lblCopDensity
@@ -386,7 +400,7 @@
             this.lblCopDensity.Location = new System.Drawing.Point(120, 95);
             this.lblCopDensity.Name = "lblCopDensity";
             this.lblCopDensity.Size = new System.Drawing.Size(67, 13);
-            this.lblCopDensity.TabIndex = 6;
+            this.lblCopDensity.TabIndex = 0;
             this.lblCopDensity.Text = "Cop Density:";
             // 
             // cmbCopDensity
@@ -404,7 +418,7 @@
             this.cmbCopDensity.Location = new System.Drawing.Point(193, 92);
             this.cmbCopDensity.Name = "cmbCopDensity";
             this.cmbCopDensity.Size = new System.Drawing.Size(121, 21);
-            this.cmbCopDensity.TabIndex = 5;
+            this.cmbCopDensity.TabIndex = 4;
             this.cmbCopDensity.SelectedIndexChanged += new System.EventHandler(this.cmbCopDensity_SelectedIndexChanged);
             // 
             // pnlCopCustom
@@ -418,7 +432,7 @@
             this.pnlCopCustom.Location = new System.Drawing.Point(38, 52);
             this.pnlCopCustom.Name = "pnlCopCustom";
             this.pnlCopCustom.Size = new System.Drawing.Size(245, 27);
-            this.pnlCopCustom.TabIndex = 4;
+            this.pnlCopCustom.TabIndex = 3;
             // 
             // lblCopSkill
             // 
@@ -426,7 +440,7 @@
             this.lblCopSkill.Location = new System.Drawing.Point(134, 6);
             this.lblCopSkill.Name = "lblCopSkill";
             this.lblCopSkill.Size = new System.Drawing.Size(42, 13);
-            this.lblCopSkill.TabIndex = 5;
+            this.lblCopSkill.TabIndex = 0;
             this.lblCopSkill.Text = "AI Skill:";
             // 
             // lblCopClass
@@ -435,7 +449,7 @@
             this.lblCopClass.Location = new System.Drawing.Point(3, 6);
             this.lblCopClass.Name = "lblCopClass";
             this.lblCopClass.Size = new System.Drawing.Size(48, 13);
-            this.lblCopClass.TabIndex = 4;
+            this.lblCopClass.TabIndex = 0;
             this.lblCopClass.Text = "AI Class:";
             // 
             // cmbCopClass
@@ -450,7 +464,7 @@
             this.cmbCopClass.Location = new System.Drawing.Point(57, 3);
             this.cmbCopClass.Name = "cmbCopClass";
             this.cmbCopClass.Size = new System.Drawing.Size(61, 21);
-            this.cmbCopClass.TabIndex = 3;
+            this.cmbCopClass.TabIndex = 1;
             this.cmbCopClass.SelectedIndexChanged += new System.EventHandler(this.cmbCopClass_SelectedIndexChanged);
             // 
             // numCopSkill
@@ -482,7 +496,7 @@
             this.txtCopDifficultyDescription.Name = "txtCopDifficultyDescription";
             this.txtCopDifficultyDescription.ReadOnly = true;
             this.txtCopDifficultyDescription.Size = new System.Drawing.Size(308, 40);
-            this.txtCopDifficultyDescription.TabIndex = 3;
+            this.txtCopDifficultyDescription.TabIndex = 2;
             this.txtCopDifficultyDescription.Text = "Sample Difficulty: Prepare to be difficulty\'d!";
             // 
             // lblCopDifficulty
@@ -492,7 +506,7 @@
             this.lblCopDifficulty.Location = new System.Drawing.Point(115, 22);
             this.lblCopDifficulty.Name = "lblCopDifficulty";
             this.lblCopDifficulty.Size = new System.Drawing.Size(72, 13);
-            this.lblCopDifficulty.TabIndex = 1;
+            this.lblCopDifficulty.TabIndex = 0;
             this.lblCopDifficulty.Text = "Cop Difficulty:";
             // 
             // cmbCopDifficulty
@@ -513,7 +527,7 @@
             this.cmbCopDifficulty.Location = new System.Drawing.Point(193, 19);
             this.cmbCopDifficulty.Name = "cmbCopDifficulty";
             this.cmbCopDifficulty.Size = new System.Drawing.Size(121, 21);
-            this.cmbCopDifficulty.TabIndex = 0;
+            this.cmbCopDifficulty.TabIndex = 1;
             this.cmbCopDifficulty.SelectedIndexChanged += new System.EventHandler(this.cmbCopDifficulty_SelectedIndexChanged);
             // 
             // lblInfoName
@@ -523,7 +537,7 @@
             this.lblInfoName.Location = new System.Drawing.Point(71, 413);
             this.lblInfoName.Name = "lblInfoName";
             this.lblInfoName.Size = new System.Drawing.Size(261, 13);
-            this.lblInfoName.TabIndex = 22;
+            this.lblInfoName.TabIndex = 0;
             this.lblInfoName.Text = "Need for Speed Rivals Difficulty Selector Tool - By fox";
             // 
             // lnkProjectPage
@@ -532,10 +546,10 @@
             this.lnkProjectPage.AutoSize = true;
             this.lnkProjectPage.Location = new System.Drawing.Point(155, 430);
             this.lnkProjectPage.Name = "lnkProjectPage";
-            this.lnkProjectPage.Size = new System.Drawing.Size(177, 13);
-            this.lnkProjectPage.TabIndex = 23;
+            this.lnkProjectPage.Size = new System.Drawing.Size(182, 13);
+            this.lnkProjectPage.TabIndex = 6;
             this.lnkProjectPage.TabStop = true;
-            this.lnkProjectPage.Text = "http://taraxis.com/nfs14difficultytool";
+            this.lnkProjectPage.Text = "https://taraxis.com/nfs14difficultytool";
             this.lnkProjectPage.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkProjectPage_LinkClicked);
             // 
             // txtStatus
@@ -547,7 +561,7 @@
             this.txtStatus.Name = "txtStatus";
             this.txtStatus.ReadOnly = true;
             this.txtStatus.Size = new System.Drawing.Size(168, 20);
-            this.txtStatus.TabIndex = 24;
+            this.txtStatus.TabIndex = 3;
             this.txtStatus.Text = "Status...";
             this.txtStatus.WordWrap = false;
             // 
@@ -570,7 +584,7 @@
             this.lblPublicOptionInfo.Location = new System.Drawing.Point(12, 430);
             this.lblPublicOptionInfo.Name = "lblPublicOptionInfo";
             this.lblPublicOptionInfo.Size = new System.Drawing.Size(135, 13);
-            this.lblPublicOptionInfo.TabIndex = 25;
+            this.lblPublicOptionInfo.TabIndex = 0;
             this.lblPublicOptionInfo.Text = "* = Non-Public Games Only";
             // 
             // DifficultyForm
@@ -587,7 +601,7 @@
             this.Controls.Add(this.grpRacerSettings);
             this.Controls.Add(this.grpCopSettings);
             this.Controls.Add(this.lblInfoName);
-            this.MinimumSize = new System.Drawing.Size(354, 484);
+            this.MinimumSize = new System.Drawing.Size(360, 491);
             this.Name = "DifficultyForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "NFS Rivals Difficulty Tool";
@@ -650,5 +664,6 @@
         private System.Windows.Forms.OpenFileDialog dlgOpenFile;
         private System.Windows.Forms.SaveFileDialog dlgSaveFile;
         private System.Windows.Forms.Label lblPublicOptionInfo;
+        private System.Windows.Forms.CheckBox chkNoSideSlam;
     }
 }

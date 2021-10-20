@@ -307,7 +307,7 @@ namespace NFS14DifficultyTool {
         }
 
         //Class events
-        public void UpdateCopClass(int index, bool eqWeapUse) {
+        public void UpdateCopClass(int index, bool eqWeapUse, bool noSideSlam) {
             LaunchThread(() => {
                 if (CheckThread())
                     return;
@@ -374,8 +374,9 @@ namespace NFS14DifficultyTool {
                 }
 
                 //Don't use SideSlam, it's kinda buggy
-                //foreach (string s in copPersonalityList)
-                //    PersonaLibraryPrefab.FieldList[s + " - SideSlam-Chance"].Field = 0f;
+                foreach (string s in copPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - SideSlam-Chance"].Field = (noSideSlam)
+                        ? 0f : PersonaLibraryPrefab.FieldList[s + " - SideSlam-Chance"].FieldDefault;
 
                 //Adjust PacingPursuitScheduleHard to tougher values to make a Very Hard class
                 NFSObject PacingPursuitScheduleHard;
@@ -384,13 +385,28 @@ namespace NFS14DifficultyTool {
                 if ((ClassEnum)index == ClassEnum.AroundTheWorld) {
                     PacingPursuitScheduleHard.FieldList["DistanceCurve-1-X"].Field = 999999f;
                     PacingPursuitScheduleHard.FieldList["SkillScalarOverTimeCurve-1-X"].Field = 999999f;
+
+                    //More effecient routing
+                    foreach (string s in copPersonalityList) {
+                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMin"].Field = 9999f;
+                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMax"].Field = 9999f;
+                        PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = false;
+                    }
                 }
-                else
+                else {
                     PacingPursuitScheduleHard.ResetFieldsToDefault(); //Safe as these are the only things we change
+
+                    //Revert routing
+                    foreach (string s in copPersonalityList) {
+                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMin"].Field = PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMin"].FieldDefault;
+                        PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMax"].Field = PersonaLibraryPrefab.FieldList[s + " - RoutingRoadBiasMax"].FieldDefault;
+                        PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].Field = PersonaLibraryPrefab.FieldList[s + " - AvoidanceSpeedMatchWhenBlocked"].FieldDefault; ;
+                    }
+                }
             });
         }
 
-        public void UpdateRacerClass(int index, bool eqWeapUse) {
+        public void UpdateRacerClass(int index, bool eqWeapUse, bool noSideSlam) {
             LaunchThread(() => {
                 if (CheckThread())
                     return;
@@ -505,8 +521,9 @@ namespace NFS14DifficultyTool {
                 }
 
                 //Don't use SideSlam, it's kinda buggy
-                //foreach (string s in racerPersonalityList)
-                //    PersonaLibraryPrefab.FieldList[s + " - SideSlam-Chance"].Field = 0f;
+                foreach (string s in racerPersonalityList)
+                    PersonaLibraryPrefab.FieldList[s + " - SideSlam-Chance"].Field = (noSideSlam)
+                        ? 0f : PersonaLibraryPrefab.FieldList[s + " - SideSlam-Chance"].FieldDefault;
             });
         }
 

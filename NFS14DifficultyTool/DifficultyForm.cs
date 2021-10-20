@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace NFS14DifficultyTool {
@@ -11,6 +12,9 @@ namespace NFS14DifficultyTool {
 
         public DifficultyForm() {
             InitializeComponent();
+
+            //Set own process priority
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.Idle;
 
             //Initialize our worker
             worker = new DifficultyFormWorker(this);
@@ -33,6 +37,7 @@ namespace NFS14DifficultyTool {
                 cmbCopHeatIntensity.SelectedIndex = (int)HeatEnum.Normal;
                 chkSpikeStripFix.Checked = true;
                 chkEqualWeaponUse.Checked = true;
+                chkNoSideSlam.Checked = false;
             }
         }
 
@@ -86,6 +91,7 @@ namespace NFS14DifficultyTool {
             cmbCopHeatIntensity_SelectedIndexChanged(null, null);
             chkSpikeStripFix_CheckedChanged(null, null);
             //chkEqualWeaponUse_CheckedChanged(null, null); //Not needed, only calls cmb[Cop/Racer]Class_SelectedIndexChanged()
+            //chkNoSideSlam_CheckedChanged(null, null); //Same as above
         }
 
         public void ValidatePublicGameOptions() {
@@ -133,6 +139,7 @@ namespace NFS14DifficultyTool {
             ini.SetValue("Settings", "CopMinHeat", numCopMinHeat.Value);
             ini.SetValue("Settings", "CopHeatIntensity", cmbCopHeatIntensity.SelectedIndex);
 
+            ini.SetValue("Settings", "NoSideSlam", chkNoSideSlam.Checked);
             ini.SetValue("Settings", "SpikeStripFix", chkSpikeStripFix.Checked);
             ini.SetValue("Settings", "EqualWeaponUse", chkEqualWeaponUse.Checked);
 
@@ -189,6 +196,8 @@ namespace NFS14DifficultyTool {
                 cmbCopHeatIntensity.SelectedIndex = iField;
 
             bool bField;
+            if (bool.TryParse(ini.GetValue("Settings", "NoSideSlam"), out bField))
+                chkNoSideSlam.Checked = bField;
             if (bool.TryParse(ini.GetValue("Settings", "SpikeStripFix"), out bField))
                 chkSpikeStripFix.Checked = bField;
             if (bool.TryParse(ini.GetValue("Settings", "EqualWeaponUse"), out bField))
@@ -211,6 +220,7 @@ namespace NFS14DifficultyTool {
         //Difficulty events
         private void cmbCopDifficulty_SelectedIndexChanged(object sender, EventArgs e) {
             pnlCopCustom.Visible = cmbCopDifficulty.SelectedIndex == (int)DifficultyEnum.Custom;
+            txtCopDifficultyDescription.TabStop = cmbCopDifficulty.SelectedIndex != (int)DifficultyEnum.Custom;
             switch ((DifficultyEnum)cmbCopDifficulty.SelectedIndex) {
                 case DifficultyEnum.Novice:
                     txtCopDifficultyDescription.Text = "They won't crash into you... much.";
@@ -260,6 +270,7 @@ namespace NFS14DifficultyTool {
 
         private void cmbRacerDifficulty_SelectedIndexChanged(object sender, EventArgs e) {
             pnlRacerCustom.Visible = cmbRacerDifficulty.SelectedIndex == (int)DifficultyEnum.Custom;
+            txtRacerDifficultyDescription.TabStop = cmbRacerDifficulty.SelectedIndex != (int)DifficultyEnum.Custom;
             switch ((DifficultyEnum)cmbRacerDifficulty.SelectedIndex) {
                 case DifficultyEnum.Novice:
                     txtRacerDifficultyDescription.Text = "They won't crash into you... much.";
@@ -309,11 +320,11 @@ namespace NFS14DifficultyTool {
 
         //Class events
         private void cmbCopClass_SelectedIndexChanged(object sender, EventArgs e) {
-            worker.UpdateCopClass(cmbCopClass.SelectedIndex, chkEqualWeaponUse.Checked);
+            worker.UpdateCopClass(cmbCopClass.SelectedIndex, chkEqualWeaponUse.Checked, chkNoSideSlam.Checked);
         }
 
         private void cmbRacerClass_SelectedIndexChanged(object sender, EventArgs e) {
-            worker.UpdateRacerClass(cmbRacerClass.SelectedIndex, chkEqualWeaponUse.Checked);
+            worker.UpdateRacerClass(cmbRacerClass.SelectedIndex, chkEqualWeaponUse.Checked, chkNoSideSlam.Checked);
         }
 
         //Skill events
@@ -362,8 +373,14 @@ namespace NFS14DifficultyTool {
 
         private void chkEqualWeaponUse_CheckedChanged(object sender, EventArgs e) {
             //This is only used by [Cop/Racer]Class, so just update those
-            worker.UpdateCopClass(cmbCopClass.SelectedIndex, chkEqualWeaponUse.Checked);
-            worker.UpdateRacerClass(cmbRacerClass.SelectedIndex, chkEqualWeaponUse.Checked);
+            worker.UpdateCopClass(cmbCopClass.SelectedIndex, chkEqualWeaponUse.Checked, chkNoSideSlam.Checked);
+            worker.UpdateRacerClass(cmbRacerClass.SelectedIndex, chkEqualWeaponUse.Checked, chkNoSideSlam.Checked);
+        }
+
+        private void chkNoSideSlam_CheckedChanged(object sender, EventArgs e) {
+            //Same here
+            worker.UpdateCopClass(cmbCopClass.SelectedIndex, chkEqualWeaponUse.Checked, chkNoSideSlam.Checked);
+            worker.UpdateRacerClass(cmbRacerClass.SelectedIndex, chkEqualWeaponUse.Checked, chkNoSideSlam.Checked);
         }
     }
 }
